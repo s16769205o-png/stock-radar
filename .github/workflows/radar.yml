@@ -1,0 +1,67 @@
+
+name: 小G股票雷達
+
+on:
+  workflow_dispatch:
+  schedule:
+    # 台灣時間週一至週五 16:40
+    - cron: "40 8 * * 1-5"
+    # 台灣時間週二至週六 07:40
+    - cron: "40 23 * * 1-5"
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: 取得專案
+        uses: actions/checkout@v4
+
+      - name: 安裝 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: 安裝工具
+        run: pip install -r requirements.txt
+
+      - name: 執行股票雷達
+        run: python radar.py
+
+      - name: 保存掃描紀錄
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html data/history.csv
+          if ! git diff --cached --quiet; then
+            git commit -m "更新股票雷達報告"
+            git push
+          fi
+
+      - name: 準備手機報告
+        run: |
+          mkdir -p _site/data
+          cp index.html _site/index.html
+          cp data/history.csv _site/data/history.csv
+
+      - name: 上傳網頁
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
+  deploy:
+    needs: scan
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.publish.outputs.page_url }}
+
+    steps:
+      - name: 發布股票雷達網頁
+        id: publish
+        uses: actions/deploy-pages@v4
