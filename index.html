@@ -1,47 +1,409 @@
 <!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>小G股票雷達</title>
-<style>*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif;background:#f4f6fb;color:#1a2538}main{max-width:950px;margin:auto;padding:25px 16px 60px}h1{font-size:2rem;margin:8px 0}h2{margin:30px 0 13px}.muted,small{color:#718095}.muted{line-height:1.7}.stats,.weights,.grid{display:grid;gap:12px}.stats{grid-template-columns:repeat(3,1fr);margin:25px 0}.stats>div,.weights>div,.card,.note{background:white;border:1px solid #e2e7f0;border-radius:16px;padding:16px}.stats b{display:block;font-size:1.65rem}.weights{grid-template-columns:repeat(4,1fr)}.weights strong{display:block;font-size:1.3rem}.weights small{display:block;line-height:1.5}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.heading{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}.heading strong{font-size:1.25rem}.heading small{display:block;margin-top:4px}.tag{font-size:.75rem;border-radius:99px;background:#eef0f4;color:#526071;padding:6px 9px;white-space:nowrap}.green{background:#dcf5e8;color:#137b4b}.price{font-size:1.6rem;font-weight:700;margin:18px 0}.price small{font-size:.75rem;font-weight:400}.metrics{display:grid;grid-template-columns:1fr 1fr;gap:13px}.metrics small{display:block;font-size:.75rem}.metrics b{display:block;margin-top:5px}.signal{border-top:1px solid #edf0f4;padding-top:12px;margin:15px 0 0;font-size:.9rem}.note{line-height:1.8;color:#526071}a{color:#245f9f}.alert{background:#fff0d6;padding:13px;border-radius:10px}@media(max-width:680px){.grid{grid-template-columns:1fr}.weights{grid-template-columns:1fr 1fr}.stats>div{padding:11px}.stats b{font-size:1.3rem}}</style></head><body><main>
-<div class="muted">STOCK RESEARCH LAB · 1.1</div><h1>📡 小G股票雷達</h1><div class="muted">台股＋美股 · 台灣時間產生：2026-11-16 00:07<br>每檔股票實際交易日請看卡片日期。</div>
-<div class="stats"><div><small>成功掃描</small><b>10</b></div><div><small>符合均線</small><b>3</b></div><div><small>明顯放量</small><b>0</b></div></div>
-<h2>四大引擎的預定權重</h2><div class="weights"><div><strong>30%</strong>技術分析<small>均線＋量價觀察；未評分</small></div><div><strong>30%</strong>產業前景<small>尚未接入</small></div><div><strong>25%</strong>法人買賣<small>尚未接入</small></div><div><strong>15%</strong>國際新聞<small>尚未接入</small></div></div>
-<h2>🇹🇼 台股（5 檔）</h2><section class="grid"><article class="card">
-      <div class="heading"><div><strong>2330.TW</strong><small>台股 · 2026-11-13</small></div><span class="tag ">未符合均線趨勢</span></div>
-      <div class="price">2,350.00 <small>TWD</small></div>
-      <div class="metrics"><div><small>MA20</small><b>2,345.50</b></div><div><small>MA60</small><b>2,412.44</b></div><div><small>量比（前 20 日）</small><b>0.88 倍</b></div><div><small>當日漲跌</small><b>+0.43%</b></div></div>
-      <p class="signal">量價訊號：<strong>一般量能・上漲</strong></p></article><article class="card">
-      <div class="heading"><div><strong>2454.TW</strong><small>台股 · 2026-11-13</small></div><span class="tag ">未符合均線趨勢</span></div>
-      <div class="price">4,120.00 <small>TWD</small></div>
-      <div class="metrics"><div><small>MA20</small><b>3,932.25</b></div><div><small>MA60</small><b>4,306.33</b></div><div><small>量比（前 20 日）</small><b>1.34 倍</b></div><div><small>當日漲跌</small><b>+7.01%</b></div></div>
-      <p class="signal">量價訊號：<strong>一般量能・上漲</strong></p></article><article class="card">
-      <div class="heading"><div><strong>2317.TW</strong><small>台股 · 2026-11-13</small></div><span class="tag ">未符合均線趨勢</span></div>
-      <div class="price">241.00 <small>TWD</small></div>
-      <div class="metrics"><div><small>MA20</small><b>242.85</b></div><div><small>MA60</small><b>247.31</b></div><div><small>量比（前 20 日）</small><b>0.99 倍</b></div><div><small>當日漲跌</small><b>+0.42%</b></div></div>
-      <p class="signal">量價訊號：<strong>一般量能・上漲</strong></p></article><article class="card">
-      <div class="heading"><div><strong>2882.TW</strong><small>台股 · 2026-11-13</small></div><span class="tag green">符合均線趨勢</span></div>
-      <div class="price">114.50 <small>TWD</small></div>
-      <div class="metrics"><div><small>MA20</small><b>113.10</b></div><div><small>MA60</small><b>110.63</b></div><div><small>量比（前 20 日）</small><b>0.98 倍</b></div><div><small>當日漲跌</small><b>+2.23%</b></div></div>
-      <p class="signal">量價訊號：<strong>一般量能・上漲</strong></p></article><article class="card">
-      <div class="heading"><div><strong>1303.TW</strong><small>台股 · 2026-11-13</small></div><span class="tag green">符合均線趨勢</span></div>
-      <div class="price">304.00 <small>TWD</small></div>
-      <div class="metrics"><div><small>MA20</small><b>292.62</b></div><div><small>MA60</small><b>259.63</b></div><div><small>量比（前 20 日）</small><b>1.04 倍</b></div><div><small>當日漲跌</small><b>+3.75%</b></div></div>
-      <p class="signal">量價訊號：<strong>一般量能・上漲</strong></p></article></section><h2>🇺🇸 美股（5 檔）</h2><section class="grid"><article class="card">
-      <div class="heading"><div><strong>AAPL</strong><small>美股 · 2026-11-13</small></div><span class="tag green">符合均線趨勢</span></div>
-      <div class="price">356.27 <small>USD</small></div>
-      <div class="metrics"><div><small>MA20</small><b>345.91</b></div><div><small>MA60</small><b>335.16</b></div><div><small>量比（前 20 日）</small><b>0.83 倍</b></div><div><small>當日漲跌</small><b>+0.39%</b></div></div>
-      <p class="signal">量價訊號：<strong>一般量能・上漲</strong></p></article><article class="card">
-      <div class="heading"><div><strong>MSFT</strong><small>美股 · 2026-11-13</small></div><span class="tag ">未符合均線趨勢</span></div>
-      <div class="price">523.88 <small>USD</small></div>
-      <div class="metrics"><div><small>MA20</small><b>529.39</b></div><div><small>MA60</small><b>515.71</b></div><div><small>量比（前 20 日）</small><b>1.00 倍</b></div><div><small>當日漲跌</small><b>+0.17%</b></div></div>
-      <p class="signal">量價訊號：<strong>一般量能・上漲</strong></p></article><article class="card">
-      <div class="heading"><div><strong>GOOGL</strong><small>美股 · 2026-11-13</small></div><span class="tag ">未符合均線趨勢</span></div>
-      <div class="price">295.77 <small>USD</small></div>
-      <div class="metrics"><div><small>MA20</small><b>303.42</b></div><div><small>MA60</small><b>330.50</b></div><div><small>量比（前 20 日）</small><b>0.75 倍</b></div><div><small>當日漲跌</small><b>-0.98%</b></div></div>
-      <p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
-      <div class="heading"><div><strong>JPM</strong><small>美股 · 2026-11-13</small></div><span class="tag ">未符合均線趨勢</span></div>
-      <div class="price">346.19 <small>USD</small></div>
-      <div class="metrics"><div><small>MA20</small><b>339.04</b></div><div><small>MA60</small><b>342.16</b></div><div><small>量比（前 20 日）</small><b>0.63 倍</b></div><div><small>當日漲跌</small><b>+0.98%</b></div></div>
-      <p class="signal">量價訊號：<strong>一般量能・上漲</strong></p></article><article class="card">
-      <div class="heading"><div><strong>XOM</strong><small>美股 · 2026-11-13</small></div><span class="tag ">未符合均線趨勢</span></div>
-      <div class="price">170.59 <small>USD</small></div>
-      <div class="metrics"><div><small>MA20</small><b>175.33</b></div><div><small>MA60</small><b>168.03</b></div><div><small>量比（前 20 日）</small><b>0.80 倍</b></div><div><small>當日漲跌</small><b>+0.48%</b></div></div>
-      <p class="signal">量價訊號：<strong>一般量能・上漲</strong></p></article></section>
-<h2>資料說明</h2><div class="note">量比＝最新一個完整交易日成交量 ÷ <strong>此前 20 個交易日</strong>（不含當日）的平均成交量。<strong>量比 ≥ 1.5</strong> 才視為明顯放量，並依當日調整後價格的漲跌區分放量上漲與放量下跌。<br>量價目前只是附加觀察訊號，不是買入條件，也沒有改動原先 30／30／25／15 的規劃權重。<br>此處價格為調整後歷史價，可能不同於券商畫面。放量可能是突破也可能是賣壓，請勿視作保證漲跌。本系統不會下單。<br><a href="data/history.csv">查看歷史紀錄 CSV</a>（舊紀錄缺少的新欄位會保持空白）。</div></main></body></html>
+<style>*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif;background:#f4f6fb;color:#1a2538}main{max-width:950px;margin:auto;padding:25px 16px 60px}h1{font-size:2rem;margin:8px 0}h2{margin:30px 0 13px}.muted,small{color:#718095}.muted{line-height:1.7}.stats,.weights,.grid{display:grid;gap:12px}.stats{grid-template-columns:repeat(3,1fr);margin:25px 0}.stats>div,.weights>div,.card,.note{background:white;border:1px solid #e2e7f0;border-radius:16px;padding:16px}.stats b{display:block;font-size:1.65rem}.weights{grid-template-columns:repeat(4,1fr)}.weights strong{display:block;font-size:1.3rem}.weights small{display:block;line-height:1.5}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.heading{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}.heading strong{font-size:1.25rem}.heading small{display:block;margin-top:4px}.tag{font-size:.75rem;border-radius:99px;background:#eef0f4;color:#526071;padding:6px 9px;white-space:nowrap}.green{background:#dcf5e8;color:#137b4b}.price{font-size:1.6rem;font-weight:700;margin:18px 0}.price small{font-size:.75rem;font-weight:400}.metrics{display:grid;grid-template-columns:1fr 1fr;gap:13px}.metrics small{display:block;font-size:.75rem}.metrics b{display:block;margin-top:5px}.signal{border-top:1px solid #edf0f4;padding-top:12px;margin:15px 0 0;font-size:.9rem}.note{line-height:1.8;color:#526071}a{color:#245f9f}.alert{background:#fff0d6;padding:13px;border-radius:10px}details{margin-top:18px}summary{cursor:pointer;font-weight:650;background:#e5eaf2;padding:14px;border-radius:12px;margin-bottom:14px}@media(max-width:680px){.grid{grid-template-columns:1fr}.weights{grid-template-columns:1fr 1fr}.stats>div{padding:11px}.stats b{font-size:1.3rem}}</style></head><body><main>
+<div class="muted">STOCK RESEARCH LAB · 1.2</div><h1>📡 小G股票雷達</h1><div class="muted">固定跨產業測試池：台股 50＋美股 50 · 台灣時間產生：2026-11-16 12:45<br>個別股票實際交易日期請看卡片。</div>
+<div class="stats"><div><small>成功掃描</small><b>100</b></div><div><small>符合均線</small><b>27</b></div><div><small>明顯放量</small><b>3</b></div></div>
+<h2>四大引擎預定權重</h2><div class="weights"><div><strong>30%</strong>技術分析<small>均線＋量價觀察；尚未給分</small></div><div><strong>30%</strong>產業前景<small>尚未接入</small></div><div><strong>25%</strong>法人買賣<small>尚未接入</small></div><div><strong>15%</strong>國際新聞<small>尚未接入</small></div></div>
+
+<h2>🇹🇼 台股（50 檔）</h2><p class="muted">優先觀察：均線趨勢符合 ＋ 放量上漲（0 檔）</p><section class="grid"><p class="muted">目前沒有同時符合均線趨勢與放量上漲的股票。</p></section><details><summary>展開其餘 50 檔股票</summary><section class="grid"><article class="card">
+<div class="heading"><div><strong>2618.TW</strong><small>台股 · 2026-11-16</small></div><span class="tag green">符合均線趨勢</span></div>
+<div class="price">48.25 <small>TWD</small></div>
+<div class="metrics"><div><small>MA20</small><b>44.11</b></div><div><small>MA60</small><b>42.88</b></div><div><small>量比（前20交易日）</small><b>1.05 倍</b></div><div><small>當日漲跌</small><b>+1.05%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・上漲</strong></p></article><article class="card">
+<div class="heading"><div><strong>2884.TW</strong><small>台股 · 2026-11-16</small></div><span class="tag green">符合均線趨勢</span></div>
+<div class="price">48.40 <small>TWD</small></div>
+<div class="metrics"><div><small>MA20</small><b>48.33</b></div><div><small>MA60</small><b>45.32</b></div><div><small>量比（前20交易日）</small><b>0.95 倍</b></div><div><small>當日漲跌</small><b>+0.21%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・上漲</strong></p></article><article class="card">
+<div class="heading"><div><strong>2610.TW</strong><small>台股 · 2026-11-16</small></div><span class="tag green">符合均線趨勢</span></div>
+<div class="price">23.00 <small>TWD</small></div>
+<div class="metrics"><div><small>MA20</small><b>21.26</b></div><div><small>MA60</small><b>20.66</b></div><div><small>量比（前20交易日）</small><b>0.87 倍</b></div><div><small>當日漲跌</small><b>-0.86%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>5880.TW</strong><small>台股 · 2026-11-16</small></div><span class="tag green">符合均線趨勢</span></div>
+<div class="price">28.55 <small>TWD</small></div>
+<div class="metrics"><div><small>MA20</small><b>28.32</b></div><div><small>MA60</small><b>27.02</b></div><div><small>量比（前20交易日）</small><b>0.86 倍</b></div><div><small>當日漲跌</small><b>+0.00%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・持平</strong></p></article><article class="card">
+<div class="heading"><div><strong>1476.TW</strong><small>台股 · 2026-11-16</small></div><span class="tag green">符合均線趨勢</span></div>
+<div class="price">385.00 <small>TWD</small></div>
+<div class="metrics"><div><small>MA20</small><b>336.57</b></div><div><small>MA60</small><b>311.62</b></div><div><small>量比（前20交易日）</small><b>0.84 倍</b></div><div><small>當日漲跌</small><b>-0.39%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>2412.TW</strong><small>台股 · 2026-11-16</small></div><span class="tag green">符合均線趨勢</span></div>
+<div class="price">165.00 <small>TWD</small></div>
+<div class="metrics"><div><small>MA20</small><b>159.40</b></div><div><small>MA60</small><b>147.82</b></div><div><small>量比（前20交易日）</small><b>0.81 倍</b></div><div><small>當日漲跌</small><b>+0.00%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・持平</strong></p></article><article class="card">
+<div class="heading"><div><strong>2882.TW</strong><small>台股 · 2026-11-16</small></div><span class="tag green">符合均線趨勢</span></div>
+<div class="price">113.00 <small>TWD</small></div>
+<div class="metrics"><div><small>MA20</small><b>112.95</b></div><div><small>MA60</small><b>110.87</b></div><div><small>量比（前20交易日）</small><b>0.77 倍</b></div><div><small>當日漲跌</small><b>-1.31%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>2891.TW</strong><small>台股 · 2026-11-16</small></div><span class="tag green">符合均線趨勢</span></div>
+<div class="price">78.10 <small>TWD</small></div>
+<div class="metrics"><div><small>MA20</small><b>74.85</b></div><div><small>MA60</small><b>70.20</b></div><div><small>量比（前20交易日）</small><b>0.72 倍</b></div><div><small>當日漲跌</small><b>-0.76%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>2603.TW</strong><small>台股 · 2026-11-16</small></div><span class="tag green">符合均線趨勢</span></div>
+<div class="price">262.00 <small>TWD</small></div>
+<div class="metrics"><div><small>MA20</small><b>260.00</b></div><div><small>MA60</small><b>247.14</b></div><div><small>量比（前20交易日）</small><b>0.68 倍</b></div><div><small>當日漲跌</small><b>+1.75%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・上漲</strong></p></article><article class="card">
+<div class="heading"><div><strong>2886.TW</strong><small>台股 · 2026-11-16</small></div><span class="tag green">符合均線趨勢</span></div>
+<div class="price">55.10 <small>TWD</small></div>
+<div class="metrics"><div><small>MA20</small><b>54.14</b></div><div><small>MA60</small><b>51.12</b></div><div><small>量比（前20交易日）</small><b>0.65 倍</b></div><div><small>當日漲跌</small><b>-0.54%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>2892.TW</strong><small>台股 · 2026-11-16</small></div><span class="tag green">符合均線趨勢</span></div>
+<div class="price">42.95 <small>TWD</small></div>
+<div class="metrics"><div><small>MA20</small><b>42.40</b></div><div><small>MA60</small><b>39.33</b></div><div><small>量比（前20交易日）</small><b>0.60 倍</b></div><div><small>當日漲跌</small><b>-1.15%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>3443.TW</strong><small>台股 · 2026-11-16</small></div><span class="tag green">符合均線趨勢</span></div>
+<div class="price">7,750.00 <small>TWD</small></div>
+<div class="metrics"><div><small>MA20</small><b>7,470.25</b></div><div><small>MA60</small><b>7,083.25</b></div><div><small>量比（前20交易日）</small><b>0.59 倍</b></div><div><small>當日漲跌</small><b>-9.99%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>2376.TW</strong><small>台股 · 2026-11-16</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">283.50 <small>TWD</small></div>
+<div class="metrics"><div><small>MA20</small><b>327.02</b></div><div><small>MA60</small><b>346.81</b></div><div><small>量比（前20交易日）</small><b>1.81 倍</b></div><div><small>當日漲跌</small><b>-0.18%</b></div></div>
+<p class="signal">量價訊號：<strong>放量下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>3661.TW</strong><small>台股 · 2026-11-16</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">3,750.00 <small>TWD</small></div>
+<div class="metrics"><div><small>MA20</small><b>3,479.25</b></div><div><small>MA60</small><b>3,730.09</b></div><div><small>量比（前20交易日）</small><b>1.74 倍</b></div><div><small>當日漲跌</small><b>-6.72%</b></div></div>
+<p class="signal">量價訊號：<strong>放量下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>2308.TW</strong><small>台股 · 2026-11-16</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">1,120.00 <small>TWD</small></div>
+<div class="metrics"><div><small>MA20</small><b>1,361.25</b></div><div><small>MA60</small><b>1,655.00</b></div><div><small>量比（前20交易日）</small><b>1.44 倍</b></div><div><small>當日漲跌</small><b>-9.68%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>2317.TW</strong><small>台股 · 2026-11-16</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">224.00 <small>TWD</small></div>
+<div class="metrics"><div><small>MA20</small><b>241.85</b></div><div><small>MA60</small><b>246.89</b></div><div><small>量比（前20交易日）</small><b>1.40 倍</b></div><div><small>當日漲跌</small><b>-7.05%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>2885.TW</strong><small>台股 · 2026-11-16</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">69.70 <small>TWD</small></div>
+<div class="metrics"><div><small>MA20</small><b>71.01</b></div><div><small>MA60</small><b>69.06</b></div><div><small>量比（前20交易日）</small><b>1.07 倍</b></div><div><small>當日漲跌</small><b>-4.13%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>3017.TW</strong><small>台股 · 2026-11-16</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">2,740.00 <small>TWD</small></div>
+<div class="metrics"><div><small>MA20</small><b>2,966.50</b></div><div><small>MA60</small><b>3,205.50</b></div><div><small>量比（前20交易日）</small><b>1.05 倍</b></div><div><small>當日漲跌</small><b>-9.87%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>2382.TW</strong><small>台股 · 2026-11-16</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">267.00 <small>TWD</small></div>
+<div class="metrics"><div><small>MA20</small><b>306.93</b></div><div><small>MA60</small><b>324.74</b></div><div><small>量比（前20交易日）</small><b>1.01 倍</b></div><div><small>當日漲跌</small><b>-3.44%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>2330.TW</strong><small>台股 · 2026-11-16</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">2,275.00 <small>TWD</small></div>
+<div class="metrics"><div><small>MA20</small><b>2,338.25</b></div><div><small>MA60</small><b>2,410.81</b></div><div><small>量比（前20交易日）</small><b>0.97 倍</b></div><div><small>當日漲跌</small><b>-3.19%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>2002.TW</strong><small>台股 · 2026-11-16</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">18.15 <small>TWD</small></div>
+<div class="metrics"><div><small>MA20</small><b>19.13</b></div><div><small>MA60</small><b>19.05</b></div><div><small>量比（前20交易日）</small><b>0.91 倍</b></div><div><small>當日漲跌</small><b>-1.36%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>2454.TW</strong><small>台股 · 2026-11-16</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">3,930.00 <small>TWD</small></div>
+<div class="metrics"><div><small>MA20</small><b>3,916.25</b></div><div><small>MA60</small><b>4,307.08</b></div><div><small>量比（前20交易日）</small><b>0.91 倍</b></div><div><small>當日漲跌</small><b>-4.61%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>2881.TW</strong><small>台股 · 2026-11-16</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">155.50 <small>TWD</small></div>
+<div class="metrics"><div><small>MA20</small><b>157.38</b></div><div><small>MA60</small><b>151.64</b></div><div><small>量比（前20交易日）</small><b>0.88 倍</b></div><div><small>當日漲跌</small><b>-3.72%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>2327.TW</strong><small>台股 · 2026-11-16</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">383.00 <small>TWD</small></div>
+<div class="metrics"><div><small>MA20</small><b>467.90</b></div><div><small>MA60</small><b>537.23</b></div><div><small>量比（前20交易日）</small><b>0.86 倍</b></div><div><small>當日漲跌</small><b>-6.81%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>1216.TW</strong><small>台股 · 2026-11-16</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">78.70 <small>TWD</small></div>
+<div class="metrics"><div><small>MA20</small><b>78.90</b></div><div><small>MA60</small><b>76.86</b></div><div><small>量比（前20交易日）</small><b>0.83 倍</b></div><div><small>當日漲跌</small><b>+0.51%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・上漲</strong></p></article><article class="card">
+<div class="heading"><div><strong>2615.TW</strong><small>台股 · 2026-11-16</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">112.00 <small>TWD</small></div>
+<div class="metrics"><div><small>MA20</small><b>114.40</b></div><div><small>MA60</small><b>115.12</b></div><div><small>量比（前20交易日）</small><b>0.79 倍</b></div><div><small>當日漲跌</small><b>+4.19%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・上漲</strong></p></article><article class="card">
+<div class="heading"><div><strong>1303.TW</strong><small>台股 · 2026-11-16</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">274.00 <small>TWD</small></div>
+<div class="metrics"><div><small>MA20</small><b>290.98</b></div><div><small>MA60</small><b>260.87</b></div><div><small>量比（前20交易日）</small><b>0.78 倍</b></div><div><small>當日漲跌</small><b>-9.87%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>2357.TW</strong><small>台股 · 2026-11-16</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">852.00 <small>TWD</small></div>
+<div class="metrics"><div><small>MA20</small><b>915.50</b></div><div><small>MA60</small><b>949.12</b></div><div><small>量比（前20交易日）</small><b>0.78 倍</b></div><div><small>當日漲跌</small><b>-3.40%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>2377.TW</strong><small>台股 · 2026-11-16</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">136.00 <small>TWD</small></div>
+<div class="metrics"><div><small>MA20</small><b>152.47</b></div><div><small>MA60</small><b>152.14</b></div><div><small>量比（前20交易日）</small><b>0.78 倍</b></div><div><small>當日漲跌</small><b>-1.45%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>1519.TW</strong><small>台股 · 2026-11-16</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">500.00 <small>TWD</small></div>
+<div class="metrics"><div><small>MA20</small><b>546.80</b></div><div><small>MA60</small><b>656.43</b></div><div><small>量比（前20交易日）</small><b>0.77 倍</b></div><div><small>當日漲跌</small><b>-0.99%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>3008.TW</strong><small>台股 · 2026-11-16</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">4,780.00 <small>TWD</small></div>
+<div class="metrics"><div><small>MA20</small><b>5,461.50</b></div><div><small>MA60</small><b>6,171.33</b></div><div><small>量比（前20交易日）</small><b>0.75 倍</b></div><div><small>當日漲跌</small><b>-9.98%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>3231.TW</strong><small>台股 · 2026-11-16</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">162.50 <small>TWD</small></div>
+<div class="metrics"><div><small>MA20</small><b>179.05</b></div><div><small>MA60</small><b>182.66</b></div><div><small>量比（前20交易日）</small><b>0.75 倍</b></div><div><small>當日漲跌</small><b>-4.97%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>2207.TW</strong><small>台股 · 2026-11-16</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">531.00 <small>TWD</small></div>
+<div class="metrics"><div><small>MA20</small><b>531.30</b></div><div><small>MA60</small><b>526.30</b></div><div><small>量比（前20交易日）</small><b>0.74 倍</b></div><div><small>當日漲跌</small><b>+0.76%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・上漲</strong></p></article><article class="card">
+<div class="heading"><div><strong>2409.TW</strong><small>台股 · 2026-11-16</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">28.20 <small>TWD</small></div>
+<div class="metrics"><div><small>MA20</small><b>31.45</b></div><div><small>MA60</small><b>31.37</b></div><div><small>量比（前20交易日）</small><b>0.74 倍</b></div><div><small>當日漲跌</small><b>-7.24%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>2609.TW</strong><small>台股 · 2026-11-16</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">60.80 <small>TWD</small></div>
+<div class="metrics"><div><small>MA20</small><b>61.13</b></div><div><small>MA60</small><b>60.41</b></div><div><small>量比（前20交易日）</small><b>0.72 倍</b></div><div><small>當日漲跌</small><b>+0.83%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・上漲</strong></p></article><article class="card">
+<div class="heading"><div><strong>3711.TW</strong><small>台股 · 2026-11-16</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">561.00 <small>TWD</small></div>
+<div class="metrics"><div><small>MA20</small><b>628.15</b></div><div><small>MA60</small><b>643.55</b></div><div><small>量比（前20交易日）</small><b>0.68 倍</b></div><div><small>當日漲跌</small><b>-6.19%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>2408.TW</strong><small>台股 · 2026-11-16</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">349.00 <small>TWD</small></div>
+<div class="metrics"><div><small>MA20</small><b>409.75</b></div><div><small>MA60</small><b>474.83</b></div><div><small>量比（前20交易日）</small><b>0.67 倍</b></div><div><small>當日漲跌</small><b>-7.43%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>1326.TW</strong><small>台股 · 2026-11-16</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">71.00 <small>TWD</small></div>
+<div class="metrics"><div><small>MA20</small><b>71.91</b></div><div><small>MA60</small><b>69.97</b></div><div><small>量比（前20交易日）</small><b>0.65 倍</b></div><div><small>當日漲跌</small><b>-5.33%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>4958.TW</strong><small>台股 · 2026-11-16</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">403.50 <small>TWD</small></div>
+<div class="metrics"><div><small>MA20</small><b>478.75</b></div><div><small>MA60</small><b>494.98</b></div><div><small>量比（前20交易日）</small><b>0.62 倍</b></div><div><small>當日漲跌</small><b>-8.30%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>2303.TW</strong><small>台股 · 2026-11-16</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">97.20 <small>TWD</small></div>
+<div class="metrics"><div><small>MA20</small><b>111.24</b></div><div><small>MA60</small><b>130.33</b></div><div><small>量比（前20交易日）</small><b>0.61 倍</b></div><div><small>當日漲跌</small><b>-4.24%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>1102.TW</strong><small>台股 · 2026-11-16</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">35.65 <small>TWD</small></div>
+<div class="metrics"><div><small>MA20</small><b>37.36</b></div><div><small>MA60</small><b>36.11</b></div><div><small>量比（前20交易日）</small><b>0.58 倍</b></div><div><small>當日漲跌</small><b>-0.28%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>5871.TW</strong><small>台股 · 2026-11-16</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">101.00 <small>TWD</small></div>
+<div class="metrics"><div><small>MA20</small><b>104.97</b></div><div><small>MA60</small><b>108.70</b></div><div><small>量比（前20交易日）</small><b>0.53 倍</b></div><div><small>當日漲跌</small><b>-2.42%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>5269.TW</strong><small>台股 · 2026-11-16</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">1,125.00 <small>TWD</small></div>
+<div class="metrics"><div><small>MA20</small><b>1,335.00</b></div><div><small>MA60</small><b>1,413.08</b></div><div><small>量比（前20交易日）</small><b>0.51 倍</b></div><div><small>當日漲跌</small><b>-3.43%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>2634.TW</strong><small>台股 · 2026-11-16</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">52.50 <small>TWD</small></div>
+<div class="metrics"><div><small>MA20</small><b>57.35</b></div><div><small>MA60</small><b>62.47</b></div><div><small>量比（前20交易日）</small><b>0.50 倍</b></div><div><small>當日漲跌</small><b>-3.14%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>3532.TW</strong><small>台股 · 2026-11-16</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">265.50 <small>TWD</small></div>
+<div class="metrics"><div><small>MA20</small><b>342.35</b></div><div><small>MA60</small><b>395.98</b></div><div><small>量比（前20交易日）</small><b>0.49 倍</b></div><div><small>當日漲跌</small><b>-10.00%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>1101.TW</strong><small>台股 · 2026-11-16</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">26.95 <small>TWD</small></div>
+<div class="metrics"><div><small>MA20</small><b>27.48</b></div><div><small>MA60</small><b>25.83</b></div><div><small>量比（前20交易日）</small><b>0.48 倍</b></div><div><small>當日漲跌</small><b>-1.46%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>4938.TW</strong><small>台股 · 2026-11-16</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">87.60 <small>TWD</small></div>
+<div class="metrics"><div><small>MA20</small><b>99.56</b></div><div><small>MA60</small><b>94.22</b></div><div><small>量比（前20交易日）</small><b>0.48 倍</b></div><div><small>當日漲跌</small><b>-1.68%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>1301.TW</strong><small>台股 · 2026-11-16</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">68.00 <small>TWD</small></div>
+<div class="metrics"><div><small>MA20</small><b>71.45</b></div><div><small>MA60</small><b>68.58</b></div><div><small>量比（前20交易日）</small><b>0.46 倍</b></div><div><small>當日漲跌</small><b>-4.36%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>3034.TW</strong><small>台股 · 2026-11-16</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">461.00 <small>TWD</small></div>
+<div class="metrics"><div><small>MA20</small><b>539.17</b></div><div><small>MA60</small><b>542.41</b></div><div><small>量比（前20交易日）</small><b>0.44 倍</b></div><div><small>當日漲跌</small><b>-2.74%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>1590.TW</strong><small>台股 · 2026-11-16</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">1,080.00 <small>TWD</small></div>
+<div class="metrics"><div><small>MA20</small><b>1,087.50</b></div><div><small>MA60</small><b>1,227.25</b></div><div><small>量比（前20交易日）</small><b>0.35 倍</b></div><div><small>當日漲跌</small><b>-0.92%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article></section></details>
+<h2>🇺🇸 美股（50 檔）</h2><p class="muted">優先觀察：均線趨勢符合 ＋ 放量上漲（0 檔）</p><section class="grid"><p class="muted">目前沒有同時符合均線趨勢與放量上漲的股票。</p></section><details><summary>展開其餘 50 檔股票</summary><section class="grid"><article class="card">
+<div class="heading"><div><strong>KO</strong><small>美股 · 2026-11-13</small></div><span class="tag green">符合均線趨勢</span></div>
+<div class="price">99.25 <small>USD</small></div>
+<div class="metrics"><div><small>MA20</small><b>94.76</b></div><div><small>MA60</small><b>90.50</b></div><div><small>量比（前20交易日）</small><b>0.97 倍</b></div><div><small>當日漲跌</small><b>+1.86%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・上漲</strong></p></article><article class="card">
+<div class="heading"><div><strong>NEE</strong><small>美股 · 2026-11-13</small></div><span class="tag green">符合均線趨勢</span></div>
+<div class="price">85.12 <small>USD</small></div>
+<div class="metrics"><div><small>MA20</small><b>83.66</b></div><div><small>MA60</small><b>81.19</b></div><div><small>量比（前20交易日）</small><b>0.88 倍</b></div><div><small>當日漲跌</small><b>-0.20%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>JNJ</strong><small>美股 · 2026-11-13</small></div><span class="tag green">符合均線趨勢</span></div>
+<div class="price">285.75 <small>USD</small></div>
+<div class="metrics"><div><small>MA20</small><b>271.55</b></div><div><small>MA60</small><b>267.52</b></div><div><small>量比（前20交易日）</small><b>0.84 倍</b></div><div><small>當日漲跌</small><b>+0.79%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・上漲</strong></p></article><article class="card">
+<div class="heading"><div><strong>AAPL</strong><small>美股 · 2026-11-13</small></div><span class="tag green">符合均線趨勢</span></div>
+<div class="price">356.27 <small>USD</small></div>
+<div class="metrics"><div><small>MA20</small><b>345.91</b></div><div><small>MA60</small><b>335.16</b></div><div><small>量比（前20交易日）</small><b>0.83 倍</b></div><div><small>當日漲跌</small><b>+0.39%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・上漲</strong></p></article><article class="card">
+<div class="heading"><div><strong>COST</strong><small>美股 · 2026-11-13</small></div><span class="tag green">符合均線趨勢</span></div>
+<div class="price">1,106.21 <small>USD</small></div>
+<div class="metrics"><div><small>MA20</small><b>1,031.44</b></div><div><small>MA60</small><b>962.35</b></div><div><small>量比（前20交易日）</small><b>0.79 倍</b></div><div><small>當日漲跌</small><b>+1.28%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・上漲</strong></p></article><article class="card">
+<div class="heading"><div><strong>TSLA</strong><small>美股 · 2026-11-13</small></div><span class="tag green">符合均線趨勢</span></div>
+<div class="price">390.22 <small>USD</small></div>
+<div class="metrics"><div><small>MA20</small><b>385.36</b></div><div><small>MA60</small><b>371.76</b></div><div><small>量比（前20交易日）</small><b>0.79 倍</b></div><div><small>當日漲跌</small><b>-1.82%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>WMT</strong><small>美股 · 2026-11-13</small></div><span class="tag green">符合均線趨勢</span></div>
+<div class="price">128.09 <small>USD</small></div>
+<div class="metrics"><div><small>MA20</small><b>123.23</b></div><div><small>MA60</small><b>112.96</b></div><div><small>量比（前20交易日）</small><b>0.75 倍</b></div><div><small>當日漲跌</small><b>+1.51%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・上漲</strong></p></article><article class="card">
+<div class="heading"><div><strong>LLY</strong><small>美股 · 2026-11-13</small></div><span class="tag green">符合均線趨勢</span></div>
+<div class="price">1,443.50 <small>USD</small></div>
+<div class="metrics"><div><small>MA20</small><b>1,354.69</b></div><div><small>MA60</small><b>1,231.31</b></div><div><small>量比（前20交易日）</small><b>0.69 倍</b></div><div><small>當日漲跌</small><b>+1.26%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・上漲</strong></p></article><article class="card">
+<div class="heading"><div><strong>PG</strong><small>美股 · 2026-11-13</small></div><span class="tag green">符合均線趨勢</span></div>
+<div class="price">169.80 <small>USD</small></div>
+<div class="metrics"><div><small>MA20</small><b>163.19</b></div><div><small>MA60</small><b>152.07</b></div><div><small>量比（前20交易日）</small><b>0.67 倍</b></div><div><small>當日漲跌</small><b>+1.05%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・上漲</strong></p></article><article class="card">
+<div class="heading"><div><strong>V</strong><small>美股 · 2026-11-13</small></div><span class="tag green">符合均線趨勢</span></div>
+<div class="price">425.76 <small>USD</small></div>
+<div class="metrics"><div><small>MA20</small><b>415.13</b></div><div><small>MA60</small><b>387.84</b></div><div><small>量比（前20交易日）</small><b>0.66 倍</b></div><div><small>當日漲跌</small><b>+1.30%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・上漲</strong></p></article><article class="card">
+<div class="heading"><div><strong>ABBV</strong><small>美股 · 2026-11-13</small></div><span class="tag green">符合均線趨勢</span></div>
+<div class="price">295.03 <small>USD</small></div>
+<div class="metrics"><div><small>MA20</small><b>289.65</b></div><div><small>MA60</small><b>272.07</b></div><div><small>量比（前20交易日）</small><b>0.62 倍</b></div><div><small>當日漲跌</small><b>+0.20%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・上漲</strong></p></article><article class="card">
+<div class="heading"><div><strong>AMZN</strong><small>美股 · 2026-11-13</small></div><span class="tag green">符合均線趨勢</span></div>
+<div class="price">266.66 <small>USD</small></div>
+<div class="metrics"><div><small>MA20</small><b>257.33</b></div><div><small>MA60</small><b>255.56</b></div><div><small>量比（前20交易日）</small><b>0.62 倍</b></div><div><small>當日漲跌</small><b>-0.29%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>MA</strong><small>美股 · 2026-11-13</small></div><span class="tag green">符合均線趨勢</span></div>
+<div class="price">661.19 <small>USD</small></div>
+<div class="metrics"><div><small>MA20</small><b>639.97</b></div><div><small>MA60</small><b>598.05</b></div><div><small>量比（前20交易日）</small><b>0.58 倍</b></div><div><small>當日漲跌</small><b>+1.32%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・上漲</strong></p></article><article class="card">
+<div class="heading"><div><strong>TXN</strong><small>美股 · 2026-11-13</small></div><span class="tag green">符合均線趨勢</span></div>
+<div class="price">303.60 <small>USD</small></div>
+<div class="metrics"><div><small>MA20</small><b>296.21</b></div><div><small>MA60</small><b>278.69</b></div><div><small>量比（前20交易日）</small><b>0.55 倍</b></div><div><small>當日漲跌</small><b>-2.84%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>GM</strong><small>美股 · 2026-11-13</small></div><span class="tag green">符合均線趨勢</span></div>
+<div class="price">86.00 <small>USD</small></div>
+<div class="metrics"><div><small>MA20</small><b>84.36</b></div><div><small>MA60</small><b>83.98</b></div><div><small>量比（前20交易日）</small><b>0.38 倍</b></div><div><small>當日漲跌</small><b>-0.29%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>NVDA</strong><small>美股 · 2026-11-13</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">162.85 <small>USD</small></div>
+<div class="metrics"><div><small>MA20</small><b>198.69</b></div><div><small>MA60</small><b>215.19</b></div><div><small>量比（前20交易日）</small><b>1.85 倍</b></div><div><small>當日漲跌</small><b>-2.01%</b></div></div>
+<p class="signal">量價訊號：<strong>放量下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>AMD</strong><small>美股 · 2026-11-13</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">534.06 <small>USD</small></div>
+<div class="metrics"><div><small>MA20</small><b>519.02</b></div><div><small>MA60</small><b>540.06</b></div><div><small>量比（前20交易日）</small><b>1.47 倍</b></div><div><small>當日漲跌</small><b>-8.75%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>AMAT</strong><small>美股 · 2026-11-13</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">370.50 <small>USD</small></div>
+<div class="metrics"><div><small>MA20</small><b>382.93</b></div><div><small>MA60</small><b>442.51</b></div><div><small>量比（前20交易日）</small><b>1.43 倍</b></div><div><small>當日漲跌</small><b>-2.74%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>AVGO</strong><small>美股 · 2026-11-13</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">347.01 <small>USD</small></div>
+<div class="metrics"><div><small>MA20</small><b>330.96</b></div><div><small>MA60</small><b>348.34</b></div><div><small>量比（前20交易日）</small><b>1.18 倍</b></div><div><small>當日漲跌</small><b>-4.76%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>DE</strong><small>美股 · 2026-11-13</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">673.54 <small>USD</small></div>
+<div class="metrics"><div><small>MA20</small><b>660.52</b></div><div><small>MA60</small><b>665.24</b></div><div><small>量比（前20交易日）</small><b>1.11 倍</b></div><div><small>當日漲跌</small><b>-0.77%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>ANET</strong><small>美股 · 2026-11-13</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">197.29 <small>USD</small></div>
+<div class="metrics"><div><small>MA20</small><b>180.51</b></div><div><small>MA60</small><b>192.92</b></div><div><small>量比（前20交易日）</small><b>1.01 倍</b></div><div><small>當日漲跌</small><b>-4.52%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>MSFT</strong><small>美股 · 2026-11-13</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">523.88 <small>USD</small></div>
+<div class="metrics"><div><small>MA20</small><b>529.39</b></div><div><small>MA60</small><b>515.71</b></div><div><small>量比（前20交易日）</small><b>1.00 倍</b></div><div><small>當日漲跌</small><b>+0.17%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・上漲</strong></p></article><article class="card">
+<div class="heading"><div><strong>CVX</strong><small>美股 · 2026-11-13</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">219.89 <small>USD</small></div>
+<div class="metrics"><div><small>MA20</small><b>223.01</b></div><div><small>MA60</small><b>213.74</b></div><div><small>量比（前20交易日）</small><b>0.91 倍</b></div><div><small>當日漲跌</small><b>+1.64%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・上漲</strong></p></article><article class="card">
+<div class="heading"><div><strong>MU</strong><small>美股 · 2026-11-13</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">778.31 <small>USD</small></div>
+<div class="metrics"><div><small>MA20</small><b>838.00</b></div><div><small>MA60</small><b>943.44</b></div><div><small>量比（前20交易日）</small><b>0.90 倍</b></div><div><small>當日漲跌</small><b>-2.52%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>KLAC</strong><small>美股 · 2026-11-13</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">152.32 <small>USD</small></div>
+<div class="metrics"><div><small>MA20</small><b>153.72</b></div><div><small>MA60</small><b>173.89</b></div><div><small>量比（前20交易日）</small><b>0.85 倍</b></div><div><small>當日漲跌</small><b>-3.17%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>PANW</strong><small>美股 · 2026-11-13</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">322.24 <small>USD</small></div>
+<div class="metrics"><div><small>MA20</small><b>350.91</b></div><div><small>MA60</small><b>365.37</b></div><div><small>量比（前20交易日）</small><b>0.85 倍</b></div><div><small>當日漲跌</small><b>-0.13%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>LRCX</strong><small>美股 · 2026-11-13</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">225.92 <small>USD</small></div>
+<div class="metrics"><div><small>MA20</small><b>234.35</b></div><div><small>MA60</small><b>282.02</b></div><div><small>量比（前20交易日）</small><b>0.80 倍</b></div><div><small>當日漲跌</small><b>-3.36%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>XOM</strong><small>美股 · 2026-11-13</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">170.59 <small>USD</small></div>
+<div class="metrics"><div><small>MA20</small><b>175.33</b></div><div><small>MA60</small><b>168.03</b></div><div><small>量比（前20交易日）</small><b>0.80 倍</b></div><div><small>當日漲跌</small><b>+0.48%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・上漲</strong></p></article><article class="card">
+<div class="heading"><div><strong>GOOGL</strong><small>美股 · 2026-11-13</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">295.77 <small>USD</small></div>
+<div class="metrics"><div><small>MA20</small><b>303.42</b></div><div><small>MA60</small><b>330.50</b></div><div><small>量比（前20交易日）</small><b>0.75 倍</b></div><div><small>當日漲跌</small><b>-0.98%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>QCOM</strong><small>美股 · 2026-11-13</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">172.47 <small>USD</small></div>
+<div class="metrics"><div><small>MA20</small><b>173.30</b></div><div><small>MA60</small><b>176.28</b></div><div><small>量比（前20交易日）</small><b>0.75 倍</b></div><div><small>當日漲跌</small><b>-2.64%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>CRM</strong><small>美股 · 2026-11-13</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">217.84 <small>USD</small></div>
+<div class="metrics"><div><small>MA20</small><b>230.48</b></div><div><small>MA60</small><b>235.51</b></div><div><small>量比（前20交易日）</small><b>0.73 倍</b></div><div><small>當日漲跌</small><b>+0.12%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・上漲</strong></p></article><article class="card">
+<div class="heading"><div><strong>GEV</strong><small>美股 · 2026-11-13</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">803.13 <small>USD</small></div>
+<div class="metrics"><div><small>MA20</small><b>847.61</b></div><div><small>MA60</small><b>915.65</b></div><div><small>量比（前20交易日）</small><b>0.70 倍</b></div><div><small>當日漲跌</small><b>-1.88%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>INTC</strong><small>美股 · 2026-11-13</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">59.66 <small>USD</small></div>
+<div class="metrics"><div><small>MA20</small><b>73.74</b></div><div><small>MA60</small><b>94.06</b></div><div><small>量比（前20交易日）</small><b>0.70 倍</b></div><div><small>當日漲跌</small><b>-2.52%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>CRWD</strong><small>美股 · 2026-11-13</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">226.61 <small>USD</small></div>
+<div class="metrics"><div><small>MA20</small><b>239.99</b></div><div><small>MA60</small><b>238.57</b></div><div><small>量比（前20交易日）</small><b>0.68 倍</b></div><div><small>當日漲跌</small><b>-1.42%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>UNH</strong><small>美股 · 2026-11-13</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">407.46 <small>USD</small></div>
+<div class="metrics"><div><small>MA20</small><b>407.73</b></div><div><small>MA60</small><b>391.60</b></div><div><small>量比（前20交易日）</small><b>0.67 倍</b></div><div><small>當日漲跌</small><b>+0.58%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・上漲</strong></p></article><article class="card">
+<div class="heading"><div><strong>MRK</strong><small>美股 · 2026-11-13</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">147.76 <small>USD</small></div>
+<div class="metrics"><div><small>MA20</small><b>146.46</b></div><div><small>MA60</small><b>146.75</b></div><div><small>量比（前20交易日）</small><b>0.66 倍</b></div><div><small>當日漲跌</small><b>+0.55%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・上漲</strong></p></article><article class="card">
+<div class="heading"><div><strong>ADI</strong><small>美股 · 2026-11-13</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">397.97 <small>USD</small></div>
+<div class="metrics"><div><small>MA20</small><b>402.69</b></div><div><small>MA60</small><b>389.78</b></div><div><small>量比（前20交易日）</small><b>0.63 倍</b></div><div><small>當日漲跌</small><b>-2.77%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>JPM</strong><small>美股 · 2026-11-13</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">346.19 <small>USD</small></div>
+<div class="metrics"><div><small>MA20</small><b>339.04</b></div><div><small>MA60</small><b>342.16</b></div><div><small>量比（前20交易日）</small><b>0.63 倍</b></div><div><small>當日漲跌</small><b>+0.98%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・上漲</strong></p></article><article class="card">
+<div class="heading"><div><strong>META</strong><small>美股 · 2026-11-13</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">641.69 <small>USD</small></div>
+<div class="metrics"><div><small>MA20</small><b>637.06</b></div><div><small>MA60</small><b>662.32</b></div><div><small>量比（前20交易日）</small><b>0.63 倍</b></div><div><small>當日漲跌</small><b>+2.90%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・上漲</strong></p></article><article class="card">
+<div class="heading"><div><strong>ADBE</strong><small>美股 · 2026-11-13</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">243.08 <small>USD</small></div>
+<div class="metrics"><div><small>MA20</small><b>248.67</b></div><div><small>MA60</small><b>252.39</b></div><div><small>量比（前20交易日）</small><b>0.61 倍</b></div><div><small>當日漲跌</small><b>+1.90%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・上漲</strong></p></article><article class="card">
+<div class="heading"><div><strong>PFE</strong><small>美股 · 2026-11-13</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">28.89 <small>USD</small></div>
+<div class="metrics"><div><small>MA20</small><b>29.49</b></div><div><small>MA60</small><b>28.36</b></div><div><small>量比（前20交易日）</small><b>0.61 倍</b></div><div><small>當日漲跌</small><b>+0.21%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・上漲</strong></p></article><article class="card">
+<div class="heading"><div><strong>GE</strong><small>美股 · 2026-11-13</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">331.81 <small>USD</small></div>
+<div class="metrics"><div><small>MA20</small><b>313.55</b></div><div><small>MA60</small><b>318.89</b></div><div><small>量比（前20交易日）</small><b>0.60 倍</b></div><div><small>當日漲跌</small><b>+0.29%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・上漲</strong></p></article><article class="card">
+<div class="heading"><div><strong>GS</strong><small>美股 · 2026-11-13</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">916.56 <small>USD</small></div>
+<div class="metrics"><div><small>MA20</small><b>900.79</b></div><div><small>MA60</small><b>939.65</b></div><div><small>量比（前20交易日）</small><b>0.60 倍</b></div><div><small>當日漲跌</small><b>+0.32%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・上漲</strong></p></article><article class="card">
+<div class="heading"><div><strong>UBER</strong><small>美股 · 2026-11-13</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">69.69 <small>USD</small></div>
+<div class="metrics"><div><small>MA20</small><b>68.09</b></div><div><small>MA60</small><b>70.86</b></div><div><small>量比（前20交易日）</small><b>0.60 倍</b></div><div><small>當日漲跌</small><b>+0.82%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・上漲</strong></p></article><article class="card">
+<div class="heading"><div><strong>CAT</strong><small>美股 · 2026-11-13</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">600.20 <small>USD</small></div>
+<div class="metrics"><div><small>MA20</small><b>644.72</b></div><div><small>MA60</small><b>750.20</b></div><div><small>量比（前20交易日）</small><b>0.59 倍</b></div><div><small>當日漲跌</small><b>-0.84%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>PLTR</strong><small>美股 · 2026-11-13</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">167.99 <small>USD</small></div>
+<div class="metrics"><div><small>MA20</small><b>182.36</b></div><div><small>MA60</small><b>183.93</b></div><div><small>量比（前20交易日）</small><b>0.59 倍</b></div><div><small>當日漲跌</small><b>-2.09%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>BAC</strong><small>美股 · 2026-11-13</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">51.02 <small>USD</small></div>
+<div class="metrics"><div><small>MA20</small><b>50.51</b></div><div><small>MA60</small><b>55.37</b></div><div><small>量比（前20交易日）</small><b>0.54 倍</b></div><div><small>當日漲跌</small><b>+1.01%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・上漲</strong></p></article><article class="card">
+<div class="heading"><div><strong>ORCL</strong><small>美股 · 2026-11-13</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">125.35 <small>USD</small></div>
+<div class="metrics"><div><small>MA20</small><b>126.60</b></div><div><small>MA60</small><b>138.18</b></div><div><small>量比（前20交易日）</small><b>0.53 倍</b></div><div><small>當日漲跌</small><b>-1.38%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>BA</strong><small>美股 · 2026-11-13</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">171.50 <small>USD</small></div>
+<div class="metrics"><div><small>MA20</small><b>177.64</b></div><div><small>MA60</small><b>192.35</b></div><div><small>量比（前20交易日）</small><b>0.50 倍</b></div><div><small>當日漲跌</small><b>-0.03%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・下跌</strong></p></article><article class="card">
+<div class="heading"><div><strong>NOW</strong><small>美股 · 2026-11-13</small></div><span class="tag ">未符合均線趨勢</span></div>
+<div class="price">102.25 <small>USD</small></div>
+<div class="metrics"><div><small>MA20</small><b>123.91</b></div><div><small>MA60</small><b>132.84</b></div><div><small>量比（前20交易日）</small><b>0.42 倍</b></div><div><small>當日漲跌</small><b>+1.58%</b></div></div>
+<p class="signal">量價訊號：<strong>一般量能・上漲</strong></p></article></section></details>
+<h2>資料說明</h2><div class="note">量比＝最新完整交易日成交量 ÷ 前 20 交易日（不含當日）平均量，達到 1.5 倍才稱為明顯放量。顯示順序只為方便觀察，不是四因子排名，量價可能代表買盤也可能代表賣壓。<br>這是固定測試名單，不是完整台股或 S&amp;P 500 股票池；目前僅完成技術面的部分指標，30／30／25／15 權重規畫不變。<br>歷史價格為調整價，可能與券商報價不同；未評估交易成本，並非買賣建議，也不會下單。<br><a href="data/history.csv">檢視 CSV 歷史紀錄</a></div></main></body></html>
