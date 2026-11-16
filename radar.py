@@ -1,4 +1,4 @@
-"""小G股票雷達 1.2：台美各 50 檔，均線與量價觀察。研究用途，不下單。"""
+"""小G股票雷達 1.3：台美各 50 檔，均線與量價觀察。研究用途，不下單。"""
 from __future__ import annotations
 
 import csv
@@ -32,7 +32,60 @@ UNIVERSE = {
         "GS", "V", "MA", "COST", "WMT", "KO", "PG", "XOM", "CVX", "NEE",
     ],
 }
-FIELDS = ["交易日期", "市場", "股票", "調整收盤價", "MA20", "MA60", "成交量", "量比", "單日漲跌幅", "量價訊號", "符合趨勢"]
+TW_NAMES = {
+    '2330': '台積電',
+    '2454': '聯發科',
+    '2317': '鴻海',
+    '2308': '台達電',
+    '2382': '廣達',
+    '2303': '聯電',
+    '2327': '國巨',
+    '2357': '華碩',
+    '2376': '技嘉',
+    '2377': '微星',
+    '2408': '南亞科',
+    '2409': '友達',
+    '2412': '中華電',
+    '3008': '大立光',
+    '3017': '奇鋐',
+    '3034': '聯詠',
+    '3231': '緯創',
+    '3443': '創意',
+    '3532': '台勝科',
+    '3661': '世芯-KY',
+    '3711': '日月光投控',
+    '4938': '和碩',
+    '4958': '臻鼎-KY',
+    '5269': '祥碩',
+    '1301': '台塑',
+    '1303': '南亞',
+    '1326': '台化',
+    '2002': '中鋼',
+    '1101': '台泥',
+    '1102': '亞泥',
+    '1216': '統一',
+    '2207': '和泰車',
+    '2603': '長榮',
+    '2609': '陽明',
+    '2615': '萬海',
+    '2610': '華航',
+    '2618': '長榮航',
+    '2634': '漢翔',
+    '1476': '儒鴻',
+    '1519': '華城',
+    '1590': '亞德客-KY',
+    '2881': '富邦金',
+    '2882': '國泰金',
+    '2884': '玉山金',
+    '2885': '元大金',
+    '2886': '兆豐金',
+    '2891': '中信金',
+    '2892': '第一金',
+    '5871': '中租-KY',
+    '5880': '合庫金',
+}
+
+FIELDS = ["交易日期", "市場", "股票", "調整收盤價", "MA20", "MA60", "成交量", "量比", "單日漲跌幅", "量價訊號", "符合趨勢", "中文名稱", "RSI14", "五日動能", "均線分數", "量價分數", "動能分數", "技術分數"]
 MIN_SUCCESS = 70  # 大量資料異常時不覆蓋既有報告。
 BATCH_SIZE = 10
 
@@ -43,6 +96,43 @@ def classify_volume_price(ratio: float | None, daily_change: float) -> str:
     if ratio >= VOLUME_THRESHOLD:
         return "放量上漲" if daily_change > 0 else "放量下跌" if daily_change < 0 else "放量持平"
     return "一般量能・上漲" if daily_change > 0 else "一般量能・下跌" if daily_change < 0 else "一般量能・持平"
+
+
+
+def rsi_14(closes: pd.Series) -> float:
+    """Wilder-style 14 day RSI using historical closing prices only."""
+    delta = closes.diff()
+    up = delta.clip(lower=0)
+    down = (-delta).clip(lower=0)
+    average_up = up.ewm(alpha=1/14, adjust=False, min_periods=14).mean().iloc[-1]
+    average_down = down.ewm(alpha=1/14, adjust=False, min_periods=14).mean().iloc[-1]
+    if average_down == 0:
+        return 100.0 if average_up > 0 else 50.0
+    rs = average_up / average_down
+    return float(100.0 - 100.0 / (1.0 + rs))
+
+
+def technique_points(price: float, ma20: float, ma60: float,
+                     ratio: float | None, change: float,
+                     rsi: float, momentum5: float) -> tuple[int, int, int]:
+    """Transparent initial experimental heuristic: 12 trend + 10 volume + 8 momentum."""
+    if price > ma20 > ma60:
+        trend = 12
+    elif price > ma20 and price > ma60:
+        trend = 8
+    elif price > ma20 or price > ma60:
+        trend = 4
+    else:
+        trend = 0
+
+    if ratio is not None and ratio >= VOLUME_THRESHOLD:
+        volume = 10 if change > 0 else 0 if change < 0 else 3
+    else:
+        volume = 5 if change > 0 else 2 if change < 0 else 3
+
+    strength = 5 if 50 <= rsi <= 70 else 3 if 40 <= rsi < 50 or 70 < rsi <= 80 else 1
+    momentum = strength + (3 if momentum5 > 0 else 0)
+    return trend, volume, momentum
 
 
 def calculate(data: pd.DataFrame, market: str, code: str) -> dict:
@@ -61,12 +151,19 @@ def calculate(data: pd.DataFrame, market: str, code: str) -> dict:
     last_vol = int(volumes.iloc[-1])
     ratio = last_vol / avg_prev_vol if avg_prev_vol > 0 else None
     change = 100 * (price / prev_close - 1) if prev_close > 0 else 0.0
+    rsi = rsi_14(closes)
+    momentum5 = 100 * (price / float(closes.iloc[-6]) - 1) if closes.iloc[-6] > 0 else 0.0
+    trend_points, volume_points, momentum_points = technique_points(price, ma20, ma60, ratio, change, rsi, momentum5)
     return {
         "交易日期": data.index[-1].strftime("%Y-%m-%d"), "市場": market, "股票": code,
         "調整收盤價": round(price, 2), "MA20": round(ma20, 2), "MA60": round(ma60, 2),
         "成交量": last_vol, "量比": round(ratio, 2) if ratio is not None else "",
         "單日漲跌幅": round(change, 2), "量價訊號": classify_volume_price(ratio, change),
         "符合趨勢": "是" if price > ma20 > ma60 else "否",
+        "中文名稱": TW_NAMES.get(code.split(".")[0], "") if market == "台股" else "",
+        "RSI14": round(rsi, 1), "五日動能": round(momentum5, 2),
+        "均線分數": trend_points, "量價分數": volume_points,
+        "動能分數": momentum_points, "技術分數": trend_points + volume_points + momentum_points,
     }
 
 
@@ -129,22 +226,28 @@ def persist(records: list[dict]) -> None:
             writer.writerow(merged[key])
 
 
-def stock_card(row: dict) -> str:
+
+def stock_card(row: dict, position: int) -> str:
     esc = lambda value: html.escape(str(value), quote=True)
     selected = row["符合趨勢"] == "是"
     vol = row["量比"]
     label = f"{float(vol):.2f} 倍" if vol != "" else "無資料"
     day_change = f'{float(row["單日漲跌幅"]):+.2f}%'
+    name = str(row.get("中文名稱", "")).strip() or row["股票"]
+    code = row["股票"]
+    score = int(row["技術分數"])
     return f'''<article class="card">
-<div class="heading"><div><strong>{esc(row['股票'])}</strong><small>{esc(row['市場'])} · {esc(row['交易日期'])}</small></div><span class="tag {'green' if selected else ''}">{'符合均線趨勢' if selected else '未符合均線趨勢'}</span></div>
+<div class="heading"><div><span class="ranking">#{position}</span> <strong>{esc(name)}</strong><small>{esc(code)} · {esc(row['市場'])} · {esc(row['交易日期'])}</small></div><span class="tag {'green' if selected else ''}">{'符合均線趨勢' if selected else '未符合均線趨勢'}</span></div>
+<div class="scoreline"><b>{score} / 30 分</b><small>技術評分（試驗中）</small></div>
 <div class="price">{float(row['調整收盤價']):,.2f} <small>{'TWD' if row['市場']=='台股' else 'USD'}</small></div>
-<div class="metrics"><div><small>MA20</small><b>{float(row['MA20']):,.2f}</b></div><div><small>MA60</small><b>{float(row['MA60']):,.2f}</b></div><div><small>量比（前20交易日）</small><b>{label}</b></div><div><small>當日漲跌</small><b>{day_change}</b></div></div>
-<p class="signal">量價訊號：<strong>{esc(row['量價訊號'])}</strong></p></article>'''
+<div class="metrics"><div><small>MA20</small><b>{float(row['MA20']):,.2f}</b></div><div><small>MA60</small><b>{float(row['MA60']):,.2f}</b></div><div><small>量比（前20交易日）</small><b>{label}</b></div><div><small>當日漲跌</small><b>{day_change}</b></div><div><small>RSI14</small><b>{float(row['RSI14']):.1f}</b></div><div><small>5日動能</small><b>{float(row['五日動能']):+.2f}%</b></div></div>
+<p class="signal">量價訊號：<strong>{esc(row['量價訊號'])}</strong></p>
+<p class="breakdown">均線 {row['均線分數']}/12 · 量價 {row['量價分數']}/10 · 動能 {row['動能分數']}/8</p></article>'''
 
 
 def rank(row: dict) -> tuple:
-    # 僅供頁面顯示順序，不是完整四因子排名。
-    return (row["符合趨勢"] != "是", row["量價訊號"] != "放量上漲", -float(row["量比"] or 0), row["股票"])
+    """Within each market, sort by TECHNICAL points only, never claim 100-point total."""
+    return (-int(row["技術分數"]), row["符合趨勢"] != "是", -float(row["量比"] or 0), row["股票"])
 
 
 def render(records: list[dict], errors: list[str]) -> None:
@@ -156,24 +259,23 @@ def render(records: list[dict], errors: list[str]) -> None:
     warning = f'<p class="alert">有 {len(errors)} 檔無法更新，請到 GitHub Actions 查閱日誌。</p>' if errors else ''
 
     def section(rows: list[dict], name: str, flag: str) -> str:
-        featured = [r for r in rows if r["符合趨勢"] == "是" and r["量價訊號"] == "放量上漲"]
-        remaining = [r for r in rows if r not in featured]
-        content = "".join(stock_card(r) for r in featured) or '<p class="muted">目前沒有同時符合均線趨勢與放量上漲的股票。</p>'
-        extra = "".join(stock_card(r) for r in remaining)
+        first10, remainder = rows[:10], rows[10:]
+        head = "".join(stock_card(r, i) for i, r in enumerate(first10, 1))
+        extra = "".join(stock_card(r, i) for i, r in enumerate(remainder, 11))
+        note = '<p class="muted">按技術分數由高至低排列，只是研究優先順序，不表示未來報酬排名。</p>'
         return (f'<h2>{flag} {name}（{len(rows)} 檔）</h2>'
-                f'<p class="muted">優先觀察：均線趨勢符合 ＋ 放量上漲（{len(featured)} 檔）</p>'
-                f'<section class="grid">{content}</section>'
-                f'<details><summary>展開其餘 {len(remaining)} 檔股票</summary><section class="grid">{extra}</section></details>')
+                f'{note}<h3>技術觀察前 {len(first10)} 名</h3><section class="grid">{head}</section>'
+                f'<details><summary>展開其餘 {len(remainder)} 檔股票（第 11 名起）</summary><section class="grid">{extra}</section></details>')
 
     page = f'''<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>小G股票雷達</title>
-<style>*{{box-sizing:border-box}}body{{margin:0;font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif;background:#f4f6fb;color:#1a2538}}main{{max-width:950px;margin:auto;padding:25px 16px 60px}}h1{{font-size:2rem;margin:8px 0}}h2{{margin:30px 0 13px}}.muted,small{{color:#718095}}.muted{{line-height:1.7}}.stats,.weights,.grid{{display:grid;gap:12px}}.stats{{grid-template-columns:repeat(3,1fr);margin:25px 0}}.stats>div,.weights>div,.card,.note{{background:white;border:1px solid #e2e7f0;border-radius:16px;padding:16px}}.stats b{{display:block;font-size:1.65rem}}.weights{{grid-template-columns:repeat(4,1fr)}}.weights strong{{display:block;font-size:1.3rem}}.weights small{{display:block;line-height:1.5}}.grid{{grid-template-columns:repeat(2,minmax(0,1fr))}}.heading{{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}}.heading strong{{font-size:1.25rem}}.heading small{{display:block;margin-top:4px}}.tag{{font-size:.75rem;border-radius:99px;background:#eef0f4;color:#526071;padding:6px 9px;white-space:nowrap}}.green{{background:#dcf5e8;color:#137b4b}}.price{{font-size:1.6rem;font-weight:700;margin:18px 0}}.price small{{font-size:.75rem;font-weight:400}}.metrics{{display:grid;grid-template-columns:1fr 1fr;gap:13px}}.metrics small{{display:block;font-size:.75rem}}.metrics b{{display:block;margin-top:5px}}.signal{{border-top:1px solid #edf0f4;padding-top:12px;margin:15px 0 0;font-size:.9rem}}.note{{line-height:1.8;color:#526071}}a{{color:#245f9f}}.alert{{background:#fff0d6;padding:13px;border-radius:10px}}details{{margin-top:18px}}summary{{cursor:pointer;font-weight:650;background:#e5eaf2;padding:14px;border-radius:12px;margin-bottom:14px}}@media(max-width:680px){{.grid{{grid-template-columns:1fr}}.weights{{grid-template-columns:1fr 1fr}}.stats>div{{padding:11px}}.stats b{{font-size:1.3rem}}}}</style></head><body><main>
-<div class="muted">STOCK RESEARCH LAB · 1.2</div><h1>📡 小G股票雷達</h1><div class="muted">固定跨產業測試池：台股 50＋美股 50 · 台灣時間產生：{updated}<br>個別股票實際交易日期請看卡片。</div>
+<style>*{{box-sizing:border-box}}body{{margin:0;font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif;background:#f4f6fb;color:#1a2538}}main{{max-width:950px;margin:auto;padding:25px 16px 60px}}h1{{font-size:2rem;margin:8px 0}}h2{{margin:30px 0 13px}}.muted,small{{color:#718095}}.muted{{line-height:1.7}}.stats,.weights,.grid{{display:grid;gap:12px}}.stats{{grid-template-columns:repeat(3,1fr);margin:25px 0}}.stats>div,.weights>div,.card,.note{{background:white;border:1px solid #e2e7f0;border-radius:16px;padding:16px}}.stats b{{display:block;font-size:1.65rem}}.weights{{grid-template-columns:repeat(4,1fr)}}.weights strong{{display:block;font-size:1.3rem}}.weights small{{display:block;line-height:1.5}}.grid{{grid-template-columns:repeat(2,minmax(0,1fr))}}.heading{{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}}.heading strong{{font-size:1.25rem}}.heading small{{display:block;margin-top:4px}}.tag{{font-size:.75rem;border-radius:99px;background:#eef0f4;color:#526071;padding:6px 9px;white-space:nowrap}}.green{{background:#dcf5e8;color:#137b4b}}.price{{font-size:1.6rem;font-weight:700;margin:18px 0}}.price small{{font-size:.75rem;font-weight:400}}.metrics{{display:grid;grid-template-columns:1fr 1fr;gap:13px}}.metrics small{{display:block;font-size:.75rem}}.metrics b{{display:block;margin-top:5px}}.signal{{border-top:1px solid #edf0f4;padding-top:12px;margin:15px 0 0;font-size:.9rem}}.note{{line-height:1.8;color:#526071}}a{{color:#245f9f}}.alert{{background:#fff0d6;padding:13px;border-radius:10px}}.ranking{{display:inline-block;color:#3565a4;font-weight:800;margin-right:4px}}.scoreline{{background:#f0f6ff;border:1px solid #dceaff;border-radius:10px;padding:9px 12px;margin-top:13px;display:flex;justify-content:space-between;align-items:center;gap:10px}}.scoreline b{{font-size:1.18rem;color:#244b86}}.scoreline small{{font-size:.72rem}}.breakdown{{font-size:.8rem;color:#64748b;margin-bottom:0}}details{{margin-top:18px}}summary{{cursor:pointer;font-weight:650;background:#e5eaf2;padding:14px;border-radius:12px;margin-bottom:14px}}@media(max-width:680px){{.grid{{grid-template-columns:1fr}}.weights{{grid-template-columns:1fr 1fr}}.stats>div{{padding:11px}}.stats b{{font-size:1.3rem}}}}</style></head><body><main>
+<div class="muted">STOCK RESEARCH LAB · 1.3</div><h1>📡 小G股票雷達</h1><div class="muted">中文名稱＋技術排名 · 台股 50＋美股 50 · 台灣時間產生：{updated}<br>個別股票實際交易日期請看卡片。</div>
 <div class="stats"><div><small>成功掃描</small><b>{len(records)}</b></div><div><small>符合均線</small><b>{trend_count}</b></div><div><small>明顯放量</small><b>{volume_count}</b></div></div>
-<h2>四大引擎預定權重</h2><div class="weights"><div><strong>30%</strong>技術分析<small>均線＋量價觀察；尚未給分</small></div><div><strong>30%</strong>產業前景<small>尚未接入</small></div><div><strong>25%</strong>法人買賣<small>尚未接入</small></div><div><strong>15%</strong>國際新聞<small>尚未接入</small></div></div>
+<h2>四大引擎預定權重</h2><div class="weights"><div><strong>30%</strong>技術分析<small>均線＋量價＋RSI 動能；已啟用技術 30 分試驗排名</small></div><div><strong>30%</strong>產業前景<small>尚未接入</small></div><div><strong>25%</strong>法人買賣<small>尚未接入</small></div><div><strong>15%</strong>國際新聞<small>尚未接入</small></div></div>
 {warning}
 {section(tw, '台股', '🇹🇼')}
 {section(us, '美股', '🇺🇸')}
-<h2>資料說明</h2><div class="note">量比＝最新完整交易日成交量 ÷ 前 20 交易日（不含當日）平均量，達到 1.5 倍才稱為明顯放量。顯示順序只為方便觀察，不是四因子排名，量價可能代表買盤也可能代表賣壓。<br>這是固定測試名單，不是完整台股或 S&amp;P 500 股票池；目前僅完成技術面的部分指標，30／30／25／15 權重規畫不變。<br>歷史價格為調整價，可能與券商報價不同；未評估交易成本，並非買賣建議，也不會下單。<br><a href="data/history.csv">檢視 CSV 歷史紀錄</a></div></main></body></html>'''
+<h2>資料說明</h2><div class="note">量比＝最新完整交易日成交量 ÷ 前 20 交易日（不含當日）平均量，達到 1.5 倍才稱為明顯放量。目前技術分數最高 30 分：均線 12、量價 10、RSI 與 5 日動能 8；這是初步規則，尚未通過歷史回測及樣本外驗證，分數不代表上漲機率。<br>這是固定測試名單，不是完整台股或 S&amp;P 500 股票池；目前只對技術面給分；產業前景 30%、法人 25%、國際新聞 15% 尚未接入，所以不能稱為四因子總排名。<br>歷史價格為調整價，可能與券商報價不同；未評估交易成本，並非買賣建議，也不會下單。<br><a href="data/history.csv">檢視 CSV 歷史紀錄</a></div></main></body></html>'''
     SITE_FILE.write_text(page, encoding="utf-8")
 
 
