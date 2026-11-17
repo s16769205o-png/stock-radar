@@ -1,4 +1,4 @@
-"""小G 股票雷達 1.7：1.5 的績效追蹤＋前十名升降榜。
+"""小G 股票雷達 1.8：1.5 的績效追蹤＋前十名升降榜。
 
 免費 GitHub Actions、無券商連線，僅供研究。5/10/20 個交易日績效是
 「訊號當日調整收盤價 -> 第 N 個後續交易日調整收盤價」的紙上觀察報酬，
@@ -263,6 +263,79 @@ def stock_card(row, position):
     </article>'''
 
 
+
+def observed_return(frame, asof, trading_days):
+    """Adjusted close return as of the stock's actual completed trading date."""
+    if frame is None or frame.empty or 'Close' not in frame.columns:
+        return None
+    prices = []
+    for ts, close in frame['Close'].items():
+        try:
+            v = float(close)
+            if pd.notna(v) and v > 0:
+                prices.append((ts.strftime('%Y-%m-%d'), v))
+        except (ValueError, TypeError, AttributeError):
+            continue
+    positions = [i for i, (date, _) in enumerate(prices) if date == asof]
+    if not positions or positions[-1] < trading_days:
+        return None
+    end = positions[-1]
+    return 100 * (prices[end][1] / prices[end - trading_days][1] - 1)
+
+
+def industry_strength_section(records, histories, benchmarks):
+    """Sector PRICE/BREADTH observations only, never an industry-fundamental score."""
+    sections = ['<h2>🏗️ 產業研究室・第一期：族群強弱</h2>',
+        '<p class="muted">只用目前固定100檔樣本：比較族群內股票近20／60個交易日的平均調整收盤價變化、20日均線上方比例，及20日平均報酬相對0050或SPY的差距。這些是等權價格動能與廣度觀察，<b>不是產業營收、獲利、資本支出或未來前景的30分評分</b>。成分太少的族群僅作參考。</p>']
+    for market, flag in (('台股', '🇹🇼'), ('美股', '🇺🇸')):
+        market_rows = [r for r in records if r.get('市場') == market and r.get('交易日期')]
+        if not market_rows:
+            sections.append(f'<h3>{flag} {market}</h3><p class="muted">本次沒有有效資料。</p>')
+            continue
+        current_date = max(r['交易日期'] for r in market_rows)
+        market_rows = [r for r in market_rows if r['交易日期'] == current_date]
+        benchmark_frame = benchmarks.get(market)
+        bench20 = observed_return(benchmark_frame, current_date, 20)
+        bench60 = observed_return(benchmark_frame, current_date, 60)
+        grouped = defaultdict(list)
+        for row in market_rows:
+            code = row['股票']
+            frame = histories.get(code)
+            ret20 = observed_return(frame, current_date, 20)
+            ret60 = observed_return(frame, current_date, 60)
+            if ret20 is not None and ret60 is not None:
+                grouped[row['產業']].append((row, ret20, ret60))
+        result = []
+        for name, members in grouped.items():
+            n = len(members)
+            avg20 = sum(x[1] for x in members) / n
+            avg60 = sum(x[2] for x in members) / n
+            breadth = 100 * sum(float(x[0]['調整收盤價']) > float(x[0]['MA20']) for x in members) / n
+            rel20 = avg20 - bench20 if bench20 is not None else None
+            rel60 = avg60 - bench60 if bench60 is not None else None
+            if n < 3:
+                signal = '樣本少'
+            elif rel20 is None or rel60 is None:
+                signal = '基準缺資料'
+            elif rel20 > 0 and rel60 > 0 and breadth >= 60:
+                signal = '價格與廣度偏強'
+            else:
+                signal = '混合／待觀察'
+            result.append((name, n, avg20, avg60, breadth, rel20, signal))
+        result.sort(key=lambda r: (r[5] is None, -(r[5] if r[5] is not None else r[2]), r[0]))
+        lines = []
+        for name, n, avg20, avg60, breadth, rel20, signal in result:
+            relative = f'{rel20:+.1f} 百分點' if rel20 is not None else '—'
+            lines.append(f'<tr><td>{esc(name)}</td><td>{n}</td><td>{avg20:+.1f}%</td>'
+                         f'<td>{avg60:+.1f}%</td><td>{breadth:.0f}%</td><td>{relative}</td><td>{esc(signal)}</td></tr>')
+        bench_name = esc(BENCHMARKS[market][1])
+        sections.append(f'<h3>{flag} {market}｜{esc(current_date)}｜對照 {bench_name}</h3>'
+                        '<div class="table-wrap"><table><thead><tr><th>研究族群</th><th>樣本</th>'
+                        '<th>20日平均</th><th>60日平均</th><th>站上MA20</th><th>相對基準20日</th><th>觀察訊號</th>'
+                        '</tr></thead><tbody>' + ''.join(lines) + '</tbody></table></div>'
+                        + ('<p class="muted">基準價格日期不同或資料不足；相對強弱暫不計算。</p>' if bench20 is None or bench60 is None else ''))
+    return ''.join(sections)
+
 def sector_table(rows):
     by_sector=defaultdict(list)
     for row in rows:by_sector[row['產業']].append(row)
@@ -501,7 +574,7 @@ def render(records,errors,history_rows,history_frames,benchmark_frames,benchmark
         <section class="grid">{primary}</section><details class="rest"><summary>展開其餘 {len(rows[10:])} 檔</summary><section class="grid">{rest}</section></details>'''
 
     page=f'''<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>小G股票雷達 1.7</title><style>
+    <title>小G股票雷達 1.8</title><style>
     *{{box-sizing:border-box}}body{{margin:0;background:#f5f7fb;color:#202a3c;font-family:system-ui,-apple-system,'Noto Sans TC',sans-serif}}
     main{{max-width:1010px;margin:auto;padding:28px 16px 64px}}h1{{font-size:2.1rem;margin:8px 0}}h2{{margin:32px 0 12px;font-size:1.35rem}}h3{{margin:20px 0 10px}}
     .muted,small{{color:#6b7789}}.muted{{line-height:1.7;font-size:.92rem}}.eyebrow{{font-size:.79rem;letter-spacing:.07em;color:#325e96;font-weight:750}}
@@ -525,12 +598,12 @@ def render(records,errors,history_rows,history_frames,benchmark_frames,benchmark
     .movetag.up{{color:#176f4a;background:#e2f6ea}}.movetag.down{{color:#a64d36;background:#feede7}}.movetag.same{{color:#576476;background:#edf0f5}}
     @media(max-width:640px){{.movelist{{grid-template-columns:1fr}}.grid{{grid-template-columns:1fr}}.weights{{grid-template-columns:repeat(2,1fr)}}.stats strong{{font-size:1.3rem}}.stats>div{{padding:11px}}}}
     </style></head><body><main>
-    <div class="eyebrow">STOCK RESEARCH LAB · 1.7</div><h1>📡 小G股票雷達</h1>
-    <p class="muted">台股50＋美股50｜分數與排名變動、績效追蹤、產業分組、風險提示<br>台灣時間產生：{updated}。各股票請以卡片上的交易日為準。</p>
+    <div class="eyebrow">STOCK RESEARCH LAB · 1.8</div><h1>📡 小G股票雷達</h1>
+    <p class="muted">台股50＋美股50｜產業動能觀察、排名變動、績效追蹤、風險提示<br>台灣時間產生：{updated}。各股票請以卡片上的交易日為準。</p>
     <div class="stats"><div><small>成功掃描</small><strong>{len(records)}</strong></div><div><small>符合均線</small><strong>{sum(r['符合趨勢']=='是' for r in records)}</strong></div>
     <div><small>明顯放量</small><strong>{sum(str(r['量價訊號']).startswith('放量') for r in records)}</strong></div></div>
     <h2>四大引擎（目前開發狀態）</h2><div class="weights"><div><b>30%</b>技術分析<small>均線／量價／RSI動能：試驗評分已啟用</small></div>
-    <div><b>30%</b>產業前景<small>尚未接入，只做手工產業分類</small></div>
+    <div><b>30%</b>產業前景<small>建置中：已新增族群動能觀察，營收與獲利資料待接入；尚未給30分</small></div>
     <div><b>25%</b>法人買賣<small>尚未接入</small></div><div><b>15%</b>國際新聞<small>尚未接入</small></div></div>
     {warning}
     {ranking_changes_section(records,history_rows)}
@@ -540,6 +613,7 @@ def render(records,errors,history_rows,history_frames,benchmark_frames,benchmark
     {warning_bench}
     {performance_section('台股',signals,results,immature,missing)}
     {performance_section('美股',signals,results,immature,missing)}
+    {industry_strength_section(records,history_frames,benchmark_frames)}
     <h2>🏭 產業觀察大廳</h2><p class="muted">依各群組在本測試池的平均技術分排序；不是資金流向、產業成長率或未來漲幅。</p>
     <h3>🇹🇼 台股產業群</h3>{sector_table(tw)}<h3>🇺🇸 美股產業群</h3>{sector_table(us)}
     <h2>⚠️ 風險研究提示</h2><p class="muted">由單日量價與技術指標產生，不代表即時警報、交易建議或異常事件的根本原因。</p>
