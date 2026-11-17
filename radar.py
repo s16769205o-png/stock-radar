@@ -1,4 +1,4 @@
-"""小G 股票雷達 1.5：產業／排行／風險提示 + 前10名歷史績效追蹤。
+"""小G 股票雷達 1.6：1.5 的績效追蹤＋前十名升降榜。
 
 免費 GitHub Actions、無券商連線，僅供研究。5/10/20 個交易日績效是
 「訊號當日調整收盤價 -> 第 N 個後續交易日調整收盤價」的紙上觀察報酬，
@@ -305,6 +305,83 @@ def historic_top10(history_rows):
     return all_signals
 
 
+def ranking_changes(records, history_rows, market):
+    """Compare a fresh, sufficiently complete market snapshot with the last older full snapshot.
+
+    No hindsight: historical snapshots use only their archived scores.
+    No same-day comparisons: repeated runs on one trading date are idempotent.
+    Incomplete snapshots (fewer than all 50 symbols for the market/date) are not used.
+    """
+    current_rows = [r for r in records if r.get('市場') == market and
+                    r.get('交易日期') and r.get('技術分數') not in ('', None)]
+    if not current_rows:
+        return {'status':'no_current'}
+    latest_date = max(r['交易日期'] for r in current_rows)
+    today_rows = [r for r in current_rows if r['交易日期'] == latest_date]
+    if len({r['股票'] for r in today_rows}) < len(UNIVERSE[market]):
+        return {'status':'partial','current_date':latest_date}
+    today_top = sorted(today_rows, key=rank)[:10]
+    by_date = defaultdict(dict)
+    for row in history_rows:
+        if row.get('市場') != market or not row.get('交易日期') or row['交易日期'] >= latest_date:
+            continue
+        symbol = row.get('股票')
+        if symbol not in UNIVERSE[market] or row.get('技術分數') in ('', None):
+            continue
+        try:
+            int(row['技術分數'])
+            if float(row['調整收盤價']) <= 0: continue
+        except (ValueError, TypeError, KeyError):
+            continue
+        by_date[row['交易日期']][symbol] = row
+    prior_dates = [day for day, symbols in by_date.items() if len(symbols) >= len(UNIVERSE[market])]
+    if not prior_dates:
+        return {'status':'waiting', 'current_date':latest_date, 'current':today_top}
+    previous_date = max(prior_dates)
+    prior_top = sorted(by_date[previous_date].values(), key=rank)[:10]
+    prior_positions = {r['股票']: i for i, r in enumerate(prior_top, 1)}
+    current_set = {r['股票'] for r in today_top}
+    updates=[]
+    for i,row in enumerate(today_top,1):
+        prev = prior_positions.get(row['股票'])
+        delta = (prev-i) if prev is not None else None
+        tag = '新進前十' if prev is None else f'上升 {delta} 名' if delta>0 else f'下降 {-delta} 名' if delta<0 else '名次持平'
+        updates.append({'position':i,'symbol':row['股票'],'name':show_name(row),
+                        'score':int(row['技術分數']),'previous':prev,'delta':delta,'label':tag})
+    exited = [{'symbol':r['股票'],'name':show_name(r),'previous':i}
+              for i,r in enumerate(prior_top,1) if r['股票'] not in current_set]
+    return {'status':'ok','current_date':latest_date,'previous_date':previous_date,
+            'updates':updates,'exited':exited}
+
+
+def ranking_changes_section(records, history_rows):
+    sections=[]
+    for market,flag in (('台股','🇹🇼'),('美股','🇺🇸')):
+        result=ranking_changes(records,history_rows,market)
+        status=result['status']
+        if status=='no_current':
+            sections.append(f'<h3>{flag} {market}</h3><p class="muted">這次沒有可用的完整股價資料。</p>')
+            continue
+        if status=='partial':
+            sections.append(f'<h3>{flag} {market}</h3><p class="muted">本次 {esc(result["current_date"])} 有效股票未滿 50 檔，不比較排行榜，以免誤判。</p>')
+            continue
+        if status=='waiting':
+            sections.append(f'<h3>{flag} {market}</h3><p class="muted">本次 {esc(result["current_date"])} 已保存；還沒有另一個完整的較早交易日可比較。累積下一個交易日後會開始顯示升降。</p>')
+            continue
+        line_items=[]
+        for item in result['updates']:
+            delta=item['delta']
+            cls = 'up' if delta is None or delta>0 else 'down' if delta<0 else 'same'
+            line_items.append(f'<li class="moveitem"><span class="movename">#{item["position"]} <b>{esc(item["name"])}</b> '
+                              f'<small>{esc(item["symbol"])} · {item["score"]}/30</small></span>'
+                              f'<span class="movetag {cls}">{esc(item["label"])}</span></li>')
+        exittext=', '.join(f'{esc(x["name"])}（原 #{x["previous"]}）' for x in result['exited'])
+        exitline=f'<p class="muted">離開前十：{exittext}</p>' if exittext else '<p class="muted">本次前十名名單沒有股票退出。</p>'
+        sections.append(f'<h3>{flag} {market}｜{esc(result["current_date"])} vs {esc(result["previous_date"])}</h3>'
+                        f'<ol class="movelist">{"".join(line_items)}</ol>{exitline}')
+    return '<h2>📈 排行榜變動室</h2><p class="muted">使用相同技術評分，比較各市場最新完整交易日與前一次有完整存檔的交易日（可能不是昨天）。新進前十表示上次不在前十；並非第一次被選到。分數升降不是股價報酬或買入訊號。</p>'+''.join(sections)
+
+
 def close_prices(frame):
     """Return {YYYY-mm-dd: adjusted close} and chronological dates, excluding missing/zero values."""
     if frame is None or frame.empty or 'Close' not in frame.columns:return {},[]
@@ -409,7 +486,7 @@ def render(records,errors,history_rows,history_frames,benchmark_frames,benchmark
         <section class="grid">{primary}</section><details class="rest"><summary>展開其餘 {len(rows[10:])} 檔</summary><section class="grid">{rest}</section></details>'''
 
     page=f'''<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>小G股票雷達 1.5</title><style>
+    <title>小G股票雷達 1.6</title><style>
     *{{box-sizing:border-box}}body{{margin:0;background:#f5f7fb;color:#202a3c;font-family:system-ui,-apple-system,'Noto Sans TC',sans-serif}}
     main{{max-width:1010px;margin:auto;padding:28px 16px 64px}}h1{{font-size:2.1rem;margin:8px 0}}h2{{margin:32px 0 12px;font-size:1.35rem}}h3{{margin:20px 0 10px}}
     .muted,small{{color:#6b7789}}.muted{{line-height:1.7;font-size:.92rem}}.eyebrow{{font-size:.79rem;letter-spacing:.07em;color:#325e96;font-weight:750}}
@@ -426,16 +503,22 @@ def render(records,errors,history_rows,history_frames,benchmark_frames,benchmark
     .table-wrap{{padding:0;overflow-x:auto}}table{{border-collapse:collapse;width:100%;font-size:.87rem}}th,td{{text-align:left;padding:13px;border-bottom:1px solid #edf0f5;vertical-align:top}}
     th{{background:#f3f6fb;white-space:nowrap}}td:nth-child(3){{white-space:nowrap}}a{{color:#225d9f}}
     .pos{{color:#137b4b;font-weight:750}}.neg{{color:#a43b3b;font-weight:750}}
-    @media(max-width:640px){{.grid{{grid-template-columns:1fr}}.weights{{grid-template-columns:repeat(2,1fr)}}.stats strong{{font-size:1.3rem}}.stats>div{{padding:11px}}}}
+    .movelist{{list-style:none;margin:10px 0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}}
+    .moveitem{{border:1px solid #e0e6f0;border-radius:12px;background:#fff;padding:11px 13px;display:flex;justify-content:space-between;gap:10px;align-items:center}}
+    .movename{{min-width:0}}.movename small{{display:block;font-size:.74rem;margin-top:3px}}
+    .movetag{{border-radius:20px;padding:5px 9px;white-space:nowrap;font-size:.76rem;font-weight:700}}
+    .movetag.up{{color:#176f4a;background:#e2f6ea}}.movetag.down{{color:#a64d36;background:#feede7}}.movetag.same{{color:#576476;background:#edf0f5}}
+    @media(max-width:640px){{.movelist{{grid-template-columns:1fr}}.grid{{grid-template-columns:1fr}}.weights{{grid-template-columns:repeat(2,1fr)}}.stats strong{{font-size:1.3rem}}.stats>div{{padding:11px}}}}
     </style></head><body><main>
-    <div class="eyebrow">STOCK RESEARCH LAB · 1.5</div><h1>📡 小G股票雷達</h1>
-    <p class="muted">台股50＋美股50｜績效追蹤、產業分組、技術排行、研究提示<br>台灣時間產生：{updated}。各股票請以卡片上的交易日為準。</p>
+    <div class="eyebrow">STOCK RESEARCH LAB · 1.6</div><h1>📡 小G股票雷達</h1>
+    <p class="muted">台股50＋美股50｜排名升降、績效追蹤、產業分組、風險提示<br>台灣時間產生：{updated}。各股票請以卡片上的交易日為準。</p>
     <div class="stats"><div><small>成功掃描</small><strong>{len(records)}</strong></div><div><small>符合均線</small><strong>{sum(r['符合趨勢']=='是' for r in records)}</strong></div>
     <div><small>明顯放量</small><strong>{sum(str(r['量價訊號']).startswith('放量') for r in records)}</strong></div></div>
     <h2>四大引擎（目前開發狀態）</h2><div class="weights"><div><b>30%</b>技術分析<small>均線／量價／RSI動能：試驗評分已啟用</small></div>
     <div><b>30%</b>產業前景<small>尚未接入，只做手工產業分類</small></div>
     <div><b>25%</b>法人買賣<small>尚未接入</small></div><div><b>15%</b>國際新聞<small>尚未接入</small></div></div>
     {warning}
+    {ranking_changes_section(records,history_rows)}
     <h2>🏊 績效游泳池（前十名追蹤）</h2>
     <div class="note"><b>做法：</b>從歷史 CSV 找出每個市場每個交易日「當時」的技術分數前十名，觀察之後 5／10／20 個交易日的調整收盤價變化，再和同期間 ETF 比較。<br>
     <b>重要：</b>這是紙上觀察，假設能在訊號日收盤價比較，不代表真實成交或策略可獲利。不同日觀察可能重疊、同一檔會重複出現；不含稅費、滑價和買賣限制，尚非嚴格回測。已成熟結果會寫回歷史 CSV；若早期日期已超出可下載行情範圍，可能無法補算。</div>
@@ -475,7 +558,7 @@ def main():
     render(records,errors,history_rows,histories,benchmark_frames,benchmark_errors)
     # render() computes and archives any newly matured outcomes on the same dictionaries.
     save_history(history_rows)
-    print(f'完成：{len(records)}/100 檔；績效追蹤及原本功能已產生。')
+    print(f'完成：{len(records)}/100 檔；升降榜、績效追蹤及原本功能已產生。')
 
 
 if __name__=='__main__':
