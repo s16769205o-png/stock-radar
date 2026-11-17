@@ -1,0 +1,100 @@
+name: 小G產業研究室 1.8（一次性安裝）
+
+on:
+  push:
+    paths:
+      - '.github/workflows/industry-v18.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  upgrade:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 取得雷達程式
+        uses: actions/checkout@v4
+      - name: 安裝產業強弱研究室
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('radar.py')
+          s = p.read_text(encoding='utf-8')
+          if 'STOCK RESEARCH LAB · 1.8' in s:
+              print('1.8 已經安裝：不重複修改')
+          else:
+              if 'STOCK RESEARCH LAB · 1.7' not in s:
+                  raise SystemExit('目前不是預期的1.7版，停止以保護原程式')
+              def replace_once(old, new):
+                  global s
+                  if s.count(old) != 1:
+                      raise SystemExit('找不到唯一插入點：' + old[:75])
+                  s = s.replace(old, new, 1)
+              insert_before = 'def sector_table(rows):'
+              replace_once(insert_before, '\ndef observed_return(frame, asof, trading_days):\n    """Adjusted close return as of the stock\'s actual completed trading date."""\n    if frame is None or frame.empty or \'Close\' not in frame.columns:\n        return None\n    prices = []\n    for ts, close in frame[\'Close\'].items():\n        try:\n            v = float(close)\n            if pd.notna(v) and v > 0:\n                prices.append((ts.strftime(\'%Y-%m-%d\'), v))\n        except (ValueError, TypeError, AttributeError):\n            continue\n    positions = [i for i, (date, _) in enumerate(prices) if date == asof]\n    if not positions or positions[-1] < trading_days:\n        return None\n    end = positions[-1]\n    return 100 * (prices[end][1] / prices[end - trading_days][1] - 1)\n\n\ndef industry_strength_section(records, histories, benchmarks):\n    """Sector PRICE/BREADTH observations only, never an industry-fundamental score."""\n    sections = [\'<h2>🏗️ 產業研究室・第一期：族群強弱</h2>\',\n        \'<p class="muted">只用目前固定100檔樣本：比較族群內股票近20／60個交易日的平均調整收盤價變化、20日均線上方比例，及20日平均報酬相對0050或SPY的差距。這些是等權價格動能與廣度觀察，<b>不是產業營收、獲利、資本支出或未來前景的30分評分</b>。成分太少的族群僅作參考。</p>\']\n    for market, flag in ((\'台股\', \'🇹🇼\'), (\'美股\', \'🇺🇸\')):\n        market_rows = [r for r in records if r.get(\'市場\') == market and r.get(\'交易日期\')]\n        if not market_rows:\n            sections.append(f\'<h3>{flag} {market}</h3><p class="muted">本次沒有有效資料。</p>\')\n            continue\n        current_date = max(r[\'交易日期\'] for r in market_rows)\n        market_rows = [r for r in market_rows if r[\'交易日期\'] == current_date]\n        benchmark_frame = benchmarks.get(market)\n        bench20 = observed_return(benchmark_frame, current_date, 20)\n        bench60 = observed_return(benchmark_frame, current_date, 60)\n        grouped = defaultdict(list)\n        for row in market_rows:\n            code = row[\'股票\']\n            frame = histories.get(code)\n            ret20 = observed_return(frame, current_date, 20)\n            ret60 = observed_return(frame, current_date, 60)\n            if ret20 is not None and ret60 is not None:\n                grouped[row[\'產業\']].append((row, ret20, ret60))\n        result = []\n        for name, members in grouped.items():\n            n = len(members)\n            avg20 = sum(x[1] for x in members) / n\n            avg60 = sum(x[2] for x in members) / n\n            breadth = 100 * sum(float(x[0][\'調整收盤價\']) > float(x[0][\'MA20\']) for x in members) / n\n            rel20 = avg20 - bench20 if bench20 is not None else None\n            rel60 = avg60 - bench60 if bench60 is not None else None\n            if n < 3:\n                signal = \'樣本少\'\n            elif rel20 is None or rel60 is None:\n                signal = \'基準缺資料\'\n            elif rel20 > 0 and rel60 > 0 and breadth >= 60:\n                signal = \'價格與廣度偏強\'\n            else:\n                signal = \'混合／待觀察\'\n            result.append((name, n, avg20, avg60, breadth, rel20, signal))\n        result.sort(key=lambda r: (r[5] is None, -(r[5] if r[5] is not None else r[2]), r[0]))\n        lines = []\n        for name, n, avg20, avg60, breadth, rel20, signal in result:\n            relative = f\'{rel20:+.1f} 百分點\' if rel20 is not None else \'—\'\n            lines.append(f\'<tr><td>{esc(name)}</td><td>{n}</td><td>{avg20:+.1f}%</td>\'\n                         f\'<td>{avg60:+.1f}%</td><td>{breadth:.0f}%</td><td>{relative}</td><td>{esc(signal)}</td></tr>\')\n        bench_name = esc(BENCHMARKS[market][1])\n        sections.append(f\'<h3>{flag} {market}｜{esc(current_date)}｜對照 {bench_name}</h3>\'\n                        \'<div class="table-wrap"><table><thead><tr><th>研究族群</th><th>樣本</th>\'\n                        \'<th>20日平均</th><th>60日平均</th><th>站上MA20</th><th>相對基準20日</th><th>觀察訊號</th>\'\n                        \'</tr></thead><tbody>\' + \'\'.join(lines) + \'</tbody></table></div>\'\n                        + (\'<p class="muted">基準價格日期不同或資料不足；相對強弱暫不計算。</p>\' if bench20 is None or bench60 is None else \'\'))\n    return \'\'.join(sections)\n\n' + insert_before)
+              replace_once('    <h2>🏭 產業觀察大廳</h2>',
+                           '    {industry_strength_section(records,history_frames,benchmark_frames)}\n    <h2>🏭 產業觀察大廳</h2>')
+              replace_once('產業前景<small>尚未接入，只做手工產業分類</small>',
+                           '產業前景<small>建置中：已新增族群動能觀察，營收與獲利資料待接入；尚未給30分</small>')
+              replace_once('小G 股票雷達 1.7：', '小G 股票雷達 1.8：')
+              replace_once('小G股票雷達 1.7', '小G股票雷達 1.8')
+              replace_once('STOCK RESEARCH LAB · 1.7', 'STOCK RESEARCH LAB · 1.8')
+              replace_once('台股50＋美股50｜分數與排名變動、績效追蹤、產業分組、風險提示',
+                           '台股50＋美股50｜產業動能觀察、排名變動、績效追蹤、風險提示')
+              compile(s, 'radar.py', 'exec')
+              p.write_text(s, encoding='utf-8')
+              print('產業研究室第一期安裝完成，語法檢查通過')
+          PY
+      - name: 儲存新版程式
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add radar.py
+          if ! git diff --cached --quiet; then
+            git commit -m "小G雷達1.8：產業20/60日強弱觀察"
+            git push
+          fi
+      - name: 安裝行情工具
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: 安裝依賴
+        run: pip install -r requirements.txt
+      - name: 產生新版報告
+        run: python radar.py
+      - name: 保存行情與網頁
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html data/history.csv
+          if ! git diff --cached --quiet; then
+            git commit -m "產生雷達1.8報告"
+            git push
+          fi
+      - name: 準備網頁
+        run: |
+          mkdir -p _site/data
+          cp index.html _site/index.html
+          cp data/history.csv _site/data/history.csv
+      - name: 上傳網頁
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
+  publish:
+    needs: upgrade
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.publish.outputs.page_url }}
+    steps:
+      - name: 發布研究室
+        id: publish
+        uses: actions/deploy-pages@v4
