@@ -1,0 +1,139 @@
+name: 小G雷達 1.7 排行修正（一次性）
+
+on:
+  push:
+    paths:
+      - '.github/workflows/upgrade-v17.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  upgrade:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 取得原有雷達程式
+        uses: actions/checkout@v4
+      - name: 修正同分排序的解讀
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('radar.py')
+          source = p.read_text(encoding='utf-8')
+          if 'STOCK RESEARCH LAB · 1.7' in source:
+              print('已是 1.7 版，略過修改')
+              raise SystemExit(0)
+          if 'STOCK RESEARCH LAB · 1.6' not in source:
+              raise SystemExit('目前不是已驗證的 1.6 版，停止修改以避免覆蓋別的版本')
+
+          changes = [
+              (
+                  "小G 股票雷達 1.6：",
+                  "小G 股票雷達 1.7：",
+              ),
+              (
+                  """    prior_top = sorted(by_date[previous_date].values(), key=rank)[:10]
+              prior_positions = {r['股票']: i for i, r in enumerate(prior_top, 1)}""",
+                  """    prior_top = sorted(by_date[previous_date].values(), key=rank)[:10]
+              prior_positions = {r['股票']: i for i, r in enumerate(prior_top, 1)}
+              # 分數與名次分開比較；分數基準是上次完整股票池，不只前十。
+              prior_scores = {r['股票']: int(r['技術分數']) for r in by_date[previous_date].values()}
+              current_score_counts = {}
+              for entry in today_rows:
+                  point = int(entry['技術分數'])
+                  current_score_counts[point] = current_score_counts.get(point, 0) + 1""",
+              ),
+              (
+                  """        tag = '新進前十' if prev is None else f'上升 {delta} 名' if delta>0 else f'下降 {-delta} 名' if delta<0 else '名次持平'
+                  updates.append({'position':i,'symbol':row['股票'],'name':show_name(row),
+                        'score':int(row['技術分數']),'previous':prev,'delta':delta,'label':tag})""",
+                  """        score = int(row['技術分數'])
+                  old_score = prior_scores.get(row['股票'])
+                  score_delta = score-old_score if old_score is not None else None
+                  same_score_group = current_score_counts[score] > 1
+                  if prev is None:
+            tag = '新進前十' + (f' · 分數{score_delta:+d}' if score_delta else ' · 分數持平' if score_delta == 0 else '')
+                  elif score_delta == 0:
+            position_word = f'排序↑{delta}' if delta>0 else f'排序↓{-delta}' if delta<0 else '排序不變'
+            tag = ('同分群・' if same_score_group else '分數持平・') + position_word
+                  else:
+            position_word = f' · 排序↑{delta}' if delta>0 else f' · 排序↓{-delta}' if delta<0 else ''
+            tag = f'分數{score_delta:+d}' + position_word
+                  updates.append({'position':i,'symbol':row['股票'],'name':show_name(row),
+                        'score':score,'previous':prev,'delta':delta,
+                        'score_delta':score_delta,'same_score_group':same_score_group,'label':tag})""",
+              ),
+              (
+                  """            cls = 'up' if delta is None or delta>0 else 'down' if delta<0 else 'same'""",
+                  """            point_change = item['score_delta']
+            cls = ('same' if point_change is None or point_change == 0
+                   else 'up' if point_change > 0 else 'down')""",
+              ),
+              (
+                  "新進前十表示上次不在前十；並非第一次被選到。分數升降不是股價報酬或買入訊號。",
+                  "新進前十表示上次不在前十，不是第一次被選到。分數和排序分別比較；同分群也可能因量比等次要排序條件互換位置，並非分數真的上升或下降。分數不是股價報酬或買入訊號。",
+              ),
+              ("小G股票雷達 1.6", "小G股票雷達 1.7"),
+              ("STOCK RESEARCH LAB · 1.6", "STOCK RESEARCH LAB · 1.7"),
+              ("台股50＋美股50｜排名升降、績效追蹤、產業分組、風險提示",
+               "台股50＋美股50｜分數變化、排名升降、績效追蹤、產業分組、風險提示"),
+          ]
+          updated = source
+          for old, new in changes:
+              if updated.count(old) != 1:
+                  raise SystemExit(f'程式版本不符：預期找到 1 次，實際 {updated.count(old)} 次：{old[:45]}')
+              updated = updated.replace(old, new, 1)
+          compile(updated, 'radar.py', 'exec')
+          p.write_text(updated, encoding='utf-8')
+          print('1.7 同分排序與技術分數變化已完成，Python 語法檢查通過')
+          PY
+      - name: 將新版保存至 GitHub
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add radar.py
+          if ! git diff --cached --quiet; then
+            git commit -m "雷達 1.7：分開顯示技術分數與同分排序變動"
+            git push
+          fi
+      - name: 安裝 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: 安裝行情資料工具
+        run: pip install -r requirements.txt
+      - name: 執行新版股票雷達
+        run: python radar.py
+      - name: 保存掃描紀錄
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html data/history.csv
+          if ! git diff --cached --quiet; then
+            git commit -m "產生雷達 1.7 報告"
+            git push
+          fi
+      - name: 準備手機報告
+        run: |
+          mkdir -p _site/data
+          cp index.html _site/index.html
+          cp data/history.csv _site/data/history.csv
+      - name: 上傳網頁成品
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
+  publish:
+    needs: upgrade
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.publish.outputs.page_url }}
+    steps:
+      - name: 發布雷達 1.7
+        id: publish
+        uses: actions/deploy-pages@v4
