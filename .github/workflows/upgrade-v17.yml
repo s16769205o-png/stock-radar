@@ -23,73 +23,101 @@ jobs:
           python - <<'PY'
           from pathlib import Path
           p = Path('radar.py')
-          source = p.read_text(encoding='utf-8')
-          if 'STOCK RESEARCH LAB · 1.7' in source:
-              print('已是 1.7 版，略過修改')
-              raise SystemExit(0)
-          if 'STOCK RESEARCH LAB · 1.6' not in source:
-              raise SystemExit('目前不是已驗證的 1.6 版，停止修改以避免覆蓋別的版本')
-
-          changes = [
-              (
-                  "小G 股票雷達 1.6：",
-                  "小G 股票雷達 1.7：",
-              ),
-              (
-                  """    prior_top = sorted(by_date[previous_date].values(), key=rank)[:10]
-              prior_positions = {r['股票']: i for i, r in enumerate(prior_top, 1)}""",
-                  """    prior_top = sorted(by_date[previous_date].values(), key=rank)[:10]
+          s = p.read_text(encoding='utf-8')
+          if 'STOCK RESEARCH LAB · 1.7' in s:
+              print('1.7 已安裝，不必重複改程式')
+          else:
+              if 'STOCK RESEARCH LAB · 1.6' not in s:
+                  raise SystemExit('偵測到非 1.6 版，已停止避免破壞原程式')
+              a = s.find('def ranking_changes(')
+              b = s.find('\ndef ranking_changes_section(', a)
+              if a < 0 or b < 0:
+                  raise SystemExit('無法找到 1.6 升降排名功能，停止更新')
+              new_function = '''def ranking_changes(records, history_rows, market):
+              # Compare full market days while distinguishing score changes from tie order.
+              current_rows = [r for r in records if r.get('市場') == market and
+                              r.get('交易日期') and r.get('技術分數') not in ('', None)]
+              if not current_rows:
+                  return {'status':'no_current'}
+              latest_date = max(r['交易日期'] for r in current_rows)
+              today_rows = [r for r in current_rows if r['交易日期'] == latest_date]
+              if len({r['股票'] for r in today_rows}) < len(UNIVERSE[market]):
+                  return {'status':'partial','current_date':latest_date}
+              today_top = sorted(today_rows, key=rank)[:10]
+              by_date = defaultdict(dict)
+              for row in history_rows:
+                  if row.get('市場') != market or not row.get('交易日期') or row['交易日期'] >= latest_date:
+                      continue
+                  symbol = row.get('股票')
+                  if symbol not in UNIVERSE[market] or row.get('技術分數') in ('', None):
+                      continue
+                  try:
+                      int(row['技術分數'])
+                      if float(row['調整收盤價']) <= 0: continue
+                  except (ValueError, TypeError, KeyError):
+                      continue
+                  by_date[row['交易日期']][symbol] = row
+              prior_dates = [day for day, symbols in by_date.items() if len(symbols) >= len(UNIVERSE[market])]
+              if not prior_dates:
+                  return {'status':'waiting', 'current_date':latest_date, 'current':today_top}
+              previous_date = max(prior_dates)
+              old_pool = by_date[previous_date]
+              prior_top = sorted(old_pool.values(), key=rank)[:10]
               prior_positions = {r['股票']: i for i, r in enumerate(prior_top, 1)}
-              # 分數與名次分開比較；分數基準是上次完整股票池，不只前十。
-              prior_scores = {r['股票']: int(r['技術分數']) for r in by_date[previous_date].values()}
-              current_score_counts = {}
-              for entry in today_rows:
-                  point = int(entry['技術分數'])
-                  current_score_counts[point] = current_score_counts.get(point, 0) + 1""",
-              ),
-              (
-                  """        tag = '新進前十' if prev is None else f'上升 {delta} 名' if delta>0 else f'下降 {-delta} 名' if delta<0 else '名次持平'
-                  updates.append({'position':i,'symbol':row['股票'],'name':show_name(row),
-                        'score':int(row['技術分數']),'previous':prev,'delta':delta,'label':tag})""",
-                  """        score = int(row['技術分數'])
+              prior_scores = {symbol: int(r['技術分數']) for symbol, r in old_pool.items()}
+              score_counts = {}
+              for r in today_rows:
+                  score = int(r['技術分數'])
+                  score_counts[score] = score_counts.get(score, 0) + 1
+              current_set = {r['股票'] for r in today_top}
+              updates = []
+              for i, row in enumerate(today_top, 1):
+                  prev = prior_positions.get(row['股票'])
+                  delta = prev - i if prev is not None else None
+                  score = int(row['技術分數'])
                   old_score = prior_scores.get(row['股票'])
-                  score_delta = score-old_score if old_score is not None else None
-                  same_score_group = current_score_counts[score] > 1
+                  point_change = score - old_score if old_score is not None else None
+                  same_group = score_counts[score] > 1
                   if prev is None:
-            tag = '新進前十' + (f' · 分數{score_delta:+d}' if score_delta else ' · 分數持平' if score_delta == 0 else '')
-                  elif score_delta == 0:
-            position_word = f'排序↑{delta}' if delta>0 else f'排序↓{-delta}' if delta<0 else '排序不變'
-            tag = ('同分群・' if same_score_group else '分數持平・') + position_word
+                      label = '新進前十'
+                      if point_change is not None:
+                          label += f' · 分數{point_change:+d}' if point_change else ' · 分數持平'
+                  elif point_change == 0:
+                      movement = f'排序↑{delta}' if delta > 0 else f'排序↓{-delta}' if delta < 0 else '排序不變'
+                      label = ('同分群・' if same_group else '分數持平・') + movement
                   else:
-            position_word = f' · 排序↑{delta}' if delta>0 else f' · 排序↓{-delta}' if delta<0 else ''
-            tag = f'分數{score_delta:+d}' + position_word
-                  updates.append({'position':i,'symbol':row['股票'],'name':show_name(row),
-                        'score':score,'previous':prev,'delta':delta,
-                        'score_delta':score_delta,'same_score_group':same_score_group,'label':tag})""",
-              ),
-              (
-                  """            cls = 'up' if delta is None or delta>0 else 'down' if delta<0 else 'same'""",
-                  """            point_change = item['score_delta']
-            cls = ('same' if point_change is None or point_change == 0
-                   else 'up' if point_change > 0 else 'down')""",
-              ),
-              (
-                  "新進前十表示上次不在前十；並非第一次被選到。分數升降不是股價報酬或買入訊號。",
-                  "新進前十表示上次不在前十，不是第一次被選到。分數和排序分別比較；同分群也可能因量比等次要排序條件互換位置，並非分數真的上升或下降。分數不是股價報酬或買入訊號。",
-              ),
-              ("小G股票雷達 1.6", "小G股票雷達 1.7"),
-              ("STOCK RESEARCH LAB · 1.6", "STOCK RESEARCH LAB · 1.7"),
-              ("台股50＋美股50｜排名升降、績效追蹤、產業分組、風險提示",
-               "台股50＋美股50｜分數變化、排名升降、績效追蹤、產業分組、風險提示"),
-          ]
-          updated = source
-          for old, new in changes:
-              if updated.count(old) != 1:
-                  raise SystemExit(f'程式版本不符：預期找到 1 次，實際 {updated.count(old)} 次：{old[:45]}')
-              updated = updated.replace(old, new, 1)
-          compile(updated, 'radar.py', 'exec')
-          p.write_text(updated, encoding='utf-8')
-          print('1.7 同分排序與技術分數變化已完成，Python 語法檢查通過')
+                      movement = f' · 排序↑{delta}' if delta > 0 else f' · 排序↓{-delta}' if delta < 0 else ''
+                      label = (f'分數{point_change:+d}' if point_change is not None else '分數未知') + movement
+                  updates.append({'position': i, 'symbol': row['股票'], 'name': show_name(row),
+                                  'score': score, 'previous': prev, 'delta': delta,
+                                  'score_delta': point_change, 'same_score_group': same_group, 'label': label})
+              exited = [{'symbol': r['股票'], 'name': show_name(r), 'previous': i}
+                        for i, r in enumerate(prior_top, 1) if r['股票'] not in current_set]
+              return {'status':'ok','current_date': latest_date,'previous_date':previous_date,
+                      'updates':updates,'exited':exited}
+
+          '''
+              s = s[:a] + new_function + s[b+1:]
+              old = "            cls = 'up' if delta is None or delta>0 else 'down' if delta<0 else 'same'"
+              new = "            change = item['score_delta']\n            cls = 'up' if change is not None and change > 0 else 'down' if change is not None and change < 0 else 'same'"
+              if s.count(old) != 1:
+                  raise SystemExit('無法定位視覺標記，停止更新')
+              s = s.replace(old, new, 1)
+              for x, y in [
+                  ('小G 股票雷達 1.6：', '小G 股票雷達 1.7：'),
+                  ('小G股票雷達 1.6', '小G股票雷達 1.7'),
+                  ('STOCK RESEARCH LAB · 1.6', 'STOCK RESEARCH LAB · 1.7'),
+                  ('台股50＋美股50｜排名升降、績效追蹤、產業分組、風險提示',
+                   '台股50＋美股50｜分數與排名變動、績效追蹤、產業分組、風險提示'),
+                  ('新進前十表示上次不在前十；並非第一次被選到。分數升降不是股價報酬或買入訊號。',
+                   '新進前十表示上次不在前十；並非第一次被選到。同分群的名次可能因量比等次要條件互換，請同時看分數變化；名次與分數都不是股價報酬或買入訊號。'),
+              ]:
+                  if s.count(x) != 1:
+                      raise SystemExit('無法定位原文字，停止更新：' + x[:25])
+                  s = s.replace(x, y, 1)
+              compile(s, 'radar.py', 'exec')
+              p.write_text(s, encoding='utf-8')
+              print('1.7 已完成修正及 Python 語法檢查')
           PY
       - name: 將新版保存至 GitHub
         run: |
