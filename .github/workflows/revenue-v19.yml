@@ -1,23 +1,31 @@
-name: 小G月營收研究室 1.9（一次性升級）
+name: 小G月營收研究室 1.9（修正版）
 
 on:
   push:
     paths:
       - '.github/workflows/revenue-v19.yml'
   workflow_dispatch:
+  schedule:
+    # 台灣時間每週日 11:15，定期將當月新營收資料存到 GitHub 歷史 CSV。
+    # 既有 radar.yml 的每日掃描仍照常運作。
+    - cron: '15 3 * * 0'
 
 permissions:
   contents: write
   pages: write
   id-token: write
 
+concurrency:
+  group: monthly-revenue-v19
+  cancel-in-progress: false
+
 jobs:
   upgrade:
     runs-on: ubuntu-latest
     steps:
-      - name: 讀取原本正常運作的雷達
+      - name: 取得雷達程式
         uses: actions/checkout@v4
-      - name: 安裝官方月營收研究室
+      - name: 安裝月營收研究室（不修改工作流程）
         shell: bash
         run: |
           python - <<'PY'
@@ -73,17 +81,14 @@ jobs:
           new_module = gzip.decompress(base64.b64decode(''.join(source.split()))).decode('utf-8')
           compile(new_module, 'revenue.py', 'exec')
           radar_file = Path('radar.py')
-          workflow_file = Path('.github/workflows/radar.yml')
           radar = radar_file.read_text(encoding='utf-8')
-          workflow = workflow_file.read_text(encoding='utf-8')
           if 'STOCK RESEARCH LAB · 1.9' in radar:
-              print('1.9 已安裝過；不再重複修改主程式')
+              print('1.9 主程式已安裝：不重複修改')
           else:
               if 'STOCK RESEARCH LAB · 1.8' not in radar:
-                  raise SystemExit('不是已驗證 1.8 版，停止升級以保護原報告')
+                  raise SystemExit('目前不是預期的1.8版本；停止升級，保護原程式')
               patches = [
-                  ('import yfinance as yf',
-                   'import yfinance as yf\nfrom revenue import monthly_revenue_section'),
+                  ('import yfinance as yf', 'import yfinance as yf\nfrom revenue import monthly_revenue_section'),
                   ('    {industry_strength_section(records,history_frames,benchmark_frames)}',
                    '    {industry_strength_section(records,history_frames,benchmark_frames)}\n    {monthly_revenue_section(UNIVERSE, INDUSTRY, TW_NAMES)}'),
                   ('建置中：已新增族群動能觀察，營收與獲利資料待接入；尚未給30分',
@@ -96,34 +101,21 @@ jobs:
               ]
               for old, new in patches:
                   if radar.count(old) != 1:
-                      raise SystemExit(f'不符合預期：{old[:55]}，找到 {radar.count(old)} 次；未修改主程式')
-                  radar = radar.replace(old, new, 1)
-              compile(radar,'radar.py','exec')
-          # Change the existing scheduled scanner to persist the new file and publish it.
-          for old, new in [
-              ('git add index.html data/history.csv',
-               'git add index.html data/history.csv data/monthly_revenue.csv'),
-              ('cp data/history.csv _site/data/history.csv',
-               'cp data/history.csv _site/data/history.csv\n          cp data/monthly_revenue.csv _site/data/monthly_revenue.csv'),
-          ]:
-              if new in workflow:
-                  continue
-              if workflow.count(old) != 1:
-                  raise SystemExit(f'原定時排程格式已改變：{old}；停止升級')
-              workflow = workflow.replace(old, new, 1)
-          # Write only after validations are all complete.
+                      raise SystemExit('原程式不符合預期，停止修改：'+old[:55])
+                  radar = radar.replace(old,new,1)
+              compile(radar, 'radar.py', 'exec')
+          # Keep original .github/workflows/radar.yml UNCHANGED to avoid workflow-write restrictions.
           Path('revenue.py').write_text(new_module, encoding='utf-8')
           radar_file.write_text(radar, encoding='utf-8')
-          workflow_file.write_text(workflow, encoding='utf-8')
-          print('月營收研究室 1.9 安裝完成，語法驗證通過')
+          print('安裝完成：只更新 radar.py 與 revenue.py，不修改既有工作流程')
           PY
-      - name: 保存升級後的檔案
+      - name: 保存升級後的程式（不推送工作流程檔）
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add radar.py revenue.py .github/workflows/radar.yml
+          git add radar.py revenue.py
           if ! git diff --cached --quiet; then
-            git commit -m "Radar v1.9: official TWSE monthly revenue study"
+            git commit -m "Install v1.9 monthly revenue module (no workflow changes)"
             git push
           fi
       - name: 準備 Python
@@ -138,6 +130,10 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          mkdir -p data
+          if [ ! -f data/monthly_revenue.csv ]; then
+            printf '資料年月,公司代號,公司名稱,月營收千元,月增率,年增率,累計年增率,資料來源\n' > data/monthly_revenue.csv
+          fi
           git add index.html data/history.csv data/monthly_revenue.csv
           if ! git diff --cached --quiet; then
             git commit -m "Update v1.9 radar and revenue archive"
@@ -157,6 +153,9 @@ jobs:
   publish:
     needs: upgrade
     runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.publish.outputs.page_url }}
