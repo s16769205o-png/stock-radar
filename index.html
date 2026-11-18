@@ -1,5 +1,5 @@
 <!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>小G股票雷達 1.11</title><style>
+    <title>小G股票雷達 1.12</title><style>
     *{box-sizing:border-box}body{margin:0;background:#f5f7fb;color:#202a3c;font-family:system-ui,-apple-system,'Noto Sans TC',sans-serif}
     main{max-width:1010px;margin:auto;padding:28px 16px 64px}h1{font-size:2.1rem;margin:8px 0}h2{margin:32px 0 12px;font-size:1.35rem}h3{margin:20px 0 10px}
     .muted,small{color:#6b7789}.muted{line-height:1.7;font-size:.92rem}.eyebrow{font-size:.79rem;letter-spacing:.07em;color:#325e96;font-weight:750}
@@ -22,9 +22,37 @@
     .movetag{border-radius:20px;padding:5px 9px;white-space:nowrap;font-size:.76rem;font-weight:700}
     .movetag.up{color:#176f4a;background:#e2f6ea}.movetag.down{color:#a64d36;background:#feede7}.movetag.same{color:#576476;background:#edf0f5}
     @media(max-width:640px){.movelist{grid-template-columns:1fr}.grid{grid-template-columns:1fr}.weights{grid-template-columns:repeat(2,1fr)}.stats strong{font-size:1.3rem}.stats>div{padding:11px}}
-    </style></head><body><main>
-    <div class="eyebrow">STOCK RESEARCH LAB · 1.11</div><h1>📡 小G股票雷達</h1>
-    <p class="muted">台股50＋美股50｜產業動能、月營收、季報獲利、基本面交叉驗證、排名變動、績效追蹤、風險提示<br>台灣時間產生：2026-11-18 14:03。各股票請以卡片上的交易日為準。</p>
+    </style><style>
+/* Stock Radar 1.12: market navigation */
+#radar-market-tabs {
+  position: sticky; top: 0; z-index: 20; display: grid;
+  grid-template-columns: repeat(3, minmax(0,1fr)); gap: 8px;
+  background: #f5f7fb; padding: 11px 0 12px; margin: 14px 0 14px;
+  border-bottom: 1px solid #e0e6f0;
+}
+#radar-market-tabs button {
+  border: 1px solid #dce3ee; border-radius: 13px; background: #fff;
+  padding: 12px 6px; font: 700 .98rem/1.35 system-ui, sans-serif;
+  color: #4b5a70; cursor: pointer; touch-action: manipulation;
+}
+#radar-market-tabs button[aria-selected="true"] {
+  background: #deebfb; color: #184d8b; border: 2px solid #4978b5;
+  padding: 11px 5px;
+}
+#radar-market-tabs button:focus-visible { outline: 3px solid #4b87d1; outline-offset: 2px; }
+.radar-panel[hidden] { display: none !important; }
+.radar-panel h2:first-child { margin-top: 15px; }
+.radar-panel .radar-subgroup { margin-bottom: 25px; }
+.radar-panel .radar-subgroup > h2 { margin-top: 26px; }
+.radar-panel .tabs-helper { line-height: 1.6; color: #5e697c; margin: 16px 0; }
+@media (max-width: 420px) {
+  #radar-market-tabs { gap: 6px; padding: 9px 0 11px; }
+  #radar-market-tabs button { font-size: .91rem; padding: 10px 4px; }
+  #radar-market-tabs button[aria-selected="true"] { padding: 9px 3px; }
+}
+</style></head><body><main>
+    <div class="eyebrow">STOCK RESEARCH LAB · 1.12</div><h1>📡 小G股票雷達</h1>
+    <p class="muted">台股50＋美股50｜產業動能、月營收、季報獲利、基本面交叉驗證、排名變動、績效追蹤、風險提示<br>台灣時間產生：2026-11-18 14:23。各股票請以卡片上的交易日為準。</p>
     <div class="stats"><div><small>成功掃描</small><strong>100</strong></div><div><small>符合均線</small><strong>16</strong></div>
     <div><small>明顯放量</small><strong>13</strong></div></div>
     <h2>四大引擎（目前開發狀態）</h2><div class="weights"><div><b>30%</b>技術分析<small>均線／量價／RSI動能：試驗評分已啟用</small></div>
@@ -1359,4 +1387,152 @@
     預定四大權重30／30／25／15未變，目前只有技術面提供分數；尚無產業前景、法人、新聞完整量化評分。<br>
     此網站使用調整後歷史價格，非保證即時；未連接券商，不下單。<br>
     <a href="data/history.csv">查看CSV歷史紀錄</a>（既有紀錄保留，新增欄位在舊日期可留空）。</div>
-    </main></body></html>
+    </main><script>
+(function () {
+  'use strict';
+  const main = document.querySelector('main');
+  if (!main || document.getElementById('radar-market-tabs')) return;
+  const original = Array.from(main.children);
+  const start = original.findIndex(n => n.tagName === 'H2');
+  if (start === -1) return;
+  const source = original.slice(start);
+  const groups = [];
+  let group = null;
+  for (const node of source) {
+    if (node.tagName === 'H2') {
+      group = {heading: node, nodes: []};
+      groups.push(group);
+    } else if (group) {
+      group.nodes.push(node);
+    }
+  }
+  if (!groups.length) return;
+  const tabItems = [
+    {key:'overview',label:'🏠 總覽'},
+    {key:'tw',label:'🇹🇼 台股'},
+    {key:'us',label:'🇺🇸 美股'}
+  ];
+  const nav = document.createElement('nav');
+  nav.id = 'radar-market-tabs';
+  nav.setAttribute('aria-label','股票市場分頁');
+  nav.setAttribute('role','tablist');
+  const panels = {};
+  const views = document.createElement('div');
+  views.id = 'radar-market-views';
+  for (const item of tabItems) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.id = 'tab-'+item.key;
+    button.textContent = item.label;
+    button.dataset.target = item.key;
+    button.setAttribute('role','tab');
+    button.setAttribute('aria-controls','panel-'+item.key);
+    button.setAttribute('aria-selected','false');
+    button.tabIndex = -1;
+    nav.appendChild(button);
+    const panel = document.createElement('section');
+    panel.className = 'radar-panel';
+    panel.id = 'panel-'+item.key;
+    panel.setAttribute('role','tabpanel');
+    panel.setAttribute('aria-labelledby',button.id);
+    panel.hidden = true;
+    panels[item.key] = panel;
+    views.appendChild(panel);
+  }
+  const hint = document.createElement('p');
+  hint.className = 'tabs-helper';
+  hint.textContent = '選擇市場後，只顯示該市場的排行榜、績效與產業資料；切換分頁不會重新抓取行情。';
+  panels.overview.appendChild(hint);
+  const stats = original.find(n => n.classList && n.classList.contains('stats'));
+  if (stats) panels.overview.appendChild(stats.cloneNode(true));
+
+  function marketFrom(text) {
+    if (text.includes('🇹🇼') || text.includes('台股')) return 'tw';
+    if (text.includes('🇺🇸') || text.includes('美股')) return 'us';
+    return null;
+  }
+  function addGroup(dest, heading, nodes) {
+    const container = document.createElement('section');
+    container.className = 'radar-subgroup';
+    container.appendChild(heading.cloneNode(true));
+    nodes.forEach(n => container.appendChild(n.cloneNode(true)));
+    panels[dest].appendChild(container);
+  }
+  function splitMarketGroup(heading, nodes) {
+    const first = nodes.findIndex(n => n.tagName === 'H3');
+    if (first < 0) return false;
+    const common = nodes.slice(0, first);
+    const parts = [];
+    let part = null;
+    for (const node of nodes.slice(first)) {
+      if (node.tagName === 'H3') {
+        part = {heading:node, items:[]};
+        parts.push(part);
+      } else if (part) {
+        part.items.push(node);
+      }
+    }
+    const targets = parts.map(p => marketFrom(p.heading.textContent));
+    if (!targets.includes('tw') || !targets.includes('us')) return false;
+    for (let i=0; i<parts.length; i++) {
+      const market = targets[i];
+      if (!market) continue;
+      addGroup(market, heading, common.concat([parts[i].heading],parts[i].items));
+    }
+    return true;
+  }
+  for (const block of groups) {
+    const title = block.heading.textContent.trim();
+    const nodes = block.nodes;
+    // Split shared sections by the already-rendered Taiwan/US h3 subtitles.
+    if (splitMarketGroup(block.heading,nodes)) continue;
+    const market = marketFrom(title);
+    if (market) { addGroup(market,block.heading,nodes); continue; }
+    if (title.includes('月營收') || title.includes('獲利品質') ||
+        title.includes('基本面交叉驗證')) {
+      addGroup('tw',block.heading,nodes); continue;
+    }
+    // Shared site status, risk notices and methodology remain in the overview.
+    addGroup('overview',block.heading,nodes);
+  }
+  const firstContent = stats || source[0];
+  main.insertBefore(nav, firstContent);
+  main.insertBefore(views, firstContent);
+  if (stats) stats.remove();
+  source.forEach(n => n.remove());
+
+  function select(key, saveHash, moveTop) {
+    if (!panels[key]) key='overview';
+    for (const item of tabItems) {
+      const chosen = item.key === key;
+      const button = document.getElementById('tab-'+item.key);
+      button.setAttribute('aria-selected',String(chosen));
+      button.tabIndex = chosen ? 0 : -1;
+      panels[item.key].hidden = !chosen;
+    }
+    if (saveHash && history.replaceState) {
+      try { history.replaceState(null,'',location.pathname+location.search+'#'+key); }
+      catch (e) { /* No navigation history on local previews; tabs still work. */ }
+    }
+    if (moveTop) {
+      nav.scrollIntoView({block:'start',behavior:'auto'});
+    }
+  }
+  nav.addEventListener('click',function(ev) {
+    const button = ev.target.closest('button[data-target]');
+    if (button) select(button.dataset.target,true,true);
+  });
+  nav.addEventListener('keydown',function(ev) {
+    const keys = ['ArrowLeft','ArrowRight','Home','End'];
+    if (!keys.includes(ev.key)) return;
+    ev.preventDefault();
+    const now = tabItems.findIndex(t => document.getElementById('tab-'+t.key).getAttribute('aria-selected')==='true');
+    let next = ev.key === 'Home' ? 0 : ev.key === 'End' ? 2 :
+      (now+(ev.key==='ArrowRight'?1:2))%3;
+    select(tabItems[next].key,true,false);
+    document.getElementById('tab-'+tabItems[next].key).focus();
+  });
+  const initial = location.hash.replace('#','');
+  select(panels[initial] ? initial : 'overview',false,false);
+})();
+</script></body></html>
