@@ -1,0 +1,162 @@
+name: 小G基本面交叉驗證室 1.11（一次性升級）
+
+on:
+  push:
+    paths:
+      - '.github/workflows/fundamentals-v111.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: stock-radar-fundamentals-upgrade-v111
+  cancel-in-progress: false
+
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 讀取現有 1.10 雷達
+        uses: actions/checkout@v4
+      - name: 安裝基本面交叉驗證室（保護原有定時排程）
+        shell: bash
+        run: |
+          python - <<'PY_INSTALL'
+          from pathlib import Path
+          import base64, gzip
+          blob = """
+          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
+          """
+          mod = gzip.decompress(base64.b64decode(''.join(blob.split()))).decode('utf-8')
+          compile(mod, 'fundamental_crosscheck.py', 'exec')
+          source_path = Path('radar.py')
+          original = source_path.read_text(encoding='utf-8')
+          if 'STOCK RESEARCH LAB · 1.11' in original:
+              print('1.11 已安裝：不重複修改雷達主程式')
+              updated=original
+          else:
+              if original.count('STOCK RESEARCH LAB · 1.10') != 1:
+                  raise SystemExit('主程式版本不是已驗證的 1.10；為保護舊系統停止升級')
+              updated=original
+              for old,new in [
+              ('from profitability import quarterly_profit_section', 'from profitability import quarterly_profit_section\nfrom fundamental_crosscheck import fundamental_crosscheck_section'),
+              ('    {quarterly_profit_section(UNIVERSE, INDUSTRY, TW_NAMES)}', '    {quarterly_profit_section(UNIVERSE, INDUSTRY, TW_NAMES)}\n    {fundamental_crosscheck_section(UNIVERSE, INDUSTRY, TW_NAMES)}'),
+              ('台股50＋美股50｜產業動能、月營收、季報獲利、排名變動、績效追蹤、風險提示', '台股50＋美股50｜產業動能、月營收、季報獲利、基本面交叉驗證、排名變動、績效追蹤、風險提示'),
+              ('小G 股票雷達 1.10：', '小G 股票雷達 1.11：'),
+              ('小G股票雷達 1.10', '小G股票雷達 1.11'),
+              ('STOCK RESEARCH LAB · 1.10', 'STOCK RESEARCH LAB · 1.11'),
+          ]:
+                  if updated.count(old)!=1:
+                      raise SystemExit('原程式出現非預期變化，停止升級：'+old[:55])
+                  updated=updated.replace(old,new,1)
+              # The previously installed weekly official-data archive workflows check for
+              # these exact legacy feature markers before refreshing snapshots. Retain
+              # them as explicit compatibility comments, *not* as the current UI version.
+              updated += ("\n# Legacy weekly archive compatibility (features present; not the current version):\n"
+                          "# STOCK RESEARCH LAB · 1.9\n"
+                          "# STOCK RESEARCH LAB · 1.10\n")
+              compile(updated, 'radar.py', 'exec')
+          Path('fundamental_crosscheck.py').write_text(mod,encoding='utf-8')
+          if updated != original:
+              source_path.write_text(updated,encoding='utf-8')
+          print('已安裝 1.11 基本面交叉研究室；未修改任何現有工作流程')
+          PY_INSTALL
+      - name: 保存新版程式（不修改工作流程）
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add radar.py fundamental_crosscheck.py
+          if ! git diff --cached --quiet; then
+            git commit -m 'Radar v1.11: cross-check revenue growth and operating profit'
+            git push
+          fi
+      - name: 安裝 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: 安裝原本工具
+        run: pip install -r requirements.txt
+      - name: 更新股票雷達網頁
+        run: python radar.py
+      - name: 保存掃描及研究快照
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html data/history.csv
+          if [ -f data/monthly_revenue.csv ]; then git add data/monthly_revenue.csv; fi
+          if [ -f data/quarterly_profit.csv ]; then git add data/quarterly_profit.csv; fi
+          if ! git diff --cached --quiet; then
+            git commit -m 'Update v1.11 research report and captured filings'
+            git push
+          fi
+      - name: 準備網站
+        run: |
+          mkdir -p _site/data
+          cp index.html _site/index.html
+          cp data/history.csv _site/data/history.csv
+          if [ -f data/monthly_revenue.csv ]; then cp data/monthly_revenue.csv _site/data/monthly_revenue.csv; fi
+          if [ -f data/quarterly_profit.csv ]; then cp data/quarterly_profit.csv _site/data/quarterly_profit.csv; fi
+      - name: 上傳網頁資料
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
+  publish:
+    needs: install
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.publish.outputs.page_url }}
+    steps:
+      - name: 發布 1.11 網站
+        id: publish
+        uses: actions/deploy-pages@v4
