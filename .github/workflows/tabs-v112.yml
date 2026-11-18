@@ -1,0 +1,157 @@
+name: 小G股票雷達 1.12（手機台美股分頁）
+
+on:
+  push:
+    paths:
+      - '.github/workflows/tabs-v112.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: stock-radar-112-market-tabs
+  cancel-in-progress: false
+
+jobs:
+  upgrade:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 取得股票雷達
+        uses: actions/checkout@v4
+      - name: 安裝手機台美股分頁（不修改原本每日排程）
+        shell: bash
+        run: |
+          python - <<'PY_UPGRADE'
+          from pathlib import Path
+          import base64, gzip
+          source = """    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"""
+          module = gzip.decompress(base64.b64decode(''.join(source.split()))).decode('utf-8')
+          compile(module, 'mobile_tabs.py', 'exec')
+          file = Path('radar.py')
+          src = file.read_text(encoding='utf-8')
+          if 'STOCK RESEARCH LAB · 1.12' in src:
+              if 'from mobile_tabs import install_mobile_tabs' not in src or 'install_mobile_tabs(SITE_FILE)' not in src:
+                  raise SystemExit('偵測到不完整1.12，停止避免覆蓋現有網站')
+              updated = src
+              print('已是完整1.12版，不重複修改')
+          else:
+              if src.count('STOCK RESEARCH LAB · 1.11') != 1:
+                  raise SystemExit('找不到唯一的1.11版程式標記，停止保護現有雷達')
+              changes = [
+                  ('from fundamental_crosscheck import fundamental_crosscheck_section',
+                   'from fundamental_crosscheck import fundamental_crosscheck_section\nfrom mobile_tabs import install_mobile_tabs'),
+                  ("    SITE_FILE.write_text(page,encoding='utf-8')",
+                   "    SITE_FILE.write_text(page,encoding='utf-8')\n    install_mobile_tabs(SITE_FILE)"),
+                  ('小G 股票雷達 1.11：','小G 股票雷達 1.12：'),
+                  ('小G股票雷達 1.11','小G股票雷達 1.12'),
+                  ('STOCK RESEARCH LAB · 1.11','STOCK RESEARCH LAB · 1.12'),
+              ]
+              updated = src
+              for before, after in changes:
+                  if updated.count(before) != 1:
+                      raise SystemExit(f'施工位置數量不符（{updated.count(before)}）：{before[:42]}')
+                  updated=updated.replace(before,after,1)
+              if '# STOCK RESEARCH LAB · 1.11' not in updated:
+                  updated += '\n# STOCK RESEARCH LAB · 1.11\n'
+              compile(updated, 'radar.py', 'exec')
+          Path('mobile_tabs.py').write_text(module,encoding='utf-8')
+          if updated != src:
+              file.write_text(updated,encoding='utf-8')
+          print('完成1.12安裝：不改動原本歷史資料、分數與排程。')
+          PY_UPGRADE
+      - name: 保存 1.12 程式檔
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add radar.py mobile_tabs.py
+          if ! git diff --cached --quiet; then
+            git commit -m "Radar v1.12: Taiwan and US mobile tabs"
+            git push
+          fi
+      - name: 準備 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: 安裝原本工具
+        run: pip install -r requirements.txt
+      - name: 更新分頁版股票雷達
+        run: python radar.py
+      - name: 保存網站與歷史資料
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html data/history.csv
+          for file in data/monthly_revenue.csv data/quarterly_profit.csv; do
+            if [ -f "$file" ]; then git add "$file"; fi
+          done
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish v1.12 mobile navigation report"
+            git push
+          fi
+      - name: 準備 GitHub Pages 網站
+        run: |
+          mkdir -p _site/data
+          cp index.html _site/index.html
+          cp data/history.csv _site/data/history.csv
+          for file in data/monthly_revenue.csv data/quarterly_profit.csv; do
+            if [ -f "$file" ]; then cp "$file" _site/data/; fi
+          done
+      - name: 上傳網頁
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
+  publish:
+    needs: upgrade
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.publish.outputs.page_url }}
+    steps:
+      - name: 發布分頁版網站
+        id: publish
+        uses: actions/deploy-pages@v4
