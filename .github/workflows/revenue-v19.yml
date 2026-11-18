@@ -1,0 +1,166 @@
+name: 小G月營收研究室 1.9（一次性升級）
+
+on:
+  push:
+    paths:
+      - '.github/workflows/revenue-v19.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  upgrade:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 讀取原本正常運作的雷達
+        uses: actions/checkout@v4
+      - name: 安裝官方月營收研究室
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import base64, gzip
+          source = """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
+          19agiYKWk59VaPu2j60Hp0FJ/Bc9qxrRAyMAAA=="""
+          new_module = gzip.decompress(base64.b64decode(''.join(source.split()))).decode('utf-8')
+          compile(new_module, 'revenue.py', 'exec')
+          radar_file = Path('radar.py')
+          workflow_file = Path('.github/workflows/radar.yml')
+          radar = radar_file.read_text(encoding='utf-8')
+          workflow = workflow_file.read_text(encoding='utf-8')
+          if 'STOCK RESEARCH LAB · 1.9' in radar:
+              print('1.9 已安裝過；不再重複修改主程式')
+          else:
+              if 'STOCK RESEARCH LAB · 1.8' not in radar:
+                  raise SystemExit('不是已驗證 1.8 版，停止升級以保護原報告')
+              patches = [
+                  ('import yfinance as yf',
+                   'import yfinance as yf\nfrom revenue import monthly_revenue_section'),
+                  ('    {industry_strength_section(records,history_frames,benchmark_frames)}',
+                   '    {industry_strength_section(records,history_frames,benchmark_frames)}\n    {monthly_revenue_section(UNIVERSE, INDUSTRY, TW_NAMES)}'),
+                  ('建置中：已新增族群動能觀察，營收與獲利資料待接入；尚未給30分',
+                   '建置中：已新增族群動能及台股官方月營收觀察，獲利資料待接入；尚未給30分'),
+                  ('台股50＋美股50｜產業動能觀察、排名變動、績效追蹤、風險提示',
+                   '台股50＋美股50｜產業動能、月營收、排名變動、績效追蹤、風險提示'),
+                  ('小G 股票雷達 1.8：', '小G 股票雷達 1.9：'),
+                  ('小G股票雷達 1.8', '小G股票雷達 1.9'),
+                  ('STOCK RESEARCH LAB · 1.8', 'STOCK RESEARCH LAB · 1.9'),
+              ]
+              for old, new in patches:
+                  if radar.count(old) != 1:
+                      raise SystemExit(f'不符合預期：{old[:55]}，找到 {radar.count(old)} 次；未修改主程式')
+                  radar = radar.replace(old, new, 1)
+              compile(radar,'radar.py','exec')
+          # Change the existing scheduled scanner to persist the new file and publish it.
+          for old, new in [
+              ('git add index.html data/history.csv',
+               'git add index.html data/history.csv data/monthly_revenue.csv'),
+              ('cp data/history.csv _site/data/history.csv',
+               'cp data/history.csv _site/data/history.csv\n          cp data/monthly_revenue.csv _site/data/monthly_revenue.csv'),
+          ]:
+              if new in workflow:
+                  continue
+              if workflow.count(old) != 1:
+                  raise SystemExit(f'原定時排程格式已改變：{old}；停止升級')
+              workflow = workflow.replace(old, new, 1)
+          # Write only after validations are all complete.
+          Path('revenue.py').write_text(new_module, encoding='utf-8')
+          radar_file.write_text(radar, encoding='utf-8')
+          workflow_file.write_text(workflow, encoding='utf-8')
+          print('月營收研究室 1.9 安裝完成，語法驗證通過')
+          PY
+      - name: 保存升級後的檔案
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add radar.py revenue.py .github/workflows/radar.yml
+          if ! git diff --cached --quiet; then
+            git commit -m "Radar v1.9: official TWSE monthly revenue study"
+            git push
+          fi
+      - name: 準備 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: 安裝原本工具
+        run: pip install -r requirements.txt
+      - name: 執行股票掃描與月營收分析
+        run: python radar.py
+      - name: 保存最新掃描與月營收歷史
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html data/history.csv data/monthly_revenue.csv
+          if ! git diff --cached --quiet; then
+            git commit -m "Update v1.9 radar and revenue archive"
+            git push
+          fi
+      - name: 準備網站
+        run: |
+          mkdir -p _site/data
+          cp index.html _site/index.html
+          cp data/history.csv _site/data/history.csv
+          cp data/monthly_revenue.csv _site/data/monthly_revenue.csv
+      - name: 上傳網頁成品
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
+  publish:
+    needs: upgrade
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.publish.outputs.page_url }}
+    steps:
+      - name: 發布雷達 1.9
+        id: publish
+        uses: actions/deploy-pages@v4
