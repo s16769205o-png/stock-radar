@@ -1,0 +1,182 @@
+name: 小G股票雷達 1.14 產業透視鏡（單檔升級）
+
+on:
+  push:
+    paths:
+      - '.github/workflows/industry-lens-v114.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: radar-industry-lens-v114
+  cancel-in-progress: false
+
+jobs:
+  upgrade:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 讀取舊版股票雷達
+        uses: actions/checkout@v4
+
+      - name: 安裝 1.14 產業透視鏡（不更動既有工作流程）
+        shell: bash
+        run: |
+          python - <<'PY_UPGRADE'
+          from pathlib import Path
+          import base64, gzip, re
+          packed = """          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
+          """
+          module = gzip.decompress(base64.b64decode(''.join(packed.split()))).decode('utf-8')
+          compile(module, 'industry_lens.py', 'exec')
+          main = Path('radar.py')
+          previous = main.read_text(encoding='utf-8')
+          version_match = re.search(r'<div class="eyebrow">STOCK RESEARCH LAB · ([0-9.]+)</div>', previous)
+          version = version_match.group(1) if version_match else None
+          if version == '1.14':
+              upgraded = previous
+              if 'from industry_lens import industry_lens_section' not in previous:
+                  raise SystemExit('版本標示 1.14 但缺少模組連結，為安全起見停止')
+              print('1.14 已經安裝，保持現有主程式')
+          elif version == '1.13':
+              patches = [
+                  ('from industry_readiness import industry_readiness_section',
+                   'from industry_readiness import industry_readiness_section\nfrom industry_lens import industry_lens_section'),
+                  ('    {monthly_revenue_section(UNIVERSE, INDUSTRY, TW_NAMES)}',
+                   '    {monthly_revenue_section(UNIVERSE, INDUSTRY, TW_NAMES)}\n    {industry_lens_section(UNIVERSE, INDUSTRY, TW_NAMES, records)}'),
+                  ('小G 股票雷達 1.13：', '小G 股票雷達 1.14：'),
+                  ('小G股票雷達 1.13', '小G股票雷達 1.14'),
+                  ('STOCK RESEARCH LAB · 1.13', 'STOCK RESEARCH LAB · 1.14'),
+              ]
+              upgraded = previous
+              for before, after in patches:
+                  if upgraded.count(before) != 1:
+                      raise SystemExit('主程式插入點不符合預期：'+before[:65])
+                  upgraded = upgraded.replace(before, after, 1)
+              # The existing 1.13 weekly archive job detects versions by substring.
+              # Keeping the legacy marker prevents it from trying to reinstall 1.13.
+              if '# STOCK RESEARCH LAB · 1.13' not in upgraded:
+                  upgraded += '\n# STOCK RESEARCH LAB · 1.13\n'
+              compile(upgraded, 'radar.py', 'exec')
+          else:
+              raise SystemExit('只允許從 1.13 升級；現在偵測到 '+str(version)+'，停止保護原雷達')
+
+          Path('industry_lens.py').write_text(module, encoding='utf-8')
+          if upgraded != previous:
+              main.write_text(upgraded, encoding='utf-8')
+          print('1.14 產業透視鏡安裝成功。原有掃描、排行與分頁不變。')
+          PY_UPGRADE
+
+      - name: 保存程式（不修改任何既有 workflow）
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add radar.py industry_lens.py
+          if ! git diff --cached --quiet; then
+            git commit -m 'Radar 1.14: drill down TW industry revenue and profitability'
+            git push
+          fi
+
+      - name: 安裝 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 安裝原有工具
+        run: pip install -r requirements.txt
+
+      - name: 執行股票雷達與產業透視鏡
+        run: python radar.py
+
+      - name: 保存報告與既有財報資料
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html data/history.csv
+          for path in data/monthly_revenue.csv data/quarterly_profit.csv; do
+            if [ -f "$path" ]; then git add "$path"; fi
+          done
+          if ! git diff --cached --quiet; then
+            git commit -m 'Update radar 1.14 report and official archives'
+            git push
+          fi
+
+      - name: 準備手機網站
+        run: |
+          mkdir -p _site/data
+          cp index.html _site/index.html
+          cp data/history.csv _site/data/history.csv
+          for path in data/monthly_revenue.csv data/quarterly_profit.csv; do
+            if [ -f "$path" ]; then cp "$path" "_site/$path"; fi
+          done
+
+      - name: 上傳網頁
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
+  publish:
+    needs: upgrade
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.publish.outputs.page_url }}
+    steps:
+      - name: 發布小G股票雷達 1.14
+        id: publish
+        uses: actions/deploy-pages@v4
