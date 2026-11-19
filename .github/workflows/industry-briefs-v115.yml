@@ -1,0 +1,172 @@
+name: 小G股票雷達 1.15｜產業懶人一句話（單檔升級）
+
+on:
+  push:
+    paths:
+      - '.github/workflows/industry-briefs-v115.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: stock-radar-industry-briefs-v115
+  cancel-in-progress: false
+
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 取得已運行的股票雷達
+        uses: actions/checkout@v4
+
+      - name: 安裝產業一句話研究員（保留歷史與排程）
+        shell: bash
+        run: |
+          python - <<'PY_UPGRADE'
+          from pathlib import Path
+          import base64, gzip
+          compressed = """
+          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
+          """
+          source = gzip.decompress(base64.b64decode(''.join(compressed.split()))).decode('utf-8')
+          compile(source, 'industry_briefs.py', 'exec')
+          radar_path = Path('radar.py')
+          radar = radar_path.read_text(encoding='utf-8')
+          if 'STOCK RESEARCH LAB · 1.15' in radar:
+              if 'from industry_briefs import add_industry_briefs' not in radar:
+                  raise SystemExit('版本標記與程式不一致，停止變更')
+              updated = radar
+              print('1.15 已安裝，維持版本不變')
+          else:
+              if radar.count('STOCK RESEARCH LAB · 1.14') != 1:
+                  raise SystemExit('原程式不是預期的 1.14 版，停止以保護歷史資料')
+              patches = [
+                  ('from industry_lens import industry_lens_section',
+                   'from industry_lens import industry_lens_section\nfrom industry_briefs import add_industry_briefs'),
+                  ('    install_mobile_tabs(SITE_FILE)',
+                   '    add_industry_briefs(SITE_FILE, UNIVERSE, INDUSTRY, records)\n    install_mobile_tabs(SITE_FILE)'),
+                  ('小G 股票雷達 1.14：', '小G 股票雷達 1.15：'),
+                  ('小G股票雷達 1.14', '小G股票雷達 1.15'),
+                  ('STOCK RESEARCH LAB · 1.14', 'STOCK RESEARCH LAB · 1.15'),
+                  ('台股50＋美股50｜產業資料可比性、營收、獲利、技術排名及績效追蹤',
+                   '台股50＋美股50｜產業一句話、營收、獲利、技術排名及績效追蹤'),
+              ]
+              updated = radar
+              for before, after in patches:
+                  if updated.count(before) != 1:
+                      raise SystemExit('插入點不唯一，停止保護原程式：'+before[:65])
+                  updated = updated.replace(before, after, 1)
+              compile(updated, 'radar.py', 'exec')
+          # Only change Python files. Never touch .github/workflows/radar.yml.
+          Path('industry_briefs.py').write_text(source, encoding='utf-8')
+          if updated != radar:
+              radar_path.write_text(updated, encoding='utf-8')
+          print('1.15 module and scanner installed successfully')
+          PY_UPGRADE
+
+      - name: 保存程式更新（不推送既有工作流程）
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add radar.py industry_briefs.py
+          if ! git diff --cached --quiet; then
+            git commit -m 'Install 1.15 evidence-led industry briefs'
+            git push
+          fi
+
+      - name: 準備 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 安裝雷達原有工具
+        run: pip install -r requirements.txt
+
+      - name: 更新股票雷達與產業一句話
+        run: python radar.py
+
+      - name: 保存報告與已擷取歷史資料
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html data/history.csv
+          for f in data/monthly_revenue.csv data/quarterly_profit.csv; do
+            if [ -f "$f" ]; then git add "$f"; fi
+          done
+          if ! git diff --cached --quiet; then
+            git commit -m 'Refresh 1.15 radar and sector brief snapshots'
+            git push
+          fi
+
+      - name: 整理手機網站
+        run: |
+          mkdir -p _site/data
+          cp index.html _site/index.html
+          cp data/history.csv _site/data/history.csv
+          for f in monthly_revenue.csv quarterly_profit.csv; do
+            if [ -f "data/$f" ]; then cp "data/$f" "_site/data/$f"; fi
+          done
+
+      - name: 上傳網站報告
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
+  deploy:
+    needs: install
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.publish.outputs.page_url }}
+    steps:
+      - name: 發布股票雷達1.15
+        id: publish
+        uses: actions/deploy-pages@v4
