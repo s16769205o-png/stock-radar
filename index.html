@@ -1,5 +1,5 @@
 <!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>小G股票雷達 1.14</title><style>
+    <title>小G股票雷達 1.15</title><style>
     *{box-sizing:border-box}body{margin:0;background:#f5f7fb;color:#202a3c;font-family:system-ui,-apple-system,'Noto Sans TC',sans-serif}
     main{max-width:1010px;margin:auto;padding:28px 16px 64px}h1{font-size:2.1rem;margin:8px 0}h2{margin:32px 0 12px;font-size:1.35rem}h3{margin:20px 0 10px}
     .muted,small{color:#6b7789}.muted{line-height:1.7;font-size:.92rem}.eyebrow{font-size:.79rem;letter-spacing:.07em;color:#325e96;font-weight:750}
@@ -22,6 +22,12 @@
     .movetag{border-radius:20px;padding:5px 9px;white-space:nowrap;font-size:.76rem;font-weight:700}
     .movetag.up{color:#176f4a;background:#e2f6ea}.movetag.down{color:#a64d36;background:#feede7}.movetag.same{color:#576476;background:#edf0f5}
     @media(max-width:640px){.movelist{grid-template-columns:1fr}.grid{grid-template-columns:1fr}.weights{grid-template-columns:repeat(2,1fr)}.stats strong{font-size:1.3rem}.stats>div{padding:11px}}
+    </style><style>/* STOCK_RADAR_BRIEF_V115 */
+    .lens-brief{margin:12px 13px 16px;padding:13px 14px;background:#f1f6fd;
+      color:#233a53;border-left:4px solid #477db8;border-radius:9px;line-height:1.7}
+    .lens-brief strong{display:block;color:#184c7b;font-size:.93rem;margin-bottom:4px}
+    .lens-brief p{margin:0;font-size:.91rem;overflow-wrap:anywhere}
+    .lens-brief small{display:block;margin-top:5px;font-size:.78rem;color:#606f83}
     </style><style>
 /* Stock Radar 1.12: market navigation */
 #radar-market-tabs {
@@ -51,22 +57,22 @@
   #radar-market-tabs button[aria-selected="true"] { padding: 9px 3px; }
 }
 </style></head><body><main>
-    <div class="eyebrow">STOCK RESEARCH LAB · 1.14</div><h1>📡 小G股票雷達</h1>
-    <p class="muted">台股50＋美股50｜產業資料可比性、營收、獲利、技術排名及績效追蹤<br>台灣時間產生：2026-11-19 13:18。各股票請以卡片上的交易日為準。</p>
+    <div class="eyebrow">STOCK RESEARCH LAB · 1.15</div><h1>📡 小G股票雷達</h1>
+    <p class="muted">台股50＋美股50｜產業一句話、營收、獲利、技術排名及績效追蹤<br>台灣時間產生：2026-11-19 13:51。各股票請以卡片上的交易日為準。</p>
     <div class="stats"><div><small>成功掃描</small><strong>100</strong></div><div><small>符合均線</small><strong>13</strong></div>
-    <div><small>明顯放量</small><strong>11</strong></div></div>
+    <div><small>明顯放量</small><strong>18</strong></div></div>
     <h2>四大引擎（目前開發狀態）</h2><div class="weights"><div><b>30%</b>技術分析<small>均線／量價／RSI動能：試驗評分已啟用</small></div>
     <div><b>30%</b>產業前景<small>建置中：加入官方資料跨期可比性觀察，30分評分尚未啟用</small></div>
     <div><b>25%</b>法人買賣<small>尚未接入</small></div><div><b>15%</b>國際新聞<small>尚未接入</small></div></div>
     
-    <h2>📈 排行榜變動室</h2><p class="muted">使用相同技術評分，比較各市場最新完整交易日與前一次有完整存檔的交易日（可能不是昨天）。新進前十表示上次不在前十；並非第一次被選到。同分群的名次可能因量比等次要條件互換，請同時看分數變化；名次與分數都不是股價報酬或買入訊號。</p><h3>🇹🇼 台股｜2026-11-19 vs 2026-11-18</h3><ol class="movelist"><li class="moveitem"><span class="movename">#1 <b>儒鴻</b> <small>1476.TW · 28/30</small></span><span class="movetag up">分數+10 · 排序↑5</span></li><li class="moveitem"><span class="movename">#2 <b>中華電</b> <small>2412.TW · 28/30</small></span><span class="movetag up">分數+5 · 排序↑1</span></li><li class="moveitem"><span class="movename">#3 <b>和泰車</b> <small>2207.TW · 25/30</small></span><span class="movetag same">分數持平・排序↓1</span></li><li class="moveitem"><span class="movename">#4 <b>長榮航</b> <small>2618.TW · 19/30</small></span><span class="movetag same">同分群・排序不變</span></li><li class="moveitem"><span class="movename">#5 <b>華航</b> <small>2610.TW · 19/30</small></span><span class="movetag same">同分群・排序不變</span></li><li class="moveitem"><span class="movename">#6 <b>兆豐金</b> <small>2886.TW · 19/30</small></span><span class="movetag up">新進前十 · 分數+10</span></li><li class="moveitem"><span class="movename">#7 <b>統一</b> <small>1216.TW · 14/30</small></span><span class="movetag same">分數持平・排序↑1</span></li><li class="moveitem"><span class="movename">#8 <b>中信金</b> <small>2891.TW · 12/30</small></span><span class="movetag up">新進前十 · 分數+5</span></li><li class="moveitem"><span class="movename">#9 <b>祥碩</b> <small>5269.TW · 11/30</small></span><span class="movetag up">新進前十 · 分數+5</span></li><li class="moveitem"><span class="movename">#10 <b>合庫金</b> <small>5880.TW · 9/30</small></span><span class="movetag same">新進前十 · 分數持平</span></li></ol><p class="muted">離開前十：世芯-KY（原 #1）, 陽明（原 #7）, 長榮（原 #9）, 奇鋐（原 #10）</p><h3>🇺🇸 美股｜2026-11-18 vs 2026-11-17</h3><ol class="movelist"><li class="moveitem"><span class="movename">#1 <b>AMZN</b> <small>AMZN · 25/30</small></span><span class="movetag up">分數+5 · 排序↑5</span></li><li class="moveitem"><span class="movename">#2 <b>WMT</b> <small>WMT · 22/30</small></span><span class="movetag same">同分群・排序不變</span></li><li class="moveitem"><span class="movename">#3 <b>COST</b> <small>COST · 22/30</small></span><span class="movetag up">分數+2 · 排序↑2</span></li><li class="moveitem"><span class="movename">#4 <b>PG</b> <small>PG · 22/30</small></span><span class="movetag same">同分群・排序↓1</span></li><li class="moveitem"><span class="movename">#5 <b>KO</b> <small>KO · 22/30</small></span><span class="movetag same">同分群・排序↓4</span></li><li class="moveitem"><span class="movename">#6 <b>NEE</b> <small>NEE · 22/30</small></span><span class="movetag up">分數+3 · 排序↑4</span></li><li class="moveitem"><span class="movename">#7 <b>AAPL</b> <small>AAPL · 22/30</small></span><span class="movetag same">同分群・排序↓3</span></li><li class="moveitem"><span class="movename">#8 <b>AVGO</b> <small>AVGO · 21/30</small></span><span class="movetag up">新進前十 · 分數+4</span></li><li class="moveitem"><span class="movename">#9 <b>LLY</b> <small>LLY · 19/30</small></span><span class="movetag same">分數持平・排序不變</span></li><li class="moveitem"><span class="movename">#10 <b>ANET</b> <small>ANET · 18/30</small></span><span class="movetag up">新進前十 · 分數+6</span></li></ol><p class="muted">離開前十：JNJ（原 #7）, MA（原 #8）</p>
+    <h2>📈 排行榜變動室</h2><p class="muted">使用相同技術評分，比較各市場最新完整交易日與前一次有完整存檔的交易日（可能不是昨天）。新進前十表示上次不在前十；並非第一次被選到。同分群的名次可能因量比等次要條件互換，請同時看分數變化；名次與分數都不是股價報酬或買入訊號。</p><h3>🇹🇼 台股｜2026-11-19 vs 2026-11-18</h3><ol class="movelist"><li class="moveitem"><span class="movename">#1 <b>和泰車</b> <small>2207.TW · 30/30</small></span><span class="movetag up">分數+5 · 排序↑1</span></li><li class="moveitem"><span class="movename">#2 <b>儒鴻</b> <small>1476.TW · 28/30</small></span><span class="movetag up">分數+10 · 排序↑4</span></li><li class="moveitem"><span class="movename">#3 <b>中華電</b> <small>2412.TW · 28/30</small></span><span class="movetag up">分數+5</span></li><li class="moveitem"><span class="movename">#4 <b>長榮航</b> <small>2618.TW · 19/30</small></span><span class="movetag same">同分群・排序不變</span></li><li class="moveitem"><span class="movename">#5 <b>華航</b> <small>2610.TW · 19/30</small></span><span class="movetag same">同分群・排序不變</span></li><li class="moveitem"><span class="movename">#6 <b>兆豐金</b> <small>2886.TW · 19/30</small></span><span class="movetag up">新進前十 · 分數+10</span></li><li class="moveitem"><span class="movename">#7 <b>統一</b> <small>1216.TW · 14/30</small></span><span class="movetag same">分數持平・排序↑1</span></li><li class="moveitem"><span class="movename">#8 <b>祥碩</b> <small>5269.TW · 11/30</small></span><span class="movetag up">新進前十 · 分數+5</span></li><li class="moveitem"><span class="movename">#9 <b>世芯-KY</b> <small>3661.TW · 9/30</small></span><span class="movetag down">分數-17 · 排序↓8</span></li><li class="moveitem"><span class="movename">#10 <b>合庫金</b> <small>5880.TW · 9/30</small></span><span class="movetag same">新進前十 · 分數持平</span></li></ol><p class="muted">離開前十：陽明（原 #7）, 長榮（原 #9）, 奇鋐（原 #10）</p><h3>🇺🇸 美股｜2026-11-18 vs 2026-11-17</h3><ol class="movelist"><li class="moveitem"><span class="movename">#1 <b>AMZN</b> <small>AMZN · 25/30</small></span><span class="movetag up">分數+5 · 排序↑5</span></li><li class="moveitem"><span class="movename">#2 <b>WMT</b> <small>WMT · 22/30</small></span><span class="movetag same">同分群・排序不變</span></li><li class="moveitem"><span class="movename">#3 <b>COST</b> <small>COST · 22/30</small></span><span class="movetag up">分數+2 · 排序↑2</span></li><li class="moveitem"><span class="movename">#4 <b>PG</b> <small>PG · 22/30</small></span><span class="movetag same">同分群・排序↓1</span></li><li class="moveitem"><span class="movename">#5 <b>KO</b> <small>KO · 22/30</small></span><span class="movetag same">同分群・排序↓4</span></li><li class="moveitem"><span class="movename">#6 <b>NEE</b> <small>NEE · 22/30</small></span><span class="movetag up">分數+3 · 排序↑4</span></li><li class="moveitem"><span class="movename">#7 <b>AAPL</b> <small>AAPL · 22/30</small></span><span class="movetag same">同分群・排序↓3</span></li><li class="moveitem"><span class="movename">#8 <b>AVGO</b> <small>AVGO · 21/30</small></span><span class="movetag up">新進前十 · 分數+4</span></li><li class="moveitem"><span class="movename">#9 <b>LLY</b> <small>LLY · 19/30</small></span><span class="movetag same">分數持平・排序不變</span></li><li class="moveitem"><span class="movename">#10 <b>ANET</b> <small>ANET · 18/30</small></span><span class="movetag up">新進前十 · 分數+6</span></li></ol><p class="muted">離開前十：JNJ（原 #7）, MA（原 #8）</p>
     <h2>🏊 績效游泳池（前十名追蹤）</h2>
     <div class="note"><b>做法：</b>從歷史 CSV 找出每個市場每個交易日「當時」的技術分數前十名，觀察之後 5／10／20 個交易日的調整收盤價變化，再和同期間 ETF 比較。<br>
     <b>重要：</b>這是紙上觀察，假設能在訊號日收盤價比較，不代表真實成交或策略可獲利。不同日觀察可能重疊、同一檔會重複出現；不含稅費、滑價和買賣限制，尚非嚴格回測。已成熟結果會寫回歷史 CSV；若早期日期已超出可下載行情範圍，可能無法補算。</div>
     
     <h3>台股｜對照 0050 台灣50 ETF</h3><p class="muted">歷史排名已記錄 4 個交易日，每次僅取該市場前十名。5 日尚待成熟 30 筆、10 日尚待成熟 30 筆、20 日尚待成熟 30 筆；無法比對資料 30 個期限觀察。</p><div class="table-wrap"><table><thead><tr><th>觀察期</th><th>到期筆數</th><th>股票平均</th><th>基準平均</th><th>平均超額</th><th>跑贏基準</th></tr></thead><tbody><tr><td>5 日</td><td>0</td><td colspan="4">尚無到期且資料齊全的樣本</td></tr><tr><td>10 日</td><td>0</td><td colspan="4">尚無到期且資料齊全的樣本</td></tr><tr><td>20 日</td><td>0</td><td colspan="4">尚無到期且資料齊全的樣本</td></tr></tbody></table></div>
     <h3>美股｜對照 SPY 標普500 ETF</h3><p class="muted">歷史排名已記錄 4 個交易日，每次僅取該市場前十名。5 日尚待成熟 40 筆、10 日尚待成熟 40 筆、20 日尚待成熟 40 筆。</p><div class="table-wrap"><table><thead><tr><th>觀察期</th><th>到期筆數</th><th>股票平均</th><th>基準平均</th><th>平均超額</th><th>跑贏基準</th></tr></thead><tbody><tr><td>5 日</td><td>0</td><td colspan="4">尚無到期且資料齊全的樣本</td></tr><tr><td>10 日</td><td>0</td><td colspan="4">尚無到期且資料齊全的樣本</td></tr><tr><td>20 日</td><td>0</td><td colspan="4">尚無到期且資料齊全的樣本</td></tr></tbody></table></div>
-    <h2>🏗️ 產業研究室・第一期：族群強弱</h2><p class="muted">只用目前固定100檔樣本：比較族群內股票近20／60個交易日的平均調整收盤價變化、20日均線上方比例，及20日平均報酬相對0050或SPY的差距。這些是等權價格動能與廣度觀察，<b>不是產業營收、獲利、資本支出或未來前景的30分評分</b>。成分太少的族群僅作參考。</p><h3>🇹🇼 台股｜2026-11-19｜對照 0050 台灣50 ETF</h3><div class="table-wrap"><table><thead><tr><th>研究族群</th><th>樣本</th><th>20日平均</th><th>60日平均</th><th>站上MA20</th><th>相對基準20日</th><th>觀察訊號</th></tr></thead><tbody><tr><td>紡織</td><td>1</td><td>+19.8%</td><td>+22.5%</td><td>100%</td><td>+35.2 百分點</td><td>樣本少</td></tr><tr><td>電信</td><td>1</td><td>+8.1%</td><td>+22.0%</td><td>100%</td><td>+23.5 百分點</td><td>樣本少</td></tr><tr><td>汽車</td><td>1</td><td>+4.2%</td><td>+5.8%</td><td>100%</td><td>+19.6 百分點</td><td>樣本少</td></tr><tr><td>食品</td><td>1</td><td>+0.3%</td><td>+1.5%</td><td>0%</td><td>+15.6 百分點</td><td>樣本少</td></tr><tr><td>航空／航太</td><td>3</td><td>+0.1%</td><td>-3.3%</td><td>67%</td><td>+15.5 百分點</td><td>價格與廣度偏強</td></tr><tr><td>金融</td><td>9</td><td>-6.5%</td><td>+6.9%</td><td>0%</td><td>+8.9 百分點</td><td>混合／待觀察</td></tr><tr><td>水泥</td><td>2</td><td>-7.7%</td><td>-0.0%</td><td>0%</td><td>+7.6 百分點</td><td>樣本少</td></tr><tr><td>海運</td><td>3</td><td>-8.1%</td><td>-10.2%</td><td>0%</td><td>+7.2 百分點</td><td>混合／待觀察</td></tr><tr><td>鋼鐵</td><td>1</td><td>-9.7%</td><td>-9.0%</td><td>0%</td><td>+5.7 百分點</td><td>樣本少</td></tr><tr><td>重電／機械</td><td>2</td><td>-17.5%</td><td>-32.4%</td><td>0%</td><td>-2.1 百分點</td><td>樣本少</td></tr><tr><td>電腦／伺服器</td><td>7</td><td>-20.5%</td><td>-13.5%</td><td>0%</td><td>-5.1 百分點</td><td>混合／待觀察</td></tr><tr><td>塑化</td><td>3</td><td>-22.4%</td><td>+8.7%</td><td>0%</td><td>-7.0 百分點</td><td>混合／待觀察</td></tr><tr><td>半導體</td><td>10</td><td>-23.8%</td><td>-16.4%</td><td>10%</td><td>-8.4 百分點</td><td>混合／待觀察</td></tr><tr><td>面板／光學</td><td>2</td><td>-33.6%</td><td>-14.8%</td><td>0%</td><td>-18.2 百分點</td><td>樣本少</td></tr><tr><td>電力／散熱／電子零組件</td><td>4</td><td>-35.8%</td><td>-30.1%</td><td>0%</td><td>-20.4 百分點</td><td>混合／待觀察</td></tr></tbody></table></div><h3>🇺🇸 美股｜2026-11-18｜對照 SPY 標普500 ETF</h3><div class="table-wrap"><table><thead><tr><th>研究族群</th><th>樣本</th><th>20日平均</th><th>60日平均</th><th>站上MA20</th><th>相對基準20日</th><th>觀察訊號</th></tr></thead><tbody><tr><td>民生消費</td><td>4</td><td>+8.3%</td><td>+15.2%</td><td>100%</td><td>+13.9 百分點</td><td>價格與廣度偏強</td></tr><tr><td>公用事業</td><td>1</td><td>+8.3%</td><td>+1.4%</td><td>100%</td><td>+13.9 百分點</td><td>樣本少</td></tr><tr><td>汽車</td><td>2</td><td>+3.6%</td><td>+2.7%</td><td>0%</td><td>+9.1 百分點</td><td>樣本少</td></tr><tr><td>電商／平台</td><td>2</td><td>+1.9%</td><td>-5.9%</td><td>100%</td><td>+7.4 百分點</td><td>樣本少</td></tr><tr><td>金融／支付</td><td>5</td><td>-1.0%</td><td>-6.3%</td><td>0%</td><td>+4.5 百分點</td><td>混合／待觀察</td></tr><tr><td>網路安全</td><td>2</td><td>-1.5%</td><td>+13.9%</td><td>0%</td><td>+4.0 百分點</td><td>樣本少</td></tr><tr><td>醫療／製藥</td><td>6</td><td>-2.3%</td><td>-0.4%</td><td>17%</td><td>+3.3 百分點</td><td>混合／待觀察</td></tr><tr><td>工業／設備</td><td>5</td><td>-8.8%</td><td>-14.8%</td><td>20%</td><td>-3.2 百分點</td><td>混合／待觀察</td></tr><tr><td>能源</td><td>2</td><td>-8.9%</td><td>+2.2%</td><td>0%</td><td>-3.3 百分點</td><td>樣本少</td></tr><tr><td>軟體／雲端／網路</td><td>10</td><td>-13.2%</td><td>-7.5%</td><td>20%</td><td>-7.6 百分點</td><td>混合／待觀察</td></tr><tr><td>半導體／設備</td><td>11</td><td>-13.8%</td><td>-13.2%</td><td>18%</td><td>-8.3 百分點</td><td>混合／待觀察</td></tr></tbody></table></div>
+    <h2>🏗️ 產業研究室・第一期：族群強弱</h2><p class="muted">只用目前固定100檔樣本：比較族群內股票近20／60個交易日的平均調整收盤價變化、20日均線上方比例，及20日平均報酬相對0050或SPY的差距。這些是等權價格動能與廣度觀察，<b>不是產業營收、獲利、資本支出或未來前景的30分評分</b>。成分太少的族群僅作參考。</p><h3>🇹🇼 台股｜2026-11-19｜對照 0050 台灣50 ETF</h3><div class="table-wrap"><table><thead><tr><th>研究族群</th><th>樣本</th><th>20日平均</th><th>60日平均</th><th>站上MA20</th><th>相對基準20日</th><th>觀察訊號</th></tr></thead><tbody><tr><td>紡織</td><td>1</td><td>+18.3%</td><td>+20.9%</td><td>100%</td><td>+34.2 百分點</td><td>樣本少</td></tr><tr><td>電信</td><td>1</td><td>+7.8%</td><td>+21.6%</td><td>100%</td><td>+23.7 百分點</td><td>樣本少</td></tr><tr><td>汽車</td><td>1</td><td>+3.8%</td><td>+5.4%</td><td>100%</td><td>+19.7 百分點</td><td>樣本少</td></tr><tr><td>食品</td><td>1</td><td>+0.3%</td><td>+1.5%</td><td>0%</td><td>+16.2 百分點</td><td>樣本少</td></tr><tr><td>航空／航太</td><td>3</td><td>-0.2%</td><td>-3.6%</td><td>67%</td><td>+15.7 百分點</td><td>價格與廣度偏強</td></tr><tr><td>金融</td><td>9</td><td>-6.7%</td><td>+6.6%</td><td>0%</td><td>+9.2 百分點</td><td>混合／待觀察</td></tr><tr><td>海運</td><td>3</td><td>-7.7%</td><td>-9.7%</td><td>0%</td><td>+8.2 百分點</td><td>混合／待觀察</td></tr><tr><td>水泥</td><td>2</td><td>-8.1%</td><td>-0.4%</td><td>0%</td><td>+7.8 百分點</td><td>樣本少</td></tr><tr><td>鋼鐵</td><td>1</td><td>-10.2%</td><td>-9.5%</td><td>0%</td><td>+5.7 百分點</td><td>樣本少</td></tr><tr><td>重電／機械</td><td>2</td><td>-17.8%</td><td>-32.6%</td><td>0%</td><td>-1.9 百分點</td><td>樣本少</td></tr><tr><td>電腦／伺服器</td><td>7</td><td>-20.6%</td><td>-13.7%</td><td>0%</td><td>-4.7 百分點</td><td>混合／待觀察</td></tr><tr><td>塑化</td><td>3</td><td>-22.7%</td><td>+8.3%</td><td>0%</td><td>-6.8 百分點</td><td>混合／待觀察</td></tr><tr><td>半導體</td><td>10</td><td>-24.0%</td><td>-16.6%</td><td>10%</td><td>-8.1 百分點</td><td>混合／待觀察</td></tr><tr><td>面板／光學</td><td>2</td><td>-34.1%</td><td>-15.5%</td><td>0%</td><td>-18.2 百分點</td><td>樣本少</td></tr><tr><td>電力／散熱／電子零組件</td><td>4</td><td>-36.0%</td><td>-30.3%</td><td>0%</td><td>-20.1 百分點</td><td>混合／待觀察</td></tr></tbody></table></div><h3>🇺🇸 美股｜2026-11-18｜對照 SPY 標普500 ETF</h3><div class="table-wrap"><table><thead><tr><th>研究族群</th><th>樣本</th><th>20日平均</th><th>60日平均</th><th>站上MA20</th><th>相對基準20日</th><th>觀察訊號</th></tr></thead><tbody><tr><td>民生消費</td><td>4</td><td>+8.3%</td><td>+15.2%</td><td>100%</td><td>+13.9 百分點</td><td>價格與廣度偏強</td></tr><tr><td>公用事業</td><td>1</td><td>+8.3%</td><td>+1.4%</td><td>100%</td><td>+13.9 百分點</td><td>樣本少</td></tr><tr><td>汽車</td><td>2</td><td>+3.6%</td><td>+2.7%</td><td>0%</td><td>+9.1 百分點</td><td>樣本少</td></tr><tr><td>電商／平台</td><td>2</td><td>+1.9%</td><td>-5.9%</td><td>100%</td><td>+7.4 百分點</td><td>樣本少</td></tr><tr><td>金融／支付</td><td>5</td><td>-1.0%</td><td>-6.3%</td><td>0%</td><td>+4.5 百分點</td><td>混合／待觀察</td></tr><tr><td>網路安全</td><td>2</td><td>-1.5%</td><td>+13.9%</td><td>0%</td><td>+4.0 百分點</td><td>樣本少</td></tr><tr><td>醫療／製藥</td><td>6</td><td>-2.3%</td><td>-0.4%</td><td>17%</td><td>+3.3 百分點</td><td>混合／待觀察</td></tr><tr><td>工業／設備</td><td>5</td><td>-8.8%</td><td>-14.8%</td><td>20%</td><td>-3.2 百分點</td><td>混合／待觀察</td></tr><tr><td>能源</td><td>2</td><td>-8.9%</td><td>+2.2%</td><td>0%</td><td>-3.3 百分點</td><td>樣本少</td></tr><tr><td>軟體／雲端／網路</td><td>10</td><td>-13.2%</td><td>-7.5%</td><td>20%</td><td>-7.6 百分點</td><td>混合／待觀察</td></tr><tr><td>半導體／設備</td><td>11</td><td>-13.8%</td><td>-13.2%</td><td>18%</td><td>-8.3 百分點</td><td>混合／待觀察</td></tr></tbody></table></div>
     <h2>📊 台股月營收研究室・第一期</h2>
     <p class="muted">來源：<a href="https://openapi.twse.com.tw/v1/opendata/t187ap05_L">臺灣證券交易所官方月營收</a>。
     採用公司申報的資料年月及月增／年增率；月營收不等於獲利，亦非產業前景30分。
@@ -85,7 +91,7 @@
       color:#225d9f;text-decoration:underline;text-underline-offset:3px;
       font:inherit;text-align:left;}
     .lens-link:focus-visible {outline:2px solid #245e96}
-    </style><details class="lens-sector" data-lens-sector="海運" id="lens-sector-1"><summary>海運　<b>年增中位數 +96.1%</b>　<small>3/3 檔有資料</small></summary><p class="muted">本群 3 檔；月營收年增為正 3/3 檔。</p><div class="table-wrap"><table><thead><tr><th>股票</th><th>本月營收（百萬元）</th><th>去年同月推估（百萬元）</th><th>營收年增</th><th>營收月增</th><th>累計營業利益率</th><th>最新技術分數</th><th>研究提醒</th></tr></thead><tbody><tr><td><b>長榮</b><small>2603</small></td><td>53,603</td><td>27,330</td><td>+96.1%</td><td>+7.8%</td><td>+23.7%</td><td>5/30・均線未符合</td><td>年增幅大，留意去年基期；位於20/60日均線下</td></tr><tr><td><b>陽明</b><small>2609</small></td><td>21,044</td><td>11,534</td><td>+82.4%</td><td>-3.0%</td><td>+18.5%</td><td>3/30・均線未符合</td><td>年增幅大，留意去年基期；年增但月減；位於20/60日均線下</td></tr><tr><td><b>萬海</b><small>2615</small></td><td>23,441</td><td>10,448</td><td>+124.4%</td><td>+7.6%</td><td>+31.8%</td><td>3/30・均線未符合</td><td>年增幅大，留意去年基期；位於20/60日均線下</td></tr></tbody></table></div></details><details class="lens-sector" data-lens-sector="電腦／伺服器" id="lens-sector-2"><summary>電腦／伺服器　<b>年增中位數 +62.2%</b>　<small>7/7 檔有資料</small></summary><p class="muted">本群 7 檔；月營收年增為正 6/7 檔。</p><div class="table-wrap"><table><thead><tr><th>股票</th><th>本月營收（百萬元）</th><th>去年同月推估（百萬元）</th><th>營收年增</th><th>營收月增</th><th>累計營業利益率</th><th>最新技術分數</th><th>研究提醒</th></tr></thead><tbody><tr><td><b>鴻海</b><small>2317</small></td><td>—</td><td>—</td><td>+45.7%</td><td>+12.7%</td><td>+3.7%</td><td>3/30・均線未符合</td><td>位於20/60日均線下、5日跌幅較大</td></tr><tr><td><b>廣達</b><small>2382</small></td><td>—</td><td>—</td><td>+104.0%</td><td>+8.6%</td><td>+3.0%</td><td>3/30・均線未符合</td><td>年增幅大，留意去年基期；位於20/60日均線下、RSI偏低</td></tr><tr><td><b>華碩</b><small>2357</small></td><td>—</td><td>—</td><td>+62.2%</td><td>+10.7%</td><td>+7.6%</td><td>3/30・均線未符合</td><td>位於20/60日均線下、5日跌幅較大</td></tr><tr><td><b>技嘉</b><small>2376</small></td><td>67,036</td><td>28,318</td><td>+136.7%</td><td>+6.2%</td><td>+7.0%</td><td>3/30・均線未符合</td><td>年增幅大，留意去年基期；位於20/60日均線下、RSI偏低、5日跌幅較大</td></tr><tr><td><b>微星</b><small>2377</small></td><td>19,461</td><td>20,624</td><td>-5.6%</td><td>-2.3%</td><td>+7.3%</td><td>3/30・均線未符合</td><td>位於20/60日均線下、RSI偏低、5日跌幅較大</td></tr><tr><td><b>緯創</b><small>3231</small></td><td>—</td><td>—</td><td>+117.6%</td><td>+5.7%</td><td>+3.8%</td><td>3/30・均線未符合</td><td>年增幅大，留意去年基期；位於20/60日均線下</td></tr><tr><td><b>和碩</b><small>4938</small></td><td>—</td><td>—</td><td>+59.6%</td><td>-12.4%</td><td>+1.7%</td><td>3/30・均線未符合</td><td>年增但月減；位於20/60日均線下、RSI偏低、5日跌幅較大</td></tr></tbody></table></div></details><details class="lens-sector" data-lens-sector="塑化" id="lens-sector-3"><summary>塑化　<b>年增中位數 +61.8%</b>　<small>3/3 檔有資料</small></summary><p class="muted">本群 3 檔；月營收年增為正 3/3 檔。</p><div class="table-wrap"><table><thead><tr><th>股票</th><th>本月營收（百萬元）</th><th>去年同月推估（百萬元）</th><th>營收年增</th><th>營收月增</th><th>累計營業利益率</th><th>最新技術分數</th><th>研究提醒</th></tr></thead><tbody><tr><td><b>台塑</b><small>1301</small></td><td>15,584</td><td>13,410</td><td>+16.2%</td><td>+3.8%</td><td>-2.0%</td><td>3/30・均線未符合</td><td>累計營業利益率為負；位於20/60日均線下、5日跌幅較大</td></tr><tr><td><b>南亞</b><small>1303</small></td><td>34,942</td><td>21,229</td><td>+64.6%</td><td>+1.5%</td><td>+13.5%</td><td>3/30・均線未符合</td><td>位於20/60日均線下、5日跌幅較大</td></tr><tr><td><b>台化</b><small>1326</small></td><td>35,832</td><td>22,147</td><td>+61.8%</td><td>+7.3%</td><td>+1.5%</td><td>3/30・均線未符合</td><td>位於20/60日均線下、5日跌幅較大</td></tr></tbody></table></div></details><details class="lens-sector" data-lens-sector="半導體" id="lens-sector-4"><summary>半導體　<b>年增中位數 +38.0%</b>　<small>10/10 檔有資料</small></summary><p class="muted">本群 10 檔；月營收年增為正 9/10 檔。</p><div class="table-wrap"><table><thead><tr><th>股票</th><th>本月營收（百萬元）</th><th>去年同月推估（百萬元）</th><th>營收年增</th><th>營收月增</th><th>累計營業利益率</th><th>最新技術分數</th><th>研究提醒</th></tr></thead><tbody><tr><td><b>台積電</b><small>2330</small></td><td>—</td><td>—</td><td>+59.7%</td><td>+14.7%</td><td>+59.0%</td><td>3/30・均線未符合</td><td>位於20/60日均線下、5日跌幅較大</td></tr><tr><td><b>聯發科</b><small>2454</small></td><td>55,026</td><td>52,026</td><td>+5.8%</td><td>-0.7%</td><td>+15.5%</td><td>5/30・均線未符合</td><td>年增但月減；位於20/60日均線下</td></tr><tr><td><b>聯電</b><small>2303</small></td><td>25,198</td><td>21,295</td><td>+18.3%</td><td>-0.6%</td><td>+22.0%</td><td>3/30・均線未符合</td><td>年增但月減；位於20/60日均線下、RSI偏低、5日跌幅較大</td></tr><tr><td><b>南亞科</b><small>2408</small></td><td>46,476</td><td>7,908</td><td>+487.7%</td><td>+3.1%</td><td>+74.6%</td><td>3/30・均線未符合</td><td>年增幅大，留意去年基期；位於20/60日均線下、RSI偏低、5日跌幅較大</td></tr><tr><td><b>聯詠</b><small>3034</small></td><td>10,052</td><td>7,879</td><td>+27.6%</td><td>-2.9%</td><td>+21.2%</td><td>3/30・均線未符合</td><td>年增但月減；位於20/60日均線下、RSI偏低</td></tr><tr><td><b>創意</b><small>3443</small></td><td>8,433</td><td>3,716</td><td>+127.0%</td><td>+18.0%</td><td>+13.7%</td><td>3/30・均線未符合</td><td>年增幅大，留意去年基期；位於20/60日均線下、5日跌幅較大</td></tr><tr><td><b>台勝科</b><small>3532</small></td><td>1,373</td><td>1,066</td><td>+28.8%</td><td>+1.7%</td><td>+2.2%</td><td>3/30・均線未符合</td><td>位於20/60日均線下、RSI偏低、5日跌幅較大</td></tr><tr><td><b>世芯-KY</b><small>3661</small></td><td>10,260</td><td>1,666</td><td>+515.8%</td><td>+2.8%</td><td>+17.5%</td><td>7/30・均線未符合</td><td>年增幅大，留意去年基期；放量下跌</td></tr><tr><td><b>日月光投控</b><small>3711</small></td><td>88,615</td><td>60,231</td><td>+47.1%</td><td>+0.6%</td><td>+11.8%</td><td>3/30・均線未符合</td><td>位於20/60日均線下、5日跌幅較大</td></tr><tr><td><b>祥碩</b><small>5269</small></td><td>570</td><td>1,190</td><td>-52.1%</td><td>-42.7%</td><td>+22.9%</td><td>11/30・均線未符合</td><td>位於20/60日均線下</td></tr></tbody></table></div></details><details class="lens-sector" data-lens-sector="電力／散熱／電子零組件" id="lens-sector-5"><summary>電力／散熱／電子零組件　<b>年增中位數 +37.2%</b>　<small>4/4 檔有資料</small></summary><p class="muted">本群 4 檔；月營收年增為正 4/4 檔。</p><div class="table-wrap"><table><thead><tr><th>股票</th><th>本月營收（百萬元）</th><th>去年同月推估（百萬元）</th><th>營收年增</th><th>營收月增</th><th>累計營業利益率</th><th>最新技術分數</th><th>研究提醒</th></tr></thead><tbody><tr><td><b>台達電</b><small>2308</small></td><td>74,666</td><td>57,384</td><td>+30.1%</td><td>+14.2%</td><td>+17.0%</td><td>1/30・均線未符合</td><td>放量下跌、位於20/60日均線下、RSI偏低、5日跌幅較大</td></tr><tr><td><b>國巨</b><small>2327</small></td><td>17,597</td><td>11,352</td><td>+55.0%</td><td>+3.1%</td><td>+27.2%</td><td>3/30・均線未符合</td><td>位於20/60日均線下、RSI偏低、5日跌幅較大</td></tr><tr><td><b>奇鋐</b><small>3017</small></td><td>22,103</td><td>16,451</td><td>+34.4%</td><td>+5.2%</td><td>+26.9%</td><td>5/30・均線未符合</td><td>位於20/60日均線下、5日跌幅較大</td></tr><tr><td><b>臻鼎-KY</b><small>4958</small></td><td>27,197</td><td>19,428</td><td>+40.0%</td><td>+3.2%</td><td>+9.7%</td><td>3/30・均線未符合</td><td>位於20/60日均線下、5日跌幅較大</td></tr></tbody></table></div></details><details class="lens-sector" data-lens-sector="鋼鐵" id="lens-sector-6"><summary>鋼鐵　<b>年增中位數 +31.0%</b>　<small>1/1 檔有資料</small></summary><p class="muted">本群 1 檔；月營收年增為正 1/1 檔；本群樣本少，不能代表整個產業。</p><div class="table-wrap"><table><thead><tr><th>股票</th><th>本月營收（百萬元）</th><th>去年同月推估（百萬元）</th><th>營收年增</th><th>營收月增</th><th>累計營業利益率</th><th>最新技術分數</th><th>研究提醒</th></tr></thead><tbody><tr><td><b>中鋼</b><small>2002</small></td><td>32,040</td><td>24,462</td><td>+31.0%</td><td>+3.4%</td><td>+1.8%</td><td>3/30・均線未符合</td><td>位於20/60日均線下、RSI偏低</td></tr></tbody></table></div></details><details class="lens-sector" data-lens-sector="航空／航太" id="lens-sector-7"><summary>航空／航太　<b>年增中位數 +22.4%</b>　<small>3/3 檔有資料</small></summary><p class="muted">本群 3 檔；月營收年增為正 3/3 檔。</p><div class="table-wrap"><table><thead><tr><th>股票</th><th>本月營收（百萬元）</th><th>去年同月推估（百萬元）</th><th>營收年增</th><th>營收月增</th><th>累計營業利益率</th><th>最新技術分數</th><th>研究提醒</th></tr></thead><tbody><tr><td><b>華航</b><small>2610</small></td><td>22,156</td><td>18,107</td><td>+22.4%</td><td>+5.8%</td><td>+8.5%</td><td>19/30・均線符合</td><td>—</td></tr><tr><td><b>長榮航</b><small>2618</small></td><td>23,182</td><td>18,904</td><td>+22.6%</td><td>+11.7%</td><td>+13.6%</td><td>19/30・均線符合</td><td>—</td></tr><tr><td><b>漢翔</b><small>2634</small></td><td>3,377</td><td>3,219</td><td>+4.9%</td><td>+5.6%</td><td>+9.6%</td><td>3/30・均線未符合</td><td>位於20/60日均線下、RSI偏低、5日跌幅較大</td></tr></tbody></table></div></details><details class="lens-sector" data-lens-sector="電信" id="lens-sector-8"><summary>電信　<b>年增中位數 +13.4%</b>　<small>1/1 檔有資料</small></summary><p class="muted">本群 1 檔；月營收年增為正 1/1 檔；本群樣本少，不能代表整個產業。</p><div class="table-wrap"><table><thead><tr><th>股票</th><th>本月營收（百萬元）</th><th>去年同月推估（百萬元）</th><th>營收年增</th><th>營收月增</th><th>累計營業利益率</th><th>最新技術分數</th><th>研究提醒</th></tr></thead><tbody><tr><td><b>中華電</b><small>2412</small></td><td>23,748</td><td>20,933</td><td>+13.4%</td><td>-2.7%</td><td>+22.1%</td><td>28/30・均線符合</td><td>年增但月減</td></tr></tbody></table></div></details><details class="lens-sector" data-lens-sector="紡織" id="lens-sector-9"><summary>紡織　<b>年增中位數 +10.7%</b>　<small>1/1 檔有資料</small></summary><p class="muted">本群 1 檔；月營收年增為正 1/1 檔；本群樣本少，不能代表整個產業。</p><div class="table-wrap"><table><thead><tr><th>股票</th><th>本月營收（百萬元）</th><th>去年同月推估（百萬元）</th><th>營收年增</th><th>營收月增</th><th>累計營業利益率</th><th>最新技術分數</th><th>研究提醒</th></tr></thead><tbody><tr><td><b>儒鴻</b><small>1476</small></td><td>3,400</td><td>3,072</td><td>+10.7%</td><td>-3.1%</td><td>+20.9%</td><td>28/30・均線符合</td><td>年增但月減</td></tr></tbody></table></div></details><details class="lens-sector" data-lens-sector="重電／機械" id="lens-sector-10"><summary>重電／機械　<b>年增中位數 +8.4%</b>　<small>2/2 檔有資料</small></summary><p class="muted">本群 2 檔；月營收年增為正 1/2 檔；本群樣本少，不能代表整個產業。</p><div class="table-wrap"><table><thead><tr><th>股票</th><th>本月營收（百萬元）</th><th>去年同月推估（百萬元）</th><th>營收年增</th><th>營收月增</th><th>累計營業利益率</th><th>最新技術分數</th><th>研究提醒</th></tr></thead><tbody><tr><td><b>華城</b><small>1519</small></td><td>1,889</td><td>2,232</td><td>-15.4%</td><td>-6.9%</td><td>+24.8%</td><td>3/30・均線未符合</td><td>位於20/60日均線下</td></tr><tr><td><b>亞德客-KY</b><small>1590</small></td><td>3,565</td><td>2,697</td><td>+32.2%</td><td>-6.5%</td><td>+34.1%</td><td>3/30・均線未符合</td><td>年增但月減；位於20/60日均線下</td></tr></tbody></table></div></details><details class="lens-sector" data-lens-sector="水泥" id="lens-sector-11"><summary>水泥　<b>年增中位數 +5.5%</b>　<small>2/2 檔有資料</small></summary><p class="muted">本群 2 檔；月營收年增為正 1/2 檔；本群樣本少，不能代表整個產業。</p><div class="table-wrap"><table><thead><tr><th>股票</th><th>本月營收（百萬元）</th><th>去年同月推估（百萬元）</th><th>營收年增</th><th>營收月增</th><th>累計營業利益率</th><th>最新技術分數</th><th>研究提醒</th></tr></thead><tbody><tr><td><b>台泥</b><small>1101</small></td><td>16,357</td><td>13,882</td><td>+17.8%</td><td>+14.2%</td><td>+8.5%</td><td>3/30・均線未符合</td><td>位於20/60日均線下</td></tr><tr><td><b>亞泥</b><small>1102</small></td><td>5,431</td><td>5,833</td><td>-6.9%</td><td>-19.2%</td><td>+7.8%</td><td>3/30・均線未符合</td><td>位於20/60日均線下、RSI偏低</td></tr></tbody></table></div></details><details class="lens-sector" data-lens-sector="食品" id="lens-sector-12"><summary>食品　<b>年增中位數 +5.3%</b>　<small>1/1 檔有資料</small></summary><p class="muted">本群 1 檔；月營收年增為正 1/1 檔；本群樣本少，不能代表整個產業。</p><div class="table-wrap"><table><thead><tr><th>股票</th><th>本月營收（百萬元）</th><th>去年同月推估（百萬元）</th><th>營收年增</th><th>營收月增</th><th>累計營業利益率</th><th>最新技術分數</th><th>研究提醒</th></tr></thead><tbody><tr><td><b>統一</b><small>1216</small></td><td>57,099</td><td>54,227</td><td>+5.3%</td><td>-7.6%</td><td>+5.8%</td><td>14/30・均線未符合</td><td>年增但月減</td></tr></tbody></table></div></details><details class="lens-sector" data-lens-sector="汽車" id="lens-sector-13"><summary>汽車　<b>年增中位數 +4.8%</b>　<small>1/1 檔有資料</small></summary><p class="muted">本群 1 檔；月營收年增為正 1/1 檔；本群樣本少，不能代表整個產業。</p><div class="table-wrap"><table><thead><tr><th>股票</th><th>本月營收（百萬元）</th><th>去年同月推估（百萬元）</th><th>營收年增</th><th>營收月增</th><th>累計營業利益率</th><th>最新技術分數</th><th>研究提醒</th></tr></thead><tbody><tr><td><b>和泰車</b><small>2207</small></td><td>25,977</td><td>24,795</td><td>+4.8%</td><td>-2.9%</td><td>—</td><td>25/30・均線符合</td><td>年增但月減</td></tr></tbody></table></div></details><details class="lens-sector" data-lens-sector="面板／光學" id="lens-sector-14"><summary>面板／光學　<b>年增中位數 -3.9%</b>　<small>2/2 檔有資料</small></summary><p class="muted">本群 2 檔；月營收年增為正 0/2 檔；本群樣本少，不能代表整個產業。</p><div class="table-wrap"><table><thead><tr><th>股票</th><th>本月營收（百萬元）</th><th>去年同月推估（百萬元）</th><th>營收年增</th><th>營收月增</th><th>累計營業利益率</th><th>最新技術分數</th><th>研究提醒</th></tr></thead><tbody><tr><td><b>友達</b><small>2409</small></td><td>20,779</td><td>20,916</td><td>-0.7%</td><td>-11.2%</td><td>-1.3%</td><td>3/30・均線未符合</td><td>累計營業利益率為負；位於20/60日均線下、5日跌幅較大</td></tr><tr><td><b>大立光</b><small>3008</small></td><td>5,846</td><td>6,289</td><td>-7.0%</td><td>+1.1%</td><td>+35.0%</td><td>3/30・均線未符合</td><td>位於20/60日均線下、5日跌幅較大</td></tr></tbody></table></div></details><details class="lens-sector" data-lens-sector="金融" id="lens-sector-15"><summary>金融　<b>年增中位數 -9.6%</b>　<small>9/9 檔有資料</small></summary><p class="muted">本群 9 檔；月營收年增為正 4/9 檔。</p><div class="table-wrap"><table><thead><tr><th>股票</th><th>本月營收（百萬元）</th><th>去年同月推估（百萬元）</th><th>營收年增</th><th>營收月增</th><th>累計營業利益率</th><th>最新技術分數</th><th>研究提醒</th></tr></thead><tbody><tr><td><b>富邦金</b><small>2881</small></td><td>12,351</td><td>74,308</td><td>-83.4%</td><td>-36.6%</td><td>—</td><td>3/30・均線未符合</td><td>位於20/60日均線下、5日跌幅較大</td></tr><tr><td><b>國泰金</b><small>2882</small></td><td>22,930</td><td>59,412</td><td>-61.4%</td><td>+12.4%</td><td>—</td><td>1/30・均線未符合</td><td>放量下跌、位於20/60日均線下</td></tr><tr><td><b>玉山金</b><small>2884</small></td><td>6,847</td><td>8,154</td><td>-16.0%</td><td>-20.3%</td><td>—</td><td>1/30・均線未符合</td><td>放量下跌、位於20/60日均線下、RSI偏低、5日跌幅較大</td></tr><tr><td><b>元大金</b><small>2885</small></td><td>12,880</td><td>12,501</td><td>+3.0%</td><td>-13.7%</td><td>—</td><td>1/30・均線未符合</td><td>年增但月減；放量下跌、位於20/60日均線下、5日跌幅較大</td></tr><tr><td><b>兆豐金</b><small>2886</small></td><td>6,147</td><td>6,797</td><td>-9.6%</td><td>-26.3%</td><td>—</td><td>19/30・均線未符合</td><td>—</td></tr><tr><td><b>中信金</b><small>2891</small></td><td>17,633</td><td>27,299</td><td>-35.4%</td><td>-17.3%</td><td>—</td><td>12/30・均線未符合</td><td>—</td></tr><tr><td><b>第一金</b><small>2892</small></td><td>6,248</td><td>6,223</td><td>+0.4%</td><td>+2.2%</td><td>—</td><td>7/30・均線未符合</td><td>放量下跌</td></tr><tr><td><b>中租-KY</b><small>5871</small></td><td>8,386</td><td>8,093</td><td>+3.6%</td><td>+2.4%</td><td>—</td><td>3/30・均線未符合</td><td>位於20/60日均線下</td></tr><tr><td><b>合庫金</b><small>5880</small></td><td>5,293</td><td>5,236</td><td>+1.1%</td><td>-2.8%</td><td>—</td><td>9/30・均線未符合</td><td>年增但月減</td></tr></tbody></table></div></details><script>
+    </style><details class="lens-sector" data-lens-sector="海運" id="lens-sector-1"><summary>海運　<b>年增中位數 +96.1%</b>　<small>3/3 檔有資料</small></summary><div class="lens-brief"><strong>💡 懶人一句話</strong><p>2026-10 月營收年增中位數 +96.1%（3/3 檔為正）；2026Q3 累計營業利益率未轉正 0/3 檔；本次符合均線趨勢 0/3 檔——營收普遍年增，但均線趨勢尚未同步轉強。</p><small>提醒：年增幅較大，仍需核對去年基期</small></div><p class="muted">本群 3 檔；月營收年增為正 3/3 檔。</p><div class="table-wrap"><table><thead><tr><th>股票</th><th>本月營收（百萬元）</th><th>去年同月推估（百萬元）</th><th>營收年增</th><th>營收月增</th><th>累計營業利益率</th><th>最新技術分數</th><th>研究提醒</th></tr></thead><tbody><tr><td><b>長榮</b><small>2603</small></td><td>53,603</td><td>27,330</td><td>+96.1%</td><td>+7.8%</td><td>+23.7%</td><td>5/30・均線未符合</td><td>年增幅大，留意去年基期；位於20/60日均線下</td></tr><tr><td><b>陽明</b><small>2609</small></td><td>21,044</td><td>11,534</td><td>+82.4%</td><td>-3.0%</td><td>+18.5%</td><td>3/30・均線未符合</td><td>年增幅大，留意去年基期；年增但月減；位於20/60日均線下</td></tr><tr><td><b>萬海</b><small>2615</small></td><td>23,441</td><td>10,448</td><td>+124.4%</td><td>+7.6%</td><td>+31.8%</td><td>1/30・均線未符合</td><td>年增幅大，留意去年基期；放量下跌、位於20/60日均線下</td></tr></tbody></table></div></details><details class="lens-sector" data-lens-sector="電腦／伺服器" id="lens-sector-2"><summary>電腦／伺服器　<b>年增中位數 +62.2%</b>　<small>7/7 檔有資料</small></summary><div class="lens-brief"><strong>💡 懶人一句話</strong><p>2026-10 月營收年增中位數 +62.2%（6/7 檔為正）；2026Q3 累計營業利益率未轉正 0/7 檔；本次符合均線趨勢 0/7 檔——各項數據方向未必一致，仍宜回到個股研究。</p><small>提醒：年增幅較大，仍需核對去年基期</small></div><p class="muted">本群 7 檔；月營收年增為正 6/7 檔。</p><div class="table-wrap"><table><thead><tr><th>股票</th><th>本月營收（百萬元）</th><th>去年同月推估（百萬元）</th><th>營收年增</th><th>營收月增</th><th>累計營業利益率</th><th>最新技術分數</th><th>研究提醒</th></tr></thead><tbody><tr><td><b>鴻海</b><small>2317</small></td><td>—</td><td>—</td><td>+45.7%</td><td>+12.7%</td><td>+3.7%</td><td>3/30・均線未符合</td><td>位於20/60日均線下、5日跌幅較大</td></tr><tr><td><b>廣達</b><small>2382</small></td><td>—</td><td>—</td><td>+104.0%</td><td>+8.6%</td><td>+3.0%</td><td>3/30・均線未符合</td><td>年增幅大，留意去年基期；位於20/60日均線下、RSI偏低</td></tr><tr><td><b>華碩</b><small>2357</small></td><td>—</td><td>—</td><td>+62.2%</td><td>+10.7%</td><td>+7.6%</td><td>3/30・均線未符合</td><td>位於20/60日均線下、5日跌幅較大</td></tr><tr><td><b>技嘉</b><small>2376</small></td><td>67,036</td><td>28,318</td><td>+136.7%</td><td>+6.2%</td><td>+7.0%</td><td>3/30・均線未符合</td><td>年增幅大，留意去年基期；位於20/60日均線下、RSI偏低、5日跌幅較大</td></tr><tr><td><b>微星</b><small>2377</small></td><td>19,461</td><td>20,624</td><td>-5.6%</td><td>-2.3%</td><td>+7.3%</td><td>3/30・均線未符合</td><td>位於20/60日均線下、RSI偏低、5日跌幅較大</td></tr><tr><td><b>緯創</b><small>3231</small></td><td>—</td><td>—</td><td>+117.6%</td><td>+5.7%</td><td>+3.8%</td><td>3/30・均線未符合</td><td>年增幅大，留意去年基期；位於20/60日均線下、5日跌幅較大</td></tr><tr><td><b>和碩</b><small>4938</small></td><td>—</td><td>—</td><td>+59.6%</td><td>-12.4%</td><td>+1.7%</td><td>3/30・均線未符合</td><td>年增但月減；位於20/60日均線下、RSI偏低、5日跌幅較大</td></tr></tbody></table></div></details><details class="lens-sector" data-lens-sector="塑化" id="lens-sector-3"><summary>塑化　<b>年增中位數 +61.8%</b>　<small>3/3 檔有資料</small></summary><div class="lens-brief"><strong>💡 懶人一句話</strong><p>2026-10 月營收年增中位數 +61.8%（3/3 檔為正）；2026Q3 累計營業利益率未轉正 1/3 檔；本次符合均線趨勢 0/3 檔——營收普遍年增，但部分公司累計營業仍未獲利，均線趨勢也尚未轉強。</p><small>提醒：年增幅較大，仍需核對去年基期</small></div><p class="muted">本群 3 檔；月營收年增為正 3/3 檔。</p><div class="table-wrap"><table><thead><tr><th>股票</th><th>本月營收（百萬元）</th><th>去年同月推估（百萬元）</th><th>營收年增</th><th>營收月增</th><th>累計營業利益率</th><th>最新技術分數</th><th>研究提醒</th></tr></thead><tbody><tr><td><b>台塑</b><small>1301</small></td><td>15,584</td><td>13,410</td><td>+16.2%</td><td>+3.8%</td><td>-2.0%</td><td>3/30・均線未符合</td><td>累計營業利益率為負；位於20/60日均線下、5日跌幅較大</td></tr><tr><td><b>南亞</b><small>1303</small></td><td>34,942</td><td>21,229</td><td>+64.6%</td><td>+1.5%</td><td>+13.5%</td><td>3/30・均線未符合</td><td>位於20/60日均線下、5日跌幅較大</td></tr><tr><td><b>台化</b><small>1326</small></td><td>35,832</td><td>22,147</td><td>+61.8%</td><td>+7.3%</td><td>+1.5%</td><td>3/30・均線未符合</td><td>位於20/60日均線下、5日跌幅較大</td></tr></tbody></table></div></details><details class="lens-sector" data-lens-sector="半導體" id="lens-sector-4"><summary>半導體　<b>年增中位數 +38.0%</b>　<small>10/10 檔有資料</small></summary><div class="lens-brief"><strong>💡 懶人一句話</strong><p>2026-10 月營收年增中位數 +38.0%（9/10 檔為正）；2026Q3 累計營業利益率未轉正 0/10 檔；本次符合均線趨勢 0/10 檔——各項數據方向未必一致，仍宜回到個股研究。</p></div><p class="muted">本群 10 檔；月營收年增為正 9/10 檔。</p><div class="table-wrap"><table><thead><tr><th>股票</th><th>本月營收（百萬元）</th><th>去年同月推估（百萬元）</th><th>營收年增</th><th>營收月增</th><th>累計營業利益率</th><th>最新技術分數</th><th>研究提醒</th></tr></thead><tbody><tr><td><b>台積電</b><small>2330</small></td><td>—</td><td>—</td><td>+59.7%</td><td>+14.7%</td><td>+59.0%</td><td>3/30・均線未符合</td><td>位於20/60日均線下、5日跌幅較大</td></tr><tr><td><b>聯發科</b><small>2454</small></td><td>55,026</td><td>52,026</td><td>+5.8%</td><td>-0.7%</td><td>+15.5%</td><td>3/30・均線未符合</td><td>年增但月減；放量下跌、位於20/60日均線下</td></tr><tr><td><b>聯電</b><small>2303</small></td><td>25,198</td><td>21,295</td><td>+18.3%</td><td>-0.6%</td><td>+22.0%</td><td>3/30・均線未符合</td><td>年增但月減；位於20/60日均線下、RSI偏低、5日跌幅較大</td></tr><tr><td><b>南亞科</b><small>2408</small></td><td>46,476</td><td>7,908</td><td>+487.7%</td><td>+3.1%</td><td>+74.6%</td><td>3/30・均線未符合</td><td>年增幅大，留意去年基期；位於20/60日均線下、RSI偏低、5日跌幅較大</td></tr><tr><td><b>聯詠</b><small>3034</small></td><td>10,052</td><td>7,879</td><td>+27.6%</td><td>-2.9%</td><td>+21.2%</td><td>3/30・均線未符合</td><td>年增但月減；位於20/60日均線下、RSI偏低</td></tr><tr><td><b>創意</b><small>3443</small></td><td>8,433</td><td>3,716</td><td>+127.0%</td><td>+18.0%</td><td>+13.7%</td><td>3/30・均線未符合</td><td>年增幅大，留意去年基期；位於20/60日均線下、5日跌幅較大</td></tr><tr><td><b>台勝科</b><small>3532</small></td><td>1,373</td><td>1,066</td><td>+28.8%</td><td>+1.7%</td><td>+2.2%</td><td>3/30・均線未符合</td><td>位於20/60日均線下、RSI偏低、5日跌幅較大</td></tr><tr><td><b>世芯-KY</b><small>3661</small></td><td>10,260</td><td>1,666</td><td>+515.8%</td><td>+2.8%</td><td>+17.5%</td><td>9/30・均線未符合</td><td>年增幅大，留意去年基期；放量下跌</td></tr><tr><td><b>日月光投控</b><small>3711</small></td><td>88,615</td><td>60,231</td><td>+47.1%</td><td>+0.6%</td><td>+11.8%</td><td>3/30・均線未符合</td><td>位於20/60日均線下、5日跌幅較大</td></tr><tr><td><b>祥碩</b><small>5269</small></td><td>570</td><td>1,190</td><td>-52.1%</td><td>-42.7%</td><td>+22.9%</td><td>11/30・均線未符合</td><td>位於20/60日均線下</td></tr></tbody></table></div></details><details class="lens-sector" data-lens-sector="電力／散熱／電子零組件" id="lens-sector-5"><summary>電力／散熱／電子零組件　<b>年增中位數 +37.2%</b>　<small>4/4 檔有資料</small></summary><div class="lens-brief"><strong>💡 懶人一句話</strong><p>2026-10 月營收年增中位數 +37.2%（4/4 檔為正）；2026Q3 累計營業利益率未轉正 0/4 檔；本次符合均線趨勢 0/4 檔——營收普遍年增，但均線趨勢尚未同步轉強。</p></div><p class="muted">本群 4 檔；月營收年增為正 4/4 檔。</p><div class="table-wrap"><table><thead><tr><th>股票</th><th>本月營收（百萬元）</th><th>去年同月推估（百萬元）</th><th>營收年增</th><th>營收月增</th><th>累計營業利益率</th><th>最新技術分數</th><th>研究提醒</th></tr></thead><tbody><tr><td><b>台達電</b><small>2308</small></td><td>74,666</td><td>57,384</td><td>+30.1%</td><td>+14.2%</td><td>+17.0%</td><td>1/30・均線未符合</td><td>放量下跌、位於20/60日均線下、RSI偏低、5日跌幅較大</td></tr><tr><td><b>國巨</b><small>2327</small></td><td>17,597</td><td>11,352</td><td>+55.0%</td><td>+3.1%</td><td>+27.2%</td><td>1/30・均線未符合</td><td>放量下跌、位於20/60日均線下、RSI偏低、5日跌幅較大</td></tr><tr><td><b>奇鋐</b><small>3017</small></td><td>22,103</td><td>16,451</td><td>+34.4%</td><td>+5.2%</td><td>+26.9%</td><td>5/30・均線未符合</td><td>位於20/60日均線下、5日跌幅較大</td></tr><tr><td><b>臻鼎-KY</b><small>4958</small></td><td>27,197</td><td>19,428</td><td>+40.0%</td><td>+3.2%</td><td>+9.7%</td><td>3/30・均線未符合</td><td>位於20/60日均線下、5日跌幅較大</td></tr></tbody></table></div></details><details class="lens-sector" data-lens-sector="鋼鐵" id="lens-sector-6"><summary>鋼鐵　<b>年增中位數 +31.0%</b>　<small>1/1 檔有資料</small></summary><div class="lens-brief"><strong>💡 懶人一句話</strong><p>2026-10 月營收年增中位數 +31.0%（1/1 檔為正）；2026Q3 累計營業利益率未轉正 0/1 檔；本次符合均線趨勢 0/1 檔——營收普遍年增，但均線趨勢尚未同步轉強。</p><small>提醒：本群樣本少，不能代表整個產業</small></div><p class="muted">本群 1 檔；月營收年增為正 1/1 檔；本群樣本少，不能代表整個產業。</p><div class="table-wrap"><table><thead><tr><th>股票</th><th>本月營收（百萬元）</th><th>去年同月推估（百萬元）</th><th>營收年增</th><th>營收月增</th><th>累計營業利益率</th><th>最新技術分數</th><th>研究提醒</th></tr></thead><tbody><tr><td><b>中鋼</b><small>2002</small></td><td>32,040</td><td>24,462</td><td>+31.0%</td><td>+3.4%</td><td>+1.8%</td><td>3/30・均線未符合</td><td>位於20/60日均線下、RSI偏低</td></tr></tbody></table></div></details><details class="lens-sector" data-lens-sector="航空／航太" id="lens-sector-7"><summary>航空／航太　<b>年增中位數 +22.4%</b>　<small>3/3 檔有資料</small></summary><div class="lens-brief"><strong>💡 懶人一句話</strong><p>2026-10 月營收年增中位數 +22.4%（3/3 檔為正）；2026Q3 累計營業利益率未轉正 0/3 檔；本次符合均線趨勢 2/3 檔——各項數據方向未必一致，仍宜回到個股研究。</p></div><p class="muted">本群 3 檔；月營收年增為正 3/3 檔。</p><div class="table-wrap"><table><thead><tr><th>股票</th><th>本月營收（百萬元）</th><th>去年同月推估（百萬元）</th><th>營收年增</th><th>營收月增</th><th>累計營業利益率</th><th>最新技術分數</th><th>研究提醒</th></tr></thead><tbody><tr><td><b>華航</b><small>2610</small></td><td>22,156</td><td>18,107</td><td>+22.4%</td><td>+5.8%</td><td>+8.5%</td><td>19/30・均線符合</td><td>—</td></tr><tr><td><b>長榮航</b><small>2618</small></td><td>23,182</td><td>18,904</td><td>+22.6%</td><td>+11.7%</td><td>+13.6%</td><td>19/30・均線符合</td><td>—</td></tr><tr><td><b>漢翔</b><small>2634</small></td><td>3,377</td><td>3,219</td><td>+4.9%</td><td>+5.6%</td><td>+9.6%</td><td>3/30・均線未符合</td><td>位於20/60日均線下、RSI偏低、5日跌幅較大</td></tr></tbody></table></div></details><details class="lens-sector" data-lens-sector="電信" id="lens-sector-8"><summary>電信　<b>年增中位數 +13.4%</b>　<small>1/1 檔有資料</small></summary><div class="lens-brief"><strong>💡 懶人一句話</strong><p>2026-10 月營收年增中位數 +13.4%（1/1 檔為正）；2026Q3 累計營業利益率未轉正 0/1 檔；本次符合均線趨勢 1/1 檔——各項數據方向未必一致，仍宜回到個股研究。</p><small>提醒：本群樣本少，不能代表整個產業</small></div><p class="muted">本群 1 檔；月營收年增為正 1/1 檔；本群樣本少，不能代表整個產業。</p><div class="table-wrap"><table><thead><tr><th>股票</th><th>本月營收（百萬元）</th><th>去年同月推估（百萬元）</th><th>營收年增</th><th>營收月增</th><th>累計營業利益率</th><th>最新技術分數</th><th>研究提醒</th></tr></thead><tbody><tr><td><b>中華電</b><small>2412</small></td><td>23,748</td><td>20,933</td><td>+13.4%</td><td>-2.7%</td><td>+22.1%</td><td>28/30・均線符合</td><td>年增但月減</td></tr></tbody></table></div></details><details class="lens-sector" data-lens-sector="紡織" id="lens-sector-9"><summary>紡織　<b>年增中位數 +10.7%</b>　<small>1/1 檔有資料</small></summary><div class="lens-brief"><strong>💡 懶人一句話</strong><p>2026-10 月營收年增中位數 +10.7%（1/1 檔為正）；2026Q3 累計營業利益率未轉正 0/1 檔；本次符合均線趨勢 1/1 檔——各項數據方向未必一致，仍宜回到個股研究。</p><small>提醒：本群樣本少，不能代表整個產業</small></div><p class="muted">本群 1 檔；月營收年增為正 1/1 檔；本群樣本少，不能代表整個產業。</p><div class="table-wrap"><table><thead><tr><th>股票</th><th>本月營收（百萬元）</th><th>去年同月推估（百萬元）</th><th>營收年增</th><th>營收月增</th><th>累計營業利益率</th><th>最新技術分數</th><th>研究提醒</th></tr></thead><tbody><tr><td><b>儒鴻</b><small>1476</small></td><td>3,400</td><td>3,072</td><td>+10.7%</td><td>-3.1%</td><td>+20.9%</td><td>28/30・均線符合</td><td>年增但月減</td></tr></tbody></table></div></details><details class="lens-sector" data-lens-sector="重電／機械" id="lens-sector-10"><summary>重電／機械　<b>年增中位數 +8.4%</b>　<small>2/2 檔有資料</small></summary><div class="lens-brief"><strong>💡 懶人一句話</strong><p>2026-10 月營收年增中位數 +8.4%（1/2 檔為正）；2026Q3 累計營業利益率未轉正 0/2 檔；本次符合均線趨勢 0/2 檔——各項數據方向未必一致，仍宜回到個股研究。</p><small>提醒：本群樣本少，不能代表整個產業</small></div><p class="muted">本群 2 檔；月營收年增為正 1/2 檔；本群樣本少，不能代表整個產業。</p><div class="table-wrap"><table><thead><tr><th>股票</th><th>本月營收（百萬元）</th><th>去年同月推估（百萬元）</th><th>營收年增</th><th>營收月增</th><th>累計營業利益率</th><th>最新技術分數</th><th>研究提醒</th></tr></thead><tbody><tr><td><b>華城</b><small>1519</small></td><td>1,889</td><td>2,232</td><td>-15.4%</td><td>-6.9%</td><td>+24.8%</td><td>1/30・均線未符合</td><td>放量下跌、位於20/60日均線下</td></tr><tr><td><b>亞德客-KY</b><small>1590</small></td><td>3,565</td><td>2,697</td><td>+32.2%</td><td>-6.5%</td><td>+34.1%</td><td>3/30・均線未符合</td><td>年增但月減；位於20/60日均線下</td></tr></tbody></table></div></details><details class="lens-sector" data-lens-sector="水泥" id="lens-sector-11"><summary>水泥　<b>年增中位數 +5.5%</b>　<small>2/2 檔有資料</small></summary><div class="lens-brief"><strong>💡 懶人一句話</strong><p>2026-10 月營收年增中位數 +5.5%（1/2 檔為正）；2026Q3 累計營業利益率未轉正 0/2 檔；本次符合均線趨勢 0/2 檔——各項數據方向未必一致，仍宜回到個股研究。</p><small>提醒：本群樣本少，不能代表整個產業</small></div><p class="muted">本群 2 檔；月營收年增為正 1/2 檔；本群樣本少，不能代表整個產業。</p><div class="table-wrap"><table><thead><tr><th>股票</th><th>本月營收（百萬元）</th><th>去年同月推估（百萬元）</th><th>營收年增</th><th>營收月增</th><th>累計營業利益率</th><th>最新技術分數</th><th>研究提醒</th></tr></thead><tbody><tr><td><b>台泥</b><small>1101</small></td><td>16,357</td><td>13,882</td><td>+17.8%</td><td>+14.2%</td><td>+8.5%</td><td>3/30・均線未符合</td><td>位於20/60日均線下</td></tr><tr><td><b>亞泥</b><small>1102</small></td><td>5,431</td><td>5,833</td><td>-6.9%</td><td>-19.2%</td><td>+7.8%</td><td>1/30・均線未符合</td><td>放量下跌、位於20/60日均線下、RSI偏低</td></tr></tbody></table></div></details><details class="lens-sector" data-lens-sector="食品" id="lens-sector-12"><summary>食品　<b>年增中位數 +5.3%</b>　<small>1/1 檔有資料</small></summary><div class="lens-brief"><strong>💡 懶人一句話</strong><p>2026-10 月營收年增中位數 +5.3%（1/1 檔為正）；2026Q3 累計營業利益率未轉正 0/1 檔；本次符合均線趨勢 0/1 檔——營收普遍年增，但均線趨勢尚未同步轉強。</p><small>提醒：本群樣本少，不能代表整個產業</small></div><p class="muted">本群 1 檔；月營收年增為正 1/1 檔；本群樣本少，不能代表整個產業。</p><div class="table-wrap"><table><thead><tr><th>股票</th><th>本月營收（百萬元）</th><th>去年同月推估（百萬元）</th><th>營收年增</th><th>營收月增</th><th>累計營業利益率</th><th>最新技術分數</th><th>研究提醒</th></tr></thead><tbody><tr><td><b>統一</b><small>1216</small></td><td>57,099</td><td>54,227</td><td>+5.3%</td><td>-7.6%</td><td>+5.8%</td><td>14/30・均線未符合</td><td>年增但月減</td></tr></tbody></table></div></details><details class="lens-sector" data-lens-sector="汽車" id="lens-sector-13"><summary>汽車　<b>年增中位數 +4.8%</b>　<small>1/1 檔有資料</small></summary><div class="lens-brief"><strong>💡 懶人一句話</strong><p>2026-10 月營收年增中位數 +4.8%（1/1 檔為正）；累計營業利益率尚缺可比資料；本次符合均線趨勢 1/1 檔——各項數據方向未必一致，仍宜回到個股研究。</p><small>提醒：本群樣本少，不能代表整個產業；部分公司缺少可比的累計獲利資料</small></div><p class="muted">本群 1 檔；月營收年增為正 1/1 檔；本群樣本少，不能代表整個產業。</p><div class="table-wrap"><table><thead><tr><th>股票</th><th>本月營收（百萬元）</th><th>去年同月推估（百萬元）</th><th>營收年增</th><th>營收月增</th><th>累計營業利益率</th><th>最新技術分數</th><th>研究提醒</th></tr></thead><tbody><tr><td><b>和泰車</b><small>2207</small></td><td>25,977</td><td>24,795</td><td>+4.8%</td><td>-2.9%</td><td>—</td><td>30/30・均線符合</td><td>年增但月減</td></tr></tbody></table></div></details><details class="lens-sector" data-lens-sector="面板／光學" id="lens-sector-14"><summary>面板／光學　<b>年增中位數 -3.9%</b>　<small>2/2 檔有資料</small></summary><div class="lens-brief"><strong>💡 懶人一句話</strong><p>2026-10 月營收年增中位數 -3.9%（0/2 檔為正）；2026Q3 累計營業利益率未轉正 1/2 檔；本次符合均線趨勢 0/2 檔——營收年增普遍偏弱，需留意後續改善情況。</p><small>提醒：本群樣本少，不能代表整個產業</small></div><p class="muted">本群 2 檔；月營收年增為正 0/2 檔；本群樣本少，不能代表整個產業。</p><div class="table-wrap"><table><thead><tr><th>股票</th><th>本月營收（百萬元）</th><th>去年同月推估（百萬元）</th><th>營收年增</th><th>營收月增</th><th>累計營業利益率</th><th>最新技術分數</th><th>研究提醒</th></tr></thead><tbody><tr><td><b>友達</b><small>2409</small></td><td>20,779</td><td>20,916</td><td>-0.7%</td><td>-11.2%</td><td>-1.3%</td><td>3/30・均線未符合</td><td>累計營業利益率為負；位於20/60日均線下、5日跌幅較大</td></tr><tr><td><b>大立光</b><small>3008</small></td><td>5,846</td><td>6,289</td><td>-7.0%</td><td>+1.1%</td><td>+35.0%</td><td>3/30・均線未符合</td><td>位於20/60日均線下、5日跌幅較大</td></tr></tbody></table></div></details><details class="lens-sector" data-lens-sector="金融" id="lens-sector-15"><summary>金融　<b>年增中位數 -9.6%</b>　<small>9/9 檔有資料</small></summary><div class="lens-brief"><strong>💡 懶人一句話</strong><p>2026-10 月營收年增中位數 -9.6%（4/9 檔為正）；金融股不適用一般業的營業利益率比較；本次符合均線趨勢 0/9 檔——金融業需另看適用的獲利與資產品質指標。</p></div><p class="muted">本群 9 檔；月營收年增為正 4/9 檔。</p><div class="table-wrap"><table><thead><tr><th>股票</th><th>本月營收（百萬元）</th><th>去年同月推估（百萬元）</th><th>營收年增</th><th>營收月增</th><th>累計營業利益率</th><th>最新技術分數</th><th>研究提醒</th></tr></thead><tbody><tr><td><b>富邦金</b><small>2881</small></td><td>12,351</td><td>74,308</td><td>-83.4%</td><td>-36.6%</td><td>—</td><td>5/30・均線未符合</td><td>位於20/60日均線下</td></tr><tr><td><b>國泰金</b><small>2882</small></td><td>22,930</td><td>59,412</td><td>-61.4%</td><td>+12.4%</td><td>—</td><td>1/30・均線未符合</td><td>放量下跌、位於20/60日均線下</td></tr><tr><td><b>玉山金</b><small>2884</small></td><td>6,847</td><td>8,154</td><td>-16.0%</td><td>-20.3%</td><td>—</td><td>1/30・均線未符合</td><td>放量下跌、位於20/60日均線下、RSI偏低、5日跌幅較大</td></tr><tr><td><b>元大金</b><small>2885</small></td><td>12,880</td><td>12,501</td><td>+3.0%</td><td>-13.7%</td><td>—</td><td>1/30・均線未符合</td><td>年增但月減；放量下跌、位於20/60日均線下、5日跌幅較大</td></tr><tr><td><b>兆豐金</b><small>2886</small></td><td>6,147</td><td>6,797</td><td>-9.6%</td><td>-26.3%</td><td>—</td><td>19/30・均線未符合</td><td>—</td></tr><tr><td><b>中信金</b><small>2891</small></td><td>17,633</td><td>27,299</td><td>-35.4%</td><td>-17.3%</td><td>—</td><td>7/30・均線未符合</td><td>放量下跌</td></tr><tr><td><b>第一金</b><small>2892</small></td><td>6,248</td><td>6,223</td><td>+0.4%</td><td>+2.2%</td><td>—</td><td>7/30・均線未符合</td><td>放量下跌</td></tr><tr><td><b>中租-KY</b><small>5871</small></td><td>8,386</td><td>8,093</td><td>+3.6%</td><td>+2.4%</td><td>—</td><td>6/30・均線未符合</td><td>位於20/60日均線下</td></tr><tr><td><b>合庫金</b><small>5880</small></td><td>5,293</td><td>5,236</td><td>+1.1%</td><td>-2.8%</td><td>—</td><td>9/30・均線未符合</td><td>年增但月減</td></tr></tbody></table></div></details><script>
     (function(){
       function connectLens(){
         const details=Array.from(document.querySelectorAll('details[data-lens-sector]'));
@@ -120,50 +126,50 @@
     <h2>🔬 基本面交叉驗證室・1.11</h2><p class="muted">將<strong>最新已保存的上市公司月營收年增率</strong>，與<strong>最新已保存的一般業季度累計營業利益率</strong>放在一起看。兩個指標涵蓋<strong>不同期間</strong>，不能認為當月的營收就對應這筆累計獲利，也不能把它當成股價上漲的原因或買進訊號。金融股的財報架構不同，這版先排除；美股尚未接入。資料來源為已保存的證交所官方月營收與一般業綜合損益表快照。</p><p class="muted">月營收月份：<b>2026-10</b>；季度獲利：<b>2026Q3</b>（年初至今累計）。非金融台股池：41 檔。</p><p class="muted">符合有效交叉條件：<b>40/41</b> 檔。分類的「未年增」包含年增率為零或負值；「未獲利」包含利益率為零或負值。任一指標缺值或比率異常，便不強制歸類。</p><div class="table-wrap"><table><thead><tr><th>交叉觀察類型</th><th>符合檔數</th><th>觀察重點</th></tr></thead><tbody><tr><td>營收年增・營業獲利</td><td>33</td><td>檢查成長持續性與獲利率是否改善</td></tr><tr><td>營收年增・營業未獲利</td><td>1</td><td>留意成本、費用、價格或產業週期</td></tr><tr><td>營收未年增・仍有營業獲利</td><td>5</td><td>評估季節性、基期與獲利維持能力</td></tr><tr><td>營收未年增・營業未獲利</td><td>1</td><td>留意營運壓力，仍需回原始財報核對</td></tr></tbody></table></div><h3>各產業：營收成長且營業獲利</h3><p class="muted">僅比較本研究池內同時有兩份有效數字的公司；族群只有一兩家公司時，不代表整個產業。</p><div class="table-wrap"><table><thead><tr><th>產業群</th><th>可比較檔數</th><th>雙條件符合</th></tr></thead><tbody><tr><td>半導體</td><td>10</td><td>9/10</td></tr><tr><td>電腦／伺服器</td><td>7</td><td>6/7</td></tr><tr><td>電力／散熱／電子零組件</td><td>4</td><td>4/4</td></tr><tr><td>塑化</td><td>3</td><td>2/3</td></tr><tr><td>海運</td><td>3</td><td>3/3</td></tr><tr><td>航空／航太</td><td>3</td><td>3/3</td></tr><tr><td>水泥</td><td>2</td><td>1/2</td></tr><tr><td>重電／機械</td><td>2</td><td>1/2</td></tr><tr><td>面板／光學</td><td>2</td><td>0/2</td></tr><tr><td>紡織</td><td>1</td><td>1/1</td></tr><tr><td>鋼鐵</td><td>1</td><td>1/1</td></tr><tr><td>電信</td><td>1</td><td>1/1</td></tr><tr><td>食品</td><td>1</td><td>1/1</td></tr></tbody></table></div><details class="rest"><summary>展開個股交叉檢查（41 檔）</summary><div class="table-wrap"><table><thead><tr><th>公司</th><th>產業群</th><th>最新月營收年增</th><th>累計營業利益率</th><th>累計EPS</th><th>交叉觀察</th><th>研究提醒</th></tr></thead><tbody><tr><td>世芯-KY</td><td>半導體</td><td>+515.8%</td><td>+17.5%</td><td>+75.94</td><td>營收年增・營業獲利</td><td>營收年增幅度大，留意去年基期</td></tr><tr><td>南亞科</td><td>半導體</td><td>+487.7%</td><td>+74.6%</td><td>+49.28</td><td>營收年增・營業獲利</td><td>營收年增幅度大，留意去年基期</td></tr><tr><td>技嘉</td><td>電腦／伺服器</td><td>+136.7%</td><td>+7.0%</td><td>+30.52</td><td>營收年增・營業獲利</td><td>營收年增幅度大，留意去年基期</td></tr><tr><td>創意</td><td>半導體</td><td>+127.0%</td><td>+13.7%</td><td>+40.84</td><td>營收年增・營業獲利</td><td>營收年增幅度大，留意去年基期</td></tr><tr><td>萬海</td><td>海運</td><td>+124.4%</td><td>+31.8%</td><td>+14.61</td><td>營收年增・營業獲利</td><td>營收年增幅度大，留意去年基期</td></tr><tr><td>緯創</td><td>電腦／伺服器</td><td>+117.6%</td><td>+3.8%</td><td>+13.54</td><td>營收年增・營業獲利</td><td>營收年增幅度大，留意去年基期</td></tr><tr><td>廣達</td><td>電腦／伺服器</td><td>+104.0%</td><td>+3.0%</td><td>+20.03</td><td>營收年增・營業獲利</td><td>營收年增幅度大，留意去年基期</td></tr><tr><td>長榮</td><td>海運</td><td>+96.1%</td><td>+23.7%</td><td>+32.77</td><td>營收年增・營業獲利</td><td>—</td></tr><tr><td>陽明</td><td>海運</td><td>+82.4%</td><td>+18.5%</td><td>+7.37</td><td>營收年增・營業獲利</td><td>—</td></tr><tr><td>南亞</td><td>塑化</td><td>+64.6%</td><td>+13.5%</td><td>+10.07</td><td>營收年增・營業獲利</td><td>—</td></tr><tr><td>華碩</td><td>電腦／伺服器</td><td>+62.2%</td><td>+7.6%</td><td>+67.96</td><td>營收年增・營業獲利</td><td>—</td></tr><tr><td>台化</td><td>塑化</td><td>+61.8%</td><td>+1.5%</td><td>+3.03</td><td>營收年增・營業獲利</td><td>—</td></tr><tr><td>台積電</td><td>半導體</td><td>+59.7%</td><td>+59.0%</td><td>+78.75</td><td>營收年增・營業獲利</td><td>—</td></tr><tr><td>和碩</td><td>電腦／伺服器</td><td>+59.6%</td><td>+1.7%</td><td>+3.74</td><td>營收年增・營業獲利</td><td>—</td></tr><tr><td>國巨</td><td>電力／散熱／電子零組件</td><td>+55.0%</td><td>+27.2%</td><td>+14.32</td><td>營收年增・營業獲利</td><td>—</td></tr><tr><td>日月光投控</td><td>半導體</td><td>+47.1%</td><td>+11.8%</td><td>+14.17</td><td>營收年增・營業獲利</td><td>—</td></tr><tr><td>鴻海</td><td>電腦／伺服器</td><td>+45.7%</td><td>+3.7%</td><td>+13.35</td><td>營收年增・營業獲利</td><td>—</td></tr><tr><td>臻鼎-KY</td><td>電力／散熱／電子零組件</td><td>+40.0%</td><td>+9.7%</td><td>+7.66</td><td>營收年增・營業獲利</td><td>—</td></tr><tr><td>奇鋐</td><td>電力／散熱／電子零組件</td><td>+34.4%</td><td>+26.9%</td><td>+73.86</td><td>營收年增・營業獲利</td><td>—</td></tr><tr><td>亞德客-KY</td><td>重電／機械</td><td>+32.2%</td><td>+34.1%</td><td>+44.14</td><td>營收年增・營業獲利</td><td>—</td></tr><tr><td>中鋼</td><td>鋼鐵</td><td>+31.0%</td><td>+1.8%</td><td>+0.05</td><td>營收年增・營業獲利</td><td>—</td></tr><tr><td>台達電</td><td>電力／散熱／電子零組件</td><td>+30.1%</td><td>+17.0%</td><td>+26.64</td><td>營收年增・營業獲利</td><td>—</td></tr><tr><td>台勝科</td><td>半導體</td><td>+28.8%</td><td>+2.2%</td><td>+0.34</td><td>營收年增・營業獲利</td><td>—</td></tr><tr><td>聯詠</td><td>半導體</td><td>+27.6%</td><td>+21.2%</td><td>+26.58</td><td>營收年增・營業獲利</td><td>—</td></tr><tr><td>長榮航</td><td>航空／航太</td><td>+22.6%</td><td>+13.6%</td><td>+3.50</td><td>營收年增・營業獲利</td><td>—</td></tr><tr><td>華航</td><td>航空／航太</td><td>+22.4%</td><td>+8.5%</td><td>+1.80</td><td>營收年增・營業獲利</td><td>—</td></tr><tr><td>聯電</td><td>半導體</td><td>+18.3%</td><td>+22.0%</td><td>+6.00</td><td>營收年增・營業獲利</td><td>—</td></tr><tr><td>台泥</td><td>水泥</td><td>+17.8%</td><td>+8.5%</td><td>+0.63</td><td>營收年增・營業獲利</td><td>—</td></tr><tr><td>中華電</td><td>電信</td><td>+13.4%</td><td>+22.1%</td><td>+4.25</td><td>營收年增・營業獲利</td><td>—</td></tr><tr><td>儒鴻</td><td>紡織</td><td>+10.7%</td><td>+20.9%</td><td>+18.70</td><td>營收年增・營業獲利</td><td>—</td></tr><tr><td>聯發科</td><td>半導體</td><td>+5.8%</td><td>+15.5%</td><td>+47.94</td><td>營收年增・營業獲利</td><td>—</td></tr><tr><td>統一</td><td>食品</td><td>+5.3%</td><td>+5.8%</td><td>+3.70</td><td>營收年增・營業獲利</td><td>—</td></tr><tr><td>漢翔</td><td>航空／航太</td><td>+4.9%</td><td>+9.6%</td><td>+1.97</td><td>營收年增・營業獲利</td><td>—</td></tr><tr><td>台塑</td><td>塑化</td><td>+16.2%</td><td>-2.0%</td><td>+3.09</td><td>營收年增・營業未獲利</td><td>營業未獲利、淨利為正：留意業外；營業利益率為負</td></tr><tr><td>微星</td><td>電腦／伺服器</td><td>-5.6%</td><td>+7.3%</td><td>+12.37</td><td>營收未年增・仍有營業獲利</td><td>—</td></tr><tr><td>亞泥</td><td>水泥</td><td>-6.9%</td><td>+7.8%</td><td>+2.86</td><td>營收未年增・仍有營業獲利</td><td>—</td></tr><tr><td>大立光</td><td>面板／光學</td><td>-7.0%</td><td>+35.0%</td><td>+121.98</td><td>營收未年增・仍有營業獲利</td><td>—</td></tr><tr><td>華城</td><td>重電／機械</td><td>-15.4%</td><td>+24.8%</td><td>+10.48</td><td>營收未年增・仍有營業獲利</td><td>—</td></tr><tr><td>祥碩</td><td>半導體</td><td>-52.1%</td><td>+22.9%</td><td>+78.66</td><td>營收未年增・仍有營業獲利</td><td>—</td></tr><tr><td>友達</td><td>面板／光學</td><td>-0.7%</td><td>-1.3%</td><td>-0.30</td><td>營收未年增・營業未獲利</td><td>營業利益率為負</td></tr><tr><td>和泰車</td><td>汽車</td><td>+4.8%</td><td>—</td><td>—</td><td>資料不足／異常</td><td>—</td></tr></tbody></table></div></details><p class="muted">注意：此處的「營收成長」是最新月營收對去年同月，不是季度營收成長；「營業獲利」是本年截至最新季度的<strong>累計</strong>營業利益率為正，不代表最近單季獲利。只為觀察，不增加獨立分數；四大權重仍為 30／30／25／15，產業前景完整30分尚未啟用。資料可能有公告延遲與修訂，請查證原始財報。</p>
     <h2>🧱 台股產業前景・評分地基 1.13</h2><p class="muted">先驗證資料完整度與可比性，<b>不發放產業前景30分</b>。這裡只使用既有證交所月營收與一般業季報歸檔資料，金融股不混入一般業比較。月營收與累計獲利的所屬期間不同，不能視為同一月份損益。</p><p class="muted">目前最新月份：<b>2026-10</b>（對照 2026-09）；最新季度：<b>2026Q3</b>（對照去年同季 2025Q3）。只顯示實際已存檔的月份、季度，沒有資料時以「—」呈現。</p><p class="muted">「月營收年增變化」比較<strong>連續兩個月份</strong>、「營利率變化」比較<strong>今年與去年相同季度的年初至今累計營業利益率</strong>。兩個比較都使用相同公司的配對樣本，且配對檔數至少3檔才顯示差值；這些是研究觀察，不是因果解釋、股價預測或已驗證的選股分數。</p><div class="table-wrap"><table><thead><tr><th>產業</th><th>資料覆蓋</th><th>最新月營收年增</th><th>累計營利率</th><th>營收年增變化</th><th>同季營利率變化</th><th>可比性</th></tr></thead><tbody><tr><td>半導體</td><td>10/10</td><td>+38.0%</td><td>+19.4%</td><td>—</td><td>—</td><td>待累積跨期資料</td></tr><tr><td>電腦／伺服器</td><td>7/7</td><td>+62.2%</td><td>+3.8%</td><td>—</td><td>—</td><td>待累積跨期資料</td></tr><tr><td>電力／散熱／電子零組件</td><td>4/4</td><td>+37.2%</td><td>+22.0%</td><td>—</td><td>—</td><td>待累積跨期資料</td></tr><tr><td>塑化</td><td>3/3</td><td>+61.8%</td><td>+1.5%</td><td>—</td><td>—</td><td>待累積跨期資料</td></tr><tr><td>海運</td><td>3/3</td><td>+96.1%</td><td>+23.7%</td><td>—</td><td>—</td><td>待累積跨期資料</td></tr><tr><td>航空／航太</td><td>3/3</td><td>+22.4%</td><td>+9.6%</td><td>—</td><td>—</td><td>待累積跨期資料</td></tr><tr><td>水泥</td><td>2/2</td><td>+5.5%</td><td>+8.1%</td><td>—</td><td>—</td><td>樣本少・不比較趨勢</td></tr><tr><td>重電／機械</td><td>2/2</td><td>+8.4%</td><td>+29.4%</td><td>—</td><td>—</td><td>樣本少・不比較趨勢</td></tr><tr><td>面板／光學</td><td>2/2</td><td>-3.9%</td><td>+16.8%</td><td>—</td><td>—</td><td>樣本少・不比較趨勢</td></tr><tr><td>紡織</td><td>1/1</td><td>+10.7%</td><td>+20.9%</td><td>—</td><td>—</td><td>樣本少・不比較趨勢</td></tr><tr><td>鋼鐵</td><td>1/1</td><td>+31.0%</td><td>+1.8%</td><td>—</td><td>—</td><td>樣本少・不比較趨勢</td></tr><tr><td>電信</td><td>1/1</td><td>+13.4%</td><td>+22.1%</td><td>—</td><td>—</td><td>樣本少・不比較趨勢</td></tr><tr><td>食品</td><td>1/1</td><td>+5.3%</td><td>+5.8%</td><td>—</td><td>—</td><td>樣本少・不比較趨勢</td></tr><tr><td>汽車</td><td>0/1</td><td>+4.8%</td><td>—</td><td>—</td><td>—</td><td>樣本少・不比較趨勢</td></tr></tbody></table></div><details class="rest"><summary>查看未來產業30分的評分設計草案</summary><div class="note"><b>12 分：營收成長的持續性</b>（跨月、跨年而非只看最新月）；<b>12 分：企業核心獲利趨勢</b>（需去年同季可比的累計營利率與財報）；<b>6 分：族群樣本廣度與資料可靠度</b>。權重僅是待驗證草案，尚不產生分數；未來須有足夠歷史、產業差異校正及樣本外回測才可啟用。</div></details><p class="muted">歷史資料只從實際開始保存時逐步累積；不會把今天才看到的財報誤稱為過去已經知道，亦不追溯填上未存檔快照。</p>
     <h2>🏭 產業觀察大廳</h2><p class="muted">依各群組在本測試池的平均技術分排序；不是資金流向、產業成長率或未來漲幅。</p>
-    <h3>🇹🇼 台股產業群</h3><div class="table-wrap"><table><thead><tr><th>產業群</th><th>檔數</th><th>平均技術分</th><th>群內前三名</th></tr></thead><tbody><tr><td>紡織</td><td>1</td><td>28.0/30</td><td>儒鴻（28分）</td></tr><tr><td>電信</td><td>1</td><td>28.0/30</td><td>中華電（28分）</td></tr><tr><td>汽車</td><td>1</td><td>25.0/30</td><td>和泰車（25分）</td></tr><tr><td>食品</td><td>1</td><td>14.0/30</td><td>統一（14分）</td></tr><tr><td>航空／航太</td><td>3</td><td>13.7/30</td><td>長榮航（19分）, 華航（19分）, 漢翔（3分）</td></tr><tr><td>金融</td><td>9</td><td>6.2/30</td><td>兆豐金（19分）, 中信金（12分）, 合庫金（9分）</td></tr><tr><td>半導體</td><td>10</td><td>4.4/30</td><td>祥碩（11分）, 世芯-KY（7分）, 聯發科（5分）</td></tr><tr><td>海運</td><td>3</td><td>3.7/30</td><td>長榮（5分）, 萬海（3分）, 陽明（3分）</td></tr><tr><td>塑化</td><td>3</td><td>3.0/30</td><td>台塑（3分）, 台化（3分）, 南亞（3分）</td></tr><tr><td>水泥</td><td>2</td><td>3.0/30</td><td>亞泥（3分）, 台泥（3分）</td></tr><tr><td>重電／機械</td><td>2</td><td>3.0/30</td><td>華城（3分）, 亞德客-KY（3分）</td></tr><tr><td>鋼鐵</td><td>1</td><td>3.0/30</td><td>中鋼（3分）</td></tr><tr><td>電力／散熱／電子零組件</td><td>4</td><td>3.0/30</td><td>奇鋐（5分）, 國巨（3分）, 臻鼎-KY（3分）</td></tr><tr><td>電腦／伺服器</td><td>7</td><td>3.0/30</td><td>鴻海（3分）, 技嘉（3分）, 華碩（3分）</td></tr><tr><td>面板／光學</td><td>2</td><td>3.0/30</td><td>大立光（3分）, 友達（3分）</td></tr></tbody></table></div><h3>🇺🇸 美股產業群</h3><div class="table-wrap"><table><thead><tr><th>產業群</th><th>檔數</th><th>平均技術分</th><th>群內前三名</th></tr></thead><tbody><tr><td>公用事業</td><td>1</td><td>22.0/30</td><td>NEE（22分）</td></tr><tr><td>民生消費</td><td>4</td><td>22.0/30</td><td>WMT（22分）, COST（22分）, PG（22分）</td></tr><tr><td>電商／平台</td><td>2</td><td>17.0/30</td><td>AMZN（25分）, UBER（9分）</td></tr><tr><td>網路安全</td><td>2</td><td>14.5/30</td><td>PANW（16分）, CRWD（13分）</td></tr><tr><td>汽車</td><td>2</td><td>9.5/30</td><td>TSLA（14分）, GM（5分）</td></tr><tr><td>軟體／雲端／網路</td><td>10</td><td>7.7/30</td><td>AAPL（22分）, ANET（18分）, MSFT（8分）</td></tr><tr><td>半導體／設備</td><td>11</td><td>7.5/30</td><td>AVGO（21分）, AMD（14分）, TXN（9分）</td></tr><tr><td>醫療／製藥</td><td>6</td><td>7.3/30</td><td>LLY（19分）, JNJ（9分）, ABBV（9分）</td></tr><tr><td>金融／支付</td><td>5</td><td>6.6/30</td><td>V（11分）, MA（11分）, GS（5分）</td></tr><tr><td>工業／設備</td><td>5</td><td>6.4/30</td><td>GE（18分）, DE（5分）, CAT（3分）</td></tr><tr><td>能源</td><td>2</td><td>3.0/30</td><td>XOM（3分）, CVX（3分）</td></tr></tbody></table></div>
+    <h3>🇹🇼 台股產業群</h3><div class="table-wrap"><table><thead><tr><th>產業群</th><th>檔數</th><th>平均技術分</th><th>群內前三名</th></tr></thead><tbody><tr><td>汽車</td><td>1</td><td>30.0/30</td><td>和泰車（30分）</td></tr><tr><td>紡織</td><td>1</td><td>28.0/30</td><td>儒鴻（28分）</td></tr><tr><td>電信</td><td>1</td><td>28.0/30</td><td>中華電（28分）</td></tr><tr><td>食品</td><td>1</td><td>14.0/30</td><td>統一（14分）</td></tr><tr><td>航空／航太</td><td>3</td><td>13.7/30</td><td>長榮航（19分）, 華航（19分）, 漢翔（3分）</td></tr><tr><td>金融</td><td>9</td><td>6.2/30</td><td>兆豐金（19分）, 合庫金（9分）, 第一金（7分）</td></tr><tr><td>半導體</td><td>10</td><td>4.4/30</td><td>祥碩（11分）, 世芯-KY（9分）, 聯發科（3分）</td></tr><tr><td>塑化</td><td>3</td><td>3.0/30</td><td>台塑（3分）, 台化（3分）, 南亞（3分）</td></tr><tr><td>海運</td><td>3</td><td>3.0/30</td><td>長榮（5分）, 陽明（3分）, 萬海（1分）</td></tr><tr><td>鋼鐵</td><td>1</td><td>3.0/30</td><td>中鋼（3分）</td></tr><tr><td>電腦／伺服器</td><td>7</td><td>3.0/30</td><td>技嘉（3分）, 華碩（3分）, 鴻海（3分）</td></tr><tr><td>面板／光學</td><td>2</td><td>3.0/30</td><td>大立光（3分）, 友達（3分）</td></tr><tr><td>電力／散熱／電子零組件</td><td>4</td><td>2.5/30</td><td>奇鋐（5分）, 臻鼎-KY（3分）, 台達電（1分）</td></tr><tr><td>水泥</td><td>2</td><td>2.0/30</td><td>台泥（3分）, 亞泥（1分）</td></tr><tr><td>重電／機械</td><td>2</td><td>2.0/30</td><td>亞德客-KY（3分）, 華城（1分）</td></tr></tbody></table></div><h3>🇺🇸 美股產業群</h3><div class="table-wrap"><table><thead><tr><th>產業群</th><th>檔數</th><th>平均技術分</th><th>群內前三名</th></tr></thead><tbody><tr><td>公用事業</td><td>1</td><td>22.0/30</td><td>NEE（22分）</td></tr><tr><td>民生消費</td><td>4</td><td>22.0/30</td><td>WMT（22分）, COST（22分）, PG（22分）</td></tr><tr><td>電商／平台</td><td>2</td><td>17.0/30</td><td>AMZN（25分）, UBER（9分）</td></tr><tr><td>網路安全</td><td>2</td><td>14.5/30</td><td>PANW（16分）, CRWD（13分）</td></tr><tr><td>汽車</td><td>2</td><td>9.5/30</td><td>TSLA（14分）, GM（5分）</td></tr><tr><td>軟體／雲端／網路</td><td>10</td><td>7.7/30</td><td>AAPL（22分）, ANET（18分）, MSFT（8分）</td></tr><tr><td>半導體／設備</td><td>11</td><td>7.5/30</td><td>AVGO（21分）, AMD（14分）, TXN（9分）</td></tr><tr><td>醫療／製藥</td><td>6</td><td>7.3/30</td><td>LLY（19分）, JNJ（9分）, ABBV（9分）</td></tr><tr><td>金融／支付</td><td>5</td><td>6.6/30</td><td>V（11分）, MA（11分）, GS（5分）</td></tr><tr><td>工業／設備</td><td>5</td><td>6.4/30</td><td>GE（18分）, DE（5分）, CAT（3分）</td></tr><tr><td>能源</td><td>2</td><td>3.0/30</td><td>XOM（3分）, CVX（3分）</td></tr></tbody></table></div>
     <h2>⚠️ 風險研究提示</h2><p class="muted">由單日量價與技術指標產生，不代表即時警報、交易建議或異常事件的根本原因。</p>
-    <div class="note"><ul><li><b>祥碩</b>（5269.TW）：位於20/60日均線下</li><li><b>世芯-KY</b>（3661.TW）：放量下跌</li><li><b>第一金</b>（2892.TW）：放量下跌</li><li><b>聯發科</b>（2454.TW）：位於20/60日均線下</li><li><b>奇鋐</b>（3017.TW）：位於20/60日均線下、5日跌幅較大</li><li><b>長榮</b>（2603.TW）：位於20/60日均線下</li><li><b>華城</b>（1519.TW）：位於20/60日均線下</li><li><b>國巨</b>（2327.TW）：位於20/60日均線下、RSI偏低、5日跌幅較大</li><li><b>亞泥</b>（1102.TW）：位於20/60日均線下、RSI偏低</li><li><b>萬海</b>（2615.TW）：位於20/60日均線下</li><li><b>富邦金</b>（2881.TW）：位於20/60日均線下、5日跌幅較大</li><li><b>南亞科</b>（2408.TW）：位於20/60日均線下、RSI偏低、5日跌幅較大</li></ul>
-    <p class="muted">本次共 72 檔觸發，僅顯示前 12 檔；其餘可在股票卡片查看。</p></div>
+    <div class="note"><ul><li><b>祥碩</b>（5269.TW）：位於20/60日均線下</li><li><b>世芯-KY</b>（3661.TW）：放量下跌</li><li><b>第一金</b>（2892.TW）：放量下跌</li><li><b>中信金</b>（2891.TW）：放量下跌</li><li><b>中租-KY</b>（5871.TW）：位於20/60日均線下</li><li><b>奇鋐</b>（3017.TW）：位於20/60日均線下、5日跌幅較大</li><li><b>富邦金</b>（2881.TW）：位於20/60日均線下</li><li><b>長榮</b>（2603.TW）：位於20/60日均線下</li><li><b>聯發科</b>（2454.TW）：放量下跌、位於20/60日均線下</li><li><b>台積電</b>（2330.TW）：位於20/60日均線下、5日跌幅較大</li><li><b>南亞科</b>（2408.TW）：位於20/60日均線下、RSI偏低、5日跌幅較大</li><li><b>技嘉</b>（2376.TW）：位於20/60日均線下、RSI偏低、5日跌幅較大</li></ul>
+    <p class="muted">本次共 73 檔觸發，僅顯示前 12 檔；其餘可在股票卡片查看。</p></div>
     <h2>🇹🇼 台股｜技術排名前10</h2><p class="muted">僅此固定測試池內的排名，非全市場名次。</p>
         <section class="grid"><article class="card"><div class="heading"><div><span class="ranking">#1</span>
+    <strong>和泰車</strong><small>2207.TW · 汽車 · 2026-11-19</small></div>
+    <span class="tag green">符合均線趨勢</span></div>
+    <div class="scoreline"><b>30 / 30 分</b><small>實驗性技術分數</small></div>
+    <div class="price">546.00 <small>TWD</small></div>
+    <div class="metrics"><div><small>MA20</small><b>531.90</b></div>
+    <div><small>MA60</small><b>527.60</b></div>
+    <div><small>量比（前20日）</small><b>1.66 倍</b></div>
+    <div><small>當日漲跌</small><b>+1.49%</b></div>
+    <div><small>RSI14</small><b>58.6</b></div>
+    <div><small>5日動能</small><b>+4.80%</b></div></div>
+    <p class="signal">量價訊號：<b>放量上漲</b></p>
+    <details class="carddetail"><summary>查看分數拆解</summary><p>均線 12/12 · 量價 10/10 · RSI／5日動能 8/8</p></details>
+    </article><article class="card"><div class="heading"><div><span class="ranking">#2</span>
     <strong>儒鴻</strong><small>1476.TW · 紡織 · 2026-11-19</small></div>
     <span class="tag green">符合均線趨勢</span></div>
     <div class="scoreline"><b>28 / 30 分</b><small>實驗性技術分數</small></div>
-    <div class="price">389.50 <small>TWD</small></div>
-    <div class="metrics"><div><small>MA20</small><b>345.93</b></div>
-    <div><small>MA60</small><b>315.15</b></div>
-    <div><small>量比（前20日）</small><b>1.81 倍</b></div>
-    <div><small>當日漲跌</small><b>+1.43%</b></div>
-    <div><small>RSI14</small><b>79.0</b></div>
-    <div><small>5日動能</small><b>+5.56%</b></div></div>
-    <p class="signal">量價訊號：<b>放量上漲</b></p>
-    <details class="carddetail"><summary>查看分數拆解</summary><p>均線 12/12 · 量價 10/10 · RSI／5日動能 6/8</p></details>
-    </article><article class="card"><div class="heading"><div><span class="ranking">#2</span>
-    <strong>中華電</strong><small>2412.TW · 電信 · 2026-11-19</small></div>
-    <span class="tag green">符合均線趨勢</span></div>
-    <div class="scoreline"><b>28 / 30 分</b><small>實驗性技術分數</small></div>
-    <div class="price">166.50 <small>TWD</small></div>
-    <div class="metrics"><div><small>MA20</small><b>160.95</b></div>
-    <div><small>MA60</small><b>149.23</b></div>
-    <div><small>量比（前20日）</small><b>1.81 倍</b></div>
-    <div><small>當日漲跌</small><b>+1.22%</b></div>
-    <div><small>RSI14</small><b>73.0</b></div>
-    <div><small>5日動能</small><b>+2.78%</b></div></div>
+    <div class="price">384.50 <small>TWD</small></div>
+    <div class="metrics"><div><small>MA20</small><b>345.68</b></div>
+    <div><small>MA60</small><b>315.07</b></div>
+    <div><small>量比（前20日）</small><b>2.18 倍</b></div>
+    <div><small>當日漲跌</small><b>+0.13%</b></div>
+    <div><small>RSI14</small><b>77.7</b></div>
+    <div><small>5日動能</small><b>+4.20%</b></div></div>
     <p class="signal">量價訊號：<b>放量上漲</b></p>
     <details class="carddetail"><summary>查看分數拆解</summary><p>均線 12/12 · 量價 10/10 · RSI／5日動能 6/8</p></details>
     </article><article class="card"><div class="heading"><div><span class="ranking">#3</span>
-    <strong>和泰車</strong><small>2207.TW · 汽車 · 2026-11-19</small></div>
+    <strong>中華電</strong><small>2412.TW · 電信 · 2026-11-19</small></div>
     <span class="tag green">符合均線趨勢</span></div>
-    <div class="scoreline"><b>25 / 30 分</b><small>實驗性技術分數</small></div>
-    <div class="price">548.00 <small>TWD</small></div>
-    <div class="metrics"><div><small>MA20</small><b>532.00</b></div>
-    <div><small>MA60</small><b>527.63</b></div>
-    <div><small>量比（前20日）</small><b>1.28 倍</b></div>
-    <div><small>當日漲跌</small><b>+1.86%</b></div>
-    <div><small>RSI14</small><b>59.4</b></div>
-    <div><small>5日動能</small><b>+5.18%</b></div></div>
-    <p class="signal">量價訊號：<b>一般量能・上漲</b></p>
-    <details class="carddetail"><summary>查看分數拆解</summary><p>均線 12/12 · 量價 5/10 · RSI／5日動能 8/8</p></details>
+    <div class="scoreline"><b>28 / 30 分</b><small>實驗性技術分數</small></div>
+    <div class="price">166.00 <small>TWD</small></div>
+    <div class="metrics"><div><small>MA20</small><b>160.93</b></div>
+    <div><small>MA60</small><b>149.22</b></div>
+    <div><small>量比（前20日）</small><b>2.11 倍</b></div>
+    <div><small>當日漲跌</small><b>+0.91%</b></div>
+    <div><small>RSI14</small><b>72.3</b></div>
+    <div><small>5日動能</small><b>+2.47%</b></div></div>
+    <p class="signal">量價訊號：<b>放量上漲</b></p>
+    <details class="carddetail"><summary>查看分數拆解</summary><p>均線 12/12 · 量價 10/10 · RSI／5日動能 6/8</p></details>
     </article><article class="card"><div class="heading"><div><span class="ranking">#4</span>
     <strong>長榮航</strong><small>2618.TW · 航空／航太 · 2026-11-19</small></div>
     <span class="tag green">符合均線趨勢</span></div>
@@ -171,7 +177,7 @@
     <div class="price">46.40 <small>TWD</small></div>
     <div class="metrics"><div><small>MA20</small><b>44.78</b></div>
     <div><small>MA60</small><b>43.12</b></div>
-    <div><small>量比（前20日）</small><b>1.15 倍</b></div>
+    <div><small>量比（前20日）</small><b>1.43 倍</b></div>
     <div><small>當日漲跌</small><b>-0.85%</b></div>
     <div><small>RSI14</small><b>58.5</b></div>
     <div><small>5日動能</small><b>-1.07%</b></div></div>
@@ -181,26 +187,26 @@
     <strong>華航</strong><small>2610.TW · 航空／航太 · 2026-11-19</small></div>
     <span class="tag green">符合均線趨勢</span></div>
     <div class="scoreline"><b>19 / 30 分</b><small>實驗性技術分數</small></div>
-    <div class="price">22.70 <small>TWD</small></div>
-    <div class="metrics"><div><small>MA20</small><b>21.61</b></div>
+    <div class="price">22.50 <small>TWD</small></div>
+    <div class="metrics"><div><small>MA20</small><b>21.60</b></div>
     <div><small>MA60</small><b>20.79</b></div>
-    <div><small>量比（前20日）</small><b>0.90 倍</b></div>
-    <div><small>當日漲跌</small><b>-0.87%</b></div>
-    <div><small>RSI14</small><b>60.6</b></div>
-    <div><small>5日動能</small><b>-0.44%</b></div></div>
+    <div><small>量比（前20日）</small><b>1.08 倍</b></div>
+    <div><small>當日漲跌</small><b>-1.75%</b></div>
+    <div><small>RSI14</small><b>58.4</b></div>
+    <div><small>5日動能</small><b>-1.32%</b></div></div>
     <p class="signal">量價訊號：<b>一般量能・下跌</b></p>
     <details class="carddetail"><summary>查看分數拆解</summary><p>均線 12/12 · 量價 2/10 · RSI／5日動能 5/8</p></details>
     </article><article class="card"><div class="heading"><div><span class="ranking">#6</span>
     <strong>兆豐金</strong><small>2886.TW · 金融 · 2026-11-19</small></div>
     <span class="tag ">未符合均線趨勢</span></div>
     <div class="scoreline"><b>19 / 30 分</b><small>實驗性技術分數</small></div>
-    <div class="price">53.90 <small>TWD</small></div>
-    <div class="metrics"><div><small>MA20</small><b>54.14</b></div>
-    <div><small>MA60</small><b>51.46</b></div>
-    <div><small>量比（前20日）</small><b>2.48 倍</b></div>
-    <div><small>當日漲跌</small><b>+2.47%</b></div>
-    <div><small>RSI14</small><b>53.0</b></div>
-    <div><small>5日動能</small><b>-0.92%</b></div></div>
+    <div class="price">53.40 <small>TWD</small></div>
+    <div class="metrics"><div><small>MA20</small><b>54.11</b></div>
+    <div><small>MA60</small><b>51.45</b></div>
+    <div><small>量比（前20日）</small><b>2.85 倍</b></div>
+    <div><small>當日漲跌</small><b>+1.52%</b></div>
+    <div><small>RSI14</small><b>50.6</b></div>
+    <div><small>5日動能</small><b>-1.84%</b></div></div>
     <p class="signal">量價訊號：<b>放量上漲</b></p>
     <details class="carddetail"><summary>查看分數拆解</summary><p>均線 4/12 · 量價 10/10 · RSI／5日動能 5/8</p></details>
     </article><article class="card"><div class="heading"><div><span class="ranking">#7</span>
@@ -210,38 +216,38 @@
     <div class="price">78.70 <small>TWD</small></div>
     <div class="metrics"><div><small>MA20</small><b>78.90</b></div>
     <div><small>MA60</small><b>76.91</b></div>
-    <div><small>量比（前20日）</small><b>0.96 倍</b></div>
+    <div><small>量比（前20日）</small><b>1.25 倍</b></div>
     <div><small>當日漲跌</small><b>-0.13%</b></div>
     <div><small>RSI14</small><b>53.0</b></div>
     <div><small>5日動能</small><b>+1.03%</b></div></div>
     <p class="signal">量價訊號：<b>一般量能・下跌</b></p>
     <details class="carddetail"><summary>查看分數拆解</summary><p>均線 4/12 · 量價 2/10 · RSI／5日動能 8/8</p></details>
     </article><article class="card"><div class="heading"><div><span class="ranking">#8</span>
-    <strong>中信金</strong><small>2891.TW · 金融 · 2026-11-19</small></div>
-    <span class="tag ">未符合均線趨勢</span></div>
-    <div class="scoreline"><b>12 / 30 分</b><small>實驗性技術分數</small></div>
-    <div class="price">73.60 <small>TWD</small></div>
-    <div class="metrics"><div><small>MA20</small><b>75.03</b></div>
-    <div><small>MA60</small><b>70.69</b></div>
-    <div><small>量比（前20日）</small><b>1.23 倍</b></div>
-    <div><small>當日漲跌</small><b>+0.27%</b></div>
-    <div><small>RSI14</small><b>49.0</b></div>
-    <div><small>5日動能</small><b>-2.39%</b></div></div>
-    <p class="signal">量價訊號：<b>一般量能・上漲</b></p>
-    <details class="carddetail"><summary>查看分數拆解</summary><p>均線 4/12 · 量價 5/10 · RSI／5日動能 3/8</p></details>
-    </article><article class="card"><div class="heading"><div><span class="ranking">#9</span>
     <strong>祥碩</strong><small>5269.TW · 半導體 · 2026-11-19</small></div>
     <span class="tag ">未符合均線趨勢</span></div>
     <div class="scoreline"><b>11 / 30 分</b><small>實驗性技術分數</small></div>
-    <div class="price">1,175.00 <small>TWD</small></div>
-    <div class="metrics"><div><small>MA20</small><b>1,285.50</b></div>
-    <div><small>MA60</small><b>1,398.75</b></div>
-    <div><small>量比（前20日）</small><b>1.13 倍</b></div>
-    <div><small>當日漲跌</small><b>+0.86%</b></div>
-    <div><small>RSI14</small><b>40.1</b></div>
-    <div><small>5日動能</small><b>+4.44%</b></div></div>
+    <div class="price">1,180.00 <small>TWD</small></div>
+    <div class="metrics"><div><small>MA20</small><b>1,285.75</b></div>
+    <div><small>MA60</small><b>1,398.83</b></div>
+    <div><small>量比（前20日）</small><b>1.33 倍</b></div>
+    <div><small>當日漲跌</small><b>+1.29%</b></div>
+    <div><small>RSI14</small><b>40.6</b></div>
+    <div><small>5日動能</small><b>+4.89%</b></div></div>
     <p class="signal">量價訊號：<b>一般量能・上漲</b></p><p class="alert-line">⚠️ 研究提醒：位於20/60日均線下</p>
     <details class="carddetail"><summary>查看分數拆解</summary><p>均線 0/12 · 量價 5/10 · RSI／5日動能 6/8</p></details>
+    </article><article class="card"><div class="heading"><div><span class="ranking">#9</span>
+    <strong>世芯-KY</strong><small>3661.TW · 半導體 · 2026-11-19</small></div>
+    <span class="tag ">未符合均線趨勢</span></div>
+    <div class="scoreline"><b>9 / 30 分</b><small>實驗性技術分數</small></div>
+    <div class="price">3,600.00 <small>TWD</small></div>
+    <div class="metrics"><div><small>MA20</small><b>3,478.75</b></div>
+    <div><small>MA60</small><b>3,731.11</b></div>
+    <div><small>量比（前20日）</small><b>2.43 倍</b></div>
+    <div><small>當日漲跌</small><b>-8.86%</b></div>
+    <div><small>RSI14</small><b>50.1</b></div>
+    <div><small>5日動能</small><b>-2.04%</b></div></div>
+    <p class="signal">量價訊號：<b>放量下跌</b></p><p class="alert-line">⚠️ 研究提醒：放量下跌</p>
+    <details class="carddetail"><summary>查看分數拆解</summary><p>均線 4/12 · 量價 0/10 · RSI／5日動能 5/8</p></details>
     </article><article class="card"><div class="heading"><div><span class="ranking">#10</span>
     <strong>合庫金</strong><small>5880.TW · 金融 · 2026-11-19</small></div>
     <span class="tag ">未符合均線趨勢</span></div>
@@ -249,51 +255,51 @@
     <div class="price">27.40 <small>TWD</small></div>
     <div class="metrics"><div><small>MA20</small><b>28.28</b></div>
     <div><small>MA60</small><b>27.16</b></div>
-    <div><small>量比（前20日）</small><b>1.08 倍</b></div>
+    <div><small>量比（前20日）</small><b>1.40 倍</b></div>
     <div><small>當日漲跌</small><b>-0.36%</b></div>
     <div><small>RSI14</small><b>43.5</b></div>
     <div><small>5日動能</small><b>-2.84%</b></div></div>
     <p class="signal">量價訊號：<b>一般量能・下跌</b></p>
     <details class="carddetail"><summary>查看分數拆解</summary><p>均線 4/12 · 量價 2/10 · RSI／5日動能 3/8</p></details>
     </article></section><details class="rest"><summary>展開其餘 40 檔</summary><section class="grid"><article class="card"><div class="heading"><div><span class="ranking">#11</span>
-    <strong>世芯-KY</strong><small>3661.TW · 半導體 · 2026-11-19</small></div>
-    <span class="tag ">未符合均線趨勢</span></div>
-    <div class="scoreline"><b>7 / 30 分</b><small>實驗性技術分數</small></div>
-    <div class="price">3,585.00 <small>TWD</small></div>
-    <div class="metrics"><div><small>MA20</small><b>3,478.00</b></div>
-    <div><small>MA60</small><b>3,730.86</b></div>
-    <div><small>量比（前20日）</small><b>2.20 倍</b></div>
-    <div><small>當日漲跌</small><b>-9.24%</b></div>
-    <div><small>RSI14</small><b>49.8</b></div>
-    <div><small>5日動能</small><b>-2.45%</b></div></div>
-    <p class="signal">量價訊號：<b>放量下跌</b></p><p class="alert-line">⚠️ 研究提醒：放量下跌</p>
-    <details class="carddetail"><summary>查看分數拆解</summary><p>均線 4/12 · 量價 0/10 · RSI／5日動能 3/8</p></details>
-    </article><article class="card"><div class="heading"><div><span class="ranking">#12</span>
     <strong>第一金</strong><small>2892.TW · 金融 · 2026-11-19</small></div>
     <span class="tag ">未符合均線趨勢</span></div>
     <div class="scoreline"><b>7 / 30 分</b><small>實驗性技術分數</small></div>
-    <div class="price">40.80 <small>TWD</small></div>
-    <div class="metrics"><div><small>MA20</small><b>42.41</b></div>
-    <div><small>MA60</small><b>39.71</b></div>
-    <div><small>量比（前20日）</small><b>1.89 倍</b></div>
-    <div><small>當日漲跌</small><b>-0.49%</b></div>
-    <div><small>RSI14</small><b>45.2</b></div>
-    <div><small>5日動能</small><b>-4.45%</b></div></div>
+    <div class="price">40.15 <small>TWD</small></div>
+    <div class="metrics"><div><small>MA20</small><b>42.38</b></div>
+    <div><small>MA60</small><b>39.70</b></div>
+    <div><small>量比（前20日）</small><b>2.28 倍</b></div>
+    <div><small>當日漲跌</small><b>-2.07%</b></div>
+    <div><small>RSI14</small><b>41.9</b></div>
+    <div><small>5日動能</small><b>-5.97%</b></div></div>
+    <p class="signal">量價訊號：<b>放量下跌</b></p><p class="alert-line">⚠️ 研究提醒：放量下跌</p>
+    <details class="carddetail"><summary>查看分數拆解</summary><p>均線 4/12 · 量價 0/10 · RSI／5日動能 3/8</p></details>
+    </article><article class="card"><div class="heading"><div><span class="ranking">#12</span>
+    <strong>中信金</strong><small>2891.TW · 金融 · 2026-11-19</small></div>
+    <span class="tag ">未符合均線趨勢</span></div>
+    <div class="scoreline"><b>7 / 30 分</b><small>實驗性技術分數</small></div>
+    <div class="price">73.10 <small>TWD</small></div>
+    <div class="metrics"><div><small>MA20</small><b>75.00</b></div>
+    <div><small>MA60</small><b>70.69</b></div>
+    <div><small>量比（前20日）</small><b>1.51 倍</b></div>
+    <div><small>當日漲跌</small><b>-0.41%</b></div>
+    <div><small>RSI14</small><b>47.7</b></div>
+    <div><small>5日動能</small><b>-3.05%</b></div></div>
     <p class="signal">量價訊號：<b>放量下跌</b></p><p class="alert-line">⚠️ 研究提醒：放量下跌</p>
     <details class="carddetail"><summary>查看分數拆解</summary><p>均線 4/12 · 量價 0/10 · RSI／5日動能 3/8</p></details>
     </article><article class="card"><div class="heading"><div><span class="ranking">#13</span>
-    <strong>聯發科</strong><small>2454.TW · 半導體 · 2026-11-19</small></div>
+    <strong>中租-KY</strong><small>5871.TW · 金融 · 2026-11-19</small></div>
     <span class="tag ">未符合均線趨勢</span></div>
-    <div class="scoreline"><b>5 / 30 分</b><small>實驗性技術分數</small></div>
-    <div class="price">3,710.00 <small>TWD</small></div>
-    <div class="metrics"><div><small>MA20</small><b>3,859.25</b></div>
-    <div><small>MA60</small><b>4,307.42</b></div>
-    <div><small>量比（前20日）</small><b>1.46 倍</b></div>
-    <div><small>當日漲跌</small><b>-5.84%</b></div>
-    <div><small>RSI14</small><b>43.0</b></div>
-    <div><small>5日動能</small><b>-3.64%</b></div></div>
-    <p class="signal">量價訊號：<b>一般量能・下跌</b></p><p class="alert-line">⚠️ 研究提醒：位於20/60日均線下</p>
-    <details class="carddetail"><summary>查看分數拆解</summary><p>均線 0/12 · 量價 2/10 · RSI／5日動能 3/8</p></details>
+    <div class="scoreline"><b>6 / 30 分</b><small>實驗性技術分數</small></div>
+    <div class="price">99.50 <small>TWD</small></div>
+    <div class="metrics"><div><small>MA20</small><b>103.76</b></div>
+    <div><small>MA60</small><b>108.03</b></div>
+    <div><small>量比（前20日）</small><b>1.02 倍</b></div>
+    <div><small>當日漲跌</small><b>+0.20%</b></div>
+    <div><small>RSI14</small><b>37.7</b></div>
+    <div><small>5日動能</small><b>-2.45%</b></div></div>
+    <p class="signal">量價訊號：<b>一般量能・上漲</b></p><p class="alert-line">⚠️ 研究提醒：位於20/60日均線下</p>
+    <details class="carddetail"><summary>查看分數拆解</summary><p>均線 0/12 · 量價 5/10 · RSI／5日動能 1/8</p></details>
     </article><article class="card"><div class="heading"><div><span class="ranking">#14</span>
     <strong>奇鋐</strong><small>3017.TW · 電力／散熱／電子零組件 · 2026-11-19</small></div>
     <span class="tag ">未符合均線趨勢</span></div>
@@ -301,479 +307,479 @@
     <div class="price">2,445.00 <small>TWD</small></div>
     <div class="metrics"><div><small>MA20</small><b>2,854.00</b></div>
     <div><small>MA60</small><b>3,183.58</b></div>
-    <div><small>量比（前20日）</small><b>1.39 倍</b></div>
+    <div><small>量比（前20日）</small><b>1.49 倍</b></div>
     <div><small>當日漲跌</small><b>-9.94%</b></div>
     <div><small>RSI14</small><b>40.3</b></div>
     <div><small>5日動能</small><b>-11.89%</b></div></div>
     <p class="signal">量價訊號：<b>一般量能・下跌</b></p><p class="alert-line">⚠️ 研究提醒：位於20/60日均線下、5日跌幅較大</p>
     <details class="carddetail"><summary>查看分數拆解</summary><p>均線 0/12 · 量價 2/10 · RSI／5日動能 3/8</p></details>
     </article><article class="card"><div class="heading"><div><span class="ranking">#15</span>
-    <strong>長榮</strong><small>2603.TW · 海運 · 2026-11-19</small></div>
+    <strong>富邦金</strong><small>2881.TW · 金融 · 2026-11-19</small></div>
     <span class="tag ">未符合均線趨勢</span></div>
     <div class="scoreline"><b>5 / 30 分</b><small>實驗性技術分數</small></div>
-    <div class="price">245.50 <small>TWD</small></div>
-    <div class="metrics"><div><small>MA20</small><b>258.77</b></div>
-    <div><small>MA60</small><b>247.42</b></div>
-    <div><small>量比（前20日）</small><b>0.98 倍</b></div>
-    <div><small>當日漲跌</small><b>-4.66%</b></div>
-    <div><small>RSI14</small><b>42.5</b></div>
-    <div><small>5日動能</small><b>-2.39%</b></div></div>
+    <div class="price">148.00 <small>TWD</small></div>
+    <div class="metrics"><div><small>MA20</small><b>156.05</b></div>
+    <div><small>MA60</small><b>152.53</b></div>
+    <div><small>量比（前20日）</small><b>1.48 倍</b></div>
+    <div><small>當日漲跌</small><b>-0.67%</b></div>
+    <div><small>RSI14</small><b>40.9</b></div>
+    <div><small>5日動能</small><b>-6.92%</b></div></div>
     <p class="signal">量價訊號：<b>一般量能・下跌</b></p><p class="alert-line">⚠️ 研究提醒：位於20/60日均線下</p>
     <details class="carddetail"><summary>查看分數拆解</summary><p>均線 0/12 · 量價 2/10 · RSI／5日動能 3/8</p></details>
     </article><article class="card"><div class="heading"><div><span class="ranking">#16</span>
-    <strong>華城</strong><small>1519.TW · 重電／機械 · 2026-11-19</small></div>
+    <strong>長榮</strong><small>2603.TW · 海運 · 2026-11-19</small></div>
     <span class="tag ">未符合均線趨勢</span></div>
-    <div class="scoreline"><b>3 / 30 分</b><small>實驗性技術分數</small></div>
-    <div class="price">468.50 <small>TWD</small></div>
-    <div class="metrics"><div><small>MA20</small><b>521.62</b></div>
-    <div><small>MA60</small><b>643.59</b></div>
-    <div><small>量比（前20日）</small><b>1.48 倍</b></div>
-    <div><small>當日漲跌</small><b>-1.99%</b></div>
-    <div><small>RSI14</small><b>34.2</b></div>
-    <div><small>5日動能</small><b>-2.19%</b></div></div>
+    <div class="scoreline"><b>5 / 30 分</b><small>實驗性技術分數</small></div>
+    <div class="price">247.00 <small>TWD</small></div>
+    <div class="metrics"><div><small>MA20</small><b>258.85</b></div>
+    <div><small>MA60</small><b>247.44</b></div>
+    <div><small>量比（前20日）</small><b>1.27 倍</b></div>
+    <div><small>當日漲跌</small><b>-4.08%</b></div>
+    <div><small>RSI14</small><b>43.5</b></div>
+    <div><small>5日動能</small><b>-1.79%</b></div></div>
     <p class="signal">量價訊號：<b>一般量能・下跌</b></p><p class="alert-line">⚠️ 研究提醒：位於20/60日均線下</p>
-    <details class="carddetail"><summary>查看分數拆解</summary><p>均線 0/12 · 量價 2/10 · RSI／5日動能 1/8</p></details>
+    <details class="carddetail"><summary>查看分數拆解</summary><p>均線 0/12 · 量價 2/10 · RSI／5日動能 3/8</p></details>
     </article><article class="card"><div class="heading"><div><span class="ranking">#17</span>
-    <strong>國巨</strong><small>2327.TW · 電力／散熱／電子零組件 · 2026-11-19</small></div>
+    <strong>聯發科</strong><small>2454.TW · 半導體 · 2026-11-19</small></div>
     <span class="tag ">未符合均線趨勢</span></div>
     <div class="scoreline"><b>3 / 30 分</b><small>實驗性技術分數</small></div>
-    <div class="price">320.50 <small>TWD</small></div>
-    <div class="metrics"><div><small>MA20</small><b>439.18</b></div>
-    <div><small>MA60</small><b>526.11</b></div>
-    <div><small>量比（前20日）</small><b>1.39 倍</b></div>
-    <div><small>當日漲跌</small><b>-8.95%</b></div>
-    <div><small>RSI14</small><b>25.0</b></div>
-    <div><small>5日動能</small><b>-21.25%</b></div></div>
-    <p class="signal">量價訊號：<b>一般量能・下跌</b></p><p class="alert-line">⚠️ 研究提醒：位於20/60日均線下、RSI偏低、5日跌幅較大</p>
-    <details class="carddetail"><summary>查看分數拆解</summary><p>均線 0/12 · 量價 2/10 · RSI／5日動能 1/8</p></details>
+    <div class="price">3,720.00 <small>TWD</small></div>
+    <div class="metrics"><div><small>MA20</small><b>3,859.75</b></div>
+    <div><small>MA60</small><b>4,307.58</b></div>
+    <div><small>量比（前20日）</small><b>1.70 倍</b></div>
+    <div><small>當日漲跌</small><b>-5.58%</b></div>
+    <div><small>RSI14</small><b>43.1</b></div>
+    <div><small>5日動能</small><b>-3.38%</b></div></div>
+    <p class="signal">量價訊號：<b>放量下跌</b></p><p class="alert-line">⚠️ 研究提醒：放量下跌、位於20/60日均線下</p>
+    <details class="carddetail"><summary>查看分數拆解</summary><p>均線 0/12 · 量價 0/10 · RSI／5日動能 3/8</p></details>
     </article><article class="card"><div class="heading"><div><span class="ranking">#18</span>
-    <strong>亞泥</strong><small>1102.TW · 水泥 · 2026-11-19</small></div>
-    <span class="tag ">未符合均線趨勢</span></div>
-    <div class="scoreline"><b>3 / 30 分</b><small>實驗性技術分數</small></div>
-    <div class="price">33.65 <small>TWD</small></div>
-    <div class="metrics"><div><small>MA20</small><b>36.78</b></div>
-    <div><small>MA60</small><b>36.09</b></div>
-    <div><small>量比（前20日）</small><b>1.31 倍</b></div>
-    <div><small>當日漲跌</small><b>-2.60%</b></div>
-    <div><small>RSI14</small><b>26.5</b></div>
-    <div><small>5日動能</small><b>-7.55%</b></div></div>
-    <p class="signal">量價訊號：<b>一般量能・下跌</b></p><p class="alert-line">⚠️ 研究提醒：位於20/60日均線下、RSI偏低</p>
-    <details class="carddetail"><summary>查看分數拆解</summary><p>均線 0/12 · 量價 2/10 · RSI／5日動能 1/8</p></details>
-    </article><article class="card"><div class="heading"><div><span class="ranking">#19</span>
-    <strong>萬海</strong><small>2615.TW · 海運 · 2026-11-19</small></div>
-    <span class="tag ">未符合均線趨勢</span></div>
-    <div class="scoreline"><b>3 / 30 分</b><small>實驗性技術分數</small></div>
-    <div class="price">102.50 <small>TWD</small></div>
-    <div class="metrics"><div><small>MA20</small><b>112.67</b></div>
-    <div><small>MA60</small><b>114.67</b></div>
-    <div><small>量比（前20日）</small><b>1.19 倍</b></div>
-    <div><small>當日漲跌</small><b>-7.66%</b></div>
-    <div><small>RSI14</small><b>38.2</b></div>
-    <div><small>5日動能</small><b>-4.21%</b></div></div>
-    <p class="signal">量價訊號：<b>一般量能・下跌</b></p><p class="alert-line">⚠️ 研究提醒：位於20/60日均線下</p>
-    <details class="carddetail"><summary>查看分數拆解</summary><p>均線 0/12 · 量價 2/10 · RSI／5日動能 1/8</p></details>
-    </article><article class="card"><div class="heading"><div><span class="ranking">#20</span>
-    <strong>富邦金</strong><small>2881.TW · 金融 · 2026-11-19</small></div>
-    <span class="tag ">未符合均線趨勢</span></div>
-    <div class="scoreline"><b>3 / 30 分</b><small>實驗性技術分數</small></div>
-    <div class="price">145.00 <small>TWD</small></div>
-    <div class="metrics"><div><small>MA20</small><b>155.90</b></div>
-    <div><small>MA60</small><b>152.48</b></div>
-    <div><small>量比（前20日）</small><b>1.19 倍</b></div>
-    <div><small>當日漲跌</small><b>-2.68%</b></div>
-    <div><small>RSI14</small><b>37.9</b></div>
-    <div><small>5日動能</small><b>-8.81%</b></div></div>
-    <p class="signal">量價訊號：<b>一般量能・下跌</b></p><p class="alert-line">⚠️ 研究提醒：位於20/60日均線下、5日跌幅較大</p>
-    <details class="carddetail"><summary>查看分數拆解</summary><p>均線 0/12 · 量價 2/10 · RSI／5日動能 1/8</p></details>
-    </article><article class="card"><div class="heading"><div><span class="ranking">#21</span>
-    <strong>南亞科</strong><small>2408.TW · 半導體 · 2026-11-19</small></div>
-    <span class="tag ">未符合均線趨勢</span></div>
-    <div class="scoreline"><b>3 / 30 分</b><small>實驗性技術分數</small></div>
-    <div class="price">295.00 <small>TWD</small></div>
-    <div class="metrics"><div><small>MA20</small><b>392.02</b></div>
-    <div><small>MA60</small><b>465.07</b></div>
-    <div><small>量比（前20日）</small><b>1.18 倍</b></div>
-    <div><small>當日漲跌</small><b>-9.23%</b></div>
-    <div><small>RSI14</small><b>27.2</b></div>
-    <div><small>5日動能</small><b>-22.27%</b></div></div>
-    <p class="signal">量價訊號：<b>一般量能・下跌</b></p><p class="alert-line">⚠️ 研究提醒：位於20/60日均線下、RSI偏低、5日跌幅較大</p>
-    <details class="carddetail"><summary>查看分數拆解</summary><p>均線 0/12 · 量價 2/10 · RSI／5日動能 1/8</p></details>
-    </article><article class="card"><div class="heading"><div><span class="ranking">#22</span>
     <strong>台積電</strong><small>2330.TW · 半導體 · 2026-11-19</small></div>
     <span class="tag ">未符合均線趨勢</span></div>
     <div class="scoreline"><b>3 / 30 分</b><small>實驗性技術分數</small></div>
-    <div class="price">2,120.00 <small>TWD</small></div>
-    <div class="metrics"><div><small>MA20</small><b>2,296.25</b></div>
-    <div><small>MA60</small><b>2,398.99</b></div>
-    <div><small>量比（前20日）</small><b>1.15 倍</b></div>
-    <div><small>當日漲跌</small><b>-2.53%</b></div>
-    <div><small>RSI14</small><b>33.5</b></div>
-    <div><small>5日動能</small><b>-9.40%</b></div></div>
+    <div class="price">2,100.00 <small>TWD</small></div>
+    <div class="metrics"><div><small>MA20</small><b>2,295.25</b></div>
+    <div><small>MA60</small><b>2,398.66</b></div>
+    <div><small>量比（前20日）</small><b>1.49 倍</b></div>
+    <div><small>當日漲跌</small><b>-3.45%</b></div>
+    <div><small>RSI14</small><b>32.4</b></div>
+    <div><small>5日動能</small><b>-10.26%</b></div></div>
     <p class="signal">量價訊號：<b>一般量能・下跌</b></p><p class="alert-line">⚠️ 研究提醒：位於20/60日均線下、5日跌幅較大</p>
     <details class="carddetail"><summary>查看分數拆解</summary><p>均線 0/12 · 量價 2/10 · RSI／5日動能 1/8</p></details>
-    </article><article class="card"><div class="heading"><div><span class="ranking">#23</span>
-    <strong>大立光</strong><small>3008.TW · 面板／光學 · 2026-11-19</small></div>
+    </article><article class="card"><div class="heading"><div><span class="ranking">#19</span>
+    <strong>南亞科</strong><small>2408.TW · 半導體 · 2026-11-19</small></div>
     <span class="tag ">未符合均線趨勢</span></div>
     <div class="scoreline"><b>3 / 30 分</b><small>實驗性技術分數</small></div>
-    <div class="price">3,975.00 <small>TWD</small></div>
-    <div class="metrics"><div><small>MA20</small><b>5,187.00</b></div>
-    <div><small>MA60</small><b>6,108.42</b></div>
-    <div><small>量比（前20日）</small><b>1.14 倍</b></div>
-    <div><small>當日漲跌</small><b>-9.86%</b></div>
-    <div><small>RSI14</small><b>31.1</b></div>
-    <div><small>5日動能</small><b>-21.36%</b></div></div>
-    <p class="signal">量價訊號：<b>一般量能・下跌</b></p><p class="alert-line">⚠️ 研究提醒：位於20/60日均線下、5日跌幅較大</p>
+    <div class="price">293.50 <small>TWD</small></div>
+    <div class="metrics"><div><small>MA20</small><b>391.95</b></div>
+    <div><small>MA60</small><b>465.04</b></div>
+    <div><small>量比（前20日）</small><b>1.36 倍</b></div>
+    <div><small>當日漲跌</small><b>-9.69%</b></div>
+    <div><small>RSI14</small><b>27.0</b></div>
+    <div><small>5日動能</small><b>-22.66%</b></div></div>
+    <p class="signal">量價訊號：<b>一般量能・下跌</b></p><p class="alert-line">⚠️ 研究提醒：位於20/60日均線下、RSI偏低、5日跌幅較大</p>
     <details class="carddetail"><summary>查看分數拆解</summary><p>均線 0/12 · 量價 2/10 · RSI／5日動能 1/8</p></details>
-    </article><article class="card"><div class="heading"><div><span class="ranking">#24</span>
-    <strong>日月光投控</strong><small>3711.TW · 半導體 · 2026-11-19</small></div>
-    <span class="tag ">未符合均線趨勢</span></div>
-    <div class="scoreline"><b>3 / 30 分</b><small>實驗性技術分數</small></div>
-    <div class="price">508.00 <small>TWD</small></div>
-    <div class="metrics"><div><small>MA20</small><b>605.70</b></div>
-    <div><small>MA60</small><b>640.22</b></div>
-    <div><small>量比（前20日）</small><b>1.07 倍</b></div>
-    <div><small>當日漲跌</small><b>-7.30%</b></div>
-    <div><small>RSI14</small><b>35.7</b></div>
-    <div><small>5日動能</small><b>-13.31%</b></div></div>
-    <p class="signal">量價訊號：<b>一般量能・下跌</b></p><p class="alert-line">⚠️ 研究提醒：位於20/60日均線下、5日跌幅較大</p>
-    <details class="carddetail"><summary>查看分數拆解</summary><p>均線 0/12 · 量價 2/10 · RSI／5日動能 1/8</p></details>
-    </article><article class="card"><div class="heading"><div><span class="ranking">#25</span>
-    <strong>鴻海</strong><small>2317.TW · 電腦／伺服器 · 2026-11-19</small></div>
-    <span class="tag ">未符合均線趨勢</span></div>
-    <div class="scoreline"><b>3 / 30 分</b><small>實驗性技術分數</small></div>
-    <div class="price">220.00 <small>TWD</small></div>
-    <div class="metrics"><div><small>MA20</small><b>238.03</b></div>
-    <div><small>MA60</small><b>245.52</b></div>
-    <div><small>量比（前20日）</small><b>1.01 倍</b></div>
-    <div><small>當日漲跌</small><b>-0.45%</b></div>
-    <div><small>RSI14</small><b>35.5</b></div>
-    <div><small>5日動能</small><b>-8.33%</b></div></div>
-    <p class="signal">量價訊號：<b>一般量能・下跌</b></p><p class="alert-line">⚠️ 研究提醒：位於20/60日均線下、5日跌幅較大</p>
-    <details class="carddetail"><summary>查看分數拆解</summary><p>均線 0/12 · 量價 2/10 · RSI／5日動能 1/8</p></details>
-    </article><article class="card"><div class="heading"><div><span class="ranking">#26</span>
+    </article><article class="card"><div class="heading"><div><span class="ranking">#20</span>
     <strong>技嘉</strong><small>2376.TW · 電腦／伺服器 · 2026-11-19</small></div>
     <span class="tag ">未符合均線趨勢</span></div>
     <div class="scoreline"><b>3 / 30 分</b><small>實驗性技術分數</small></div>
-    <div class="price">261.50 <small>TWD</small></div>
-    <div class="metrics"><div><small>MA20</small><b>314.07</b></div>
-    <div><small>MA60</small><b>343.05</b></div>
-    <div><small>量比（前20日）</small><b>0.99 倍</b></div>
-    <div><small>當日漲跌</small><b>-5.42%</b></div>
-    <div><small>RSI14</small><b>22.2</b></div>
-    <div><small>5日動能</small><b>-9.67%</b></div></div>
+    <div class="price">260.00 <small>TWD</small></div>
+    <div class="metrics"><div><small>MA20</small><b>314.00</b></div>
+    <div><small>MA60</small><b>343.02</b></div>
+    <div><small>量比（前20日）</small><b>1.30 倍</b></div>
+    <div><small>當日漲跌</small><b>-5.97%</b></div>
+    <div><small>RSI14</small><b>21.9</b></div>
+    <div><small>5日動能</small><b>-10.19%</b></div></div>
     <p class="signal">量價訊號：<b>一般量能・下跌</b></p><p class="alert-line">⚠️ 研究提醒：位於20/60日均線下、RSI偏低、5日跌幅較大</p>
     <details class="carddetail"><summary>查看分數拆解</summary><p>均線 0/12 · 量價 2/10 · RSI／5日動能 1/8</p></details>
-    </article><article class="card"><div class="heading"><div><span class="ranking">#27</span>
-    <strong>華碩</strong><small>2357.TW · 電腦／伺服器 · 2026-11-19</small></div>
+    </article><article class="card"><div class="heading"><div><span class="ranking">#21</span>
+    <strong>日月光投控</strong><small>3711.TW · 半導體 · 2026-11-19</small></div>
     <span class="tag ">未符合均線趨勢</span></div>
     <div class="scoreline"><b>3 / 30 分</b><small>實驗性技術分數</small></div>
-    <div class="price">805.00 <small>TWD</small></div>
-    <div class="metrics"><div><small>MA20</small><b>891.65</b></div>
-    <div><small>MA60</small><b>944.07</b></div>
-    <div><small>量比（前20日）</small><b>0.97 倍</b></div>
-    <div><small>當日漲跌</small><b>-4.28%</b></div>
-    <div><small>RSI14</small><b>30.9</b></div>
-    <div><small>5日動能</small><b>-9.55%</b></div></div>
+    <div class="price">504.00 <small>TWD</small></div>
+    <div class="metrics"><div><small>MA20</small><b>605.50</b></div>
+    <div><small>MA60</small><b>640.15</b></div>
+    <div><small>量比（前20日）</small><b>1.28 倍</b></div>
+    <div><small>當日漲跌</small><b>-8.03%</b></div>
+    <div><small>RSI14</small><b>35.3</b></div>
+    <div><small>5日動能</small><b>-13.99%</b></div></div>
     <p class="signal">量價訊號：<b>一般量能・下跌</b></p><p class="alert-line">⚠️ 研究提醒：位於20/60日均線下、5日跌幅較大</p>
     <details class="carddetail"><summary>查看分數拆解</summary><p>均線 0/12 · 量價 2/10 · RSI／5日動能 1/8</p></details>
-    </article><article class="card"><div class="heading"><div><span class="ranking">#28</span>
+    </article><article class="card"><div class="heading"><div><span class="ranking">#22</span>
+    <strong>大立光</strong><small>3008.TW · 面板／光學 · 2026-11-19</small></div>
+    <span class="tag ">未符合均線趨勢</span></div>
+    <div class="scoreline"><b>3 / 30 分</b><small>實驗性技術分數</small></div>
+    <div class="price">3,980.00 <small>TWD</small></div>
+    <div class="metrics"><div><small>MA20</small><b>5,187.25</b></div>
+    <div><small>MA60</small><b>6,108.50</b></div>
+    <div><small>量比（前20日）</small><b>1.23 倍</b></div>
+    <div><small>當日漲跌</small><b>-9.75%</b></div>
+    <div><small>RSI14</small><b>31.2</b></div>
+    <div><small>5日動能</small><b>-21.27%</b></div></div>
+    <p class="signal">量價訊號：<b>一般量能・下跌</b></p><p class="alert-line">⚠️ 研究提醒：位於20/60日均線下、5日跌幅較大</p>
+    <details class="carddetail"><summary>查看分數拆解</summary><p>均線 0/12 · 量價 2/10 · RSI／5日動能 1/8</p></details>
+    </article><article class="card"><div class="heading"><div><span class="ranking">#23</span>
+    <strong>中鋼</strong><small>2002.TW · 鋼鐵 · 2026-11-19</small></div>
+    <span class="tag ">未符合均線趨勢</span></div>
+    <div class="scoreline"><b>3 / 30 分</b><small>實驗性技術分數</small></div>
+    <div class="price">17.60 <small>TWD</small></div>
+    <div class="metrics"><div><small>MA20</small><b>18.86</b></div>
+    <div><small>MA60</small><b>18.98</b></div>
+    <div><small>量比（前20日）</small><b>1.22 倍</b></div>
+    <div><small>當日漲跌</small><b>-1.95%</b></div>
+    <div><small>RSI14</small><b>23.2</b></div>
+    <div><small>5日動能</small><b>-5.38%</b></div></div>
+    <p class="signal">量價訊號：<b>一般量能・下跌</b></p><p class="alert-line">⚠️ 研究提醒：位於20/60日均線下、RSI偏低</p>
+    <details class="carddetail"><summary>查看分數拆解</summary><p>均線 0/12 · 量價 2/10 · RSI／5日動能 1/8</p></details>
+    </article><article class="card"><div class="heading"><div><span class="ranking">#24</span>
     <strong>陽明</strong><small>2609.TW · 海運 · 2026-11-19</small></div>
     <span class="tag ">未符合均線趨勢</span></div>
     <div class="scoreline"><b>3 / 30 分</b><small>實驗性技術分數</small></div>
     <div class="price">57.30 <small>TWD</small></div>
     <div class="metrics"><div><small>MA20</small><b>60.59</b></div>
     <div><small>MA60</small><b>60.30</b></div>
-    <div><small>量比（前20日）</small><b>0.95 倍</b></div>
+    <div><small>量比（前20日）</small><b>1.21 倍</b></div>
     <div><small>當日漲跌</small><b>-5.29%</b></div>
     <div><small>RSI14</small><b>39.9</b></div>
     <div><small>5日動能</small><b>-1.55%</b></div></div>
     <p class="signal">量價訊號：<b>一般量能・下跌</b></p><p class="alert-line">⚠️ 研究提醒：位於20/60日均線下</p>
     <details class="carddetail"><summary>查看分數拆解</summary><p>均線 0/12 · 量價 2/10 · RSI／5日動能 1/8</p></details>
-    </article><article class="card"><div class="heading"><div><span class="ranking">#29</span>
+    </article><article class="card"><div class="heading"><div><span class="ranking">#25</span>
+    <strong>華碩</strong><small>2357.TW · 電腦／伺服器 · 2026-11-19</small></div>
+    <span class="tag ">未符合均線趨勢</span></div>
+    <div class="scoreline"><b>3 / 30 分</b><small>實驗性技術分數</small></div>
+    <div class="price">800.00 <small>TWD</small></div>
+    <div class="metrics"><div><small>MA20</small><b>891.40</b></div>
+    <div><small>MA60</small><b>943.98</b></div>
+    <div><small>量比（前20日）</small><b>1.18 倍</b></div>
+    <div><small>當日漲跌</small><b>-4.88%</b></div>
+    <div><small>RSI14</small><b>30.3</b></div>
+    <div><small>5日動能</small><b>-10.11%</b></div></div>
+    <p class="signal">量價訊號：<b>一般量能・下跌</b></p><p class="alert-line">⚠️ 研究提醒：位於20/60日均線下、5日跌幅較大</p>
+    <details class="carddetail"><summary>查看分數拆解</summary><p>均線 0/12 · 量價 2/10 · RSI／5日動能 1/8</p></details>
+    </article><article class="card"><div class="heading"><div><span class="ranking">#26</span>
+    <strong>鴻海</strong><small>2317.TW · 電腦／伺服器 · 2026-11-19</small></div>
+    <span class="tag ">未符合均線趨勢</span></div>
+    <div class="scoreline"><b>3 / 30 分</b><small>實驗性技術分數</small></div>
+    <div class="price">220.50 <small>TWD</small></div>
+    <div class="metrics"><div><small>MA20</small><b>238.05</b></div>
+    <div><small>MA60</small><b>245.53</b></div>
+    <div><small>量比（前20日）</small><b>1.17 倍</b></div>
+    <div><small>當日漲跌</small><b>-0.23%</b></div>
+    <div><small>RSI14</small><b>35.7</b></div>
+    <div><small>5日動能</small><b>-8.13%</b></div></div>
+    <p class="signal">量價訊號：<b>一般量能・下跌</b></p><p class="alert-line">⚠️ 研究提醒：位於20/60日均線下、5日跌幅較大</p>
+    <details class="carddetail"><summary>查看分數拆解</summary><p>均線 0/12 · 量價 2/10 · RSI／5日動能 1/8</p></details>
+    </article><article class="card"><div class="heading"><div><span class="ranking">#27</span>
     <strong>漢翔</strong><small>2634.TW · 航空／航太 · 2026-11-19</small></div>
     <span class="tag ">未符合均線趨勢</span></div>
     <div class="scoreline"><b>3 / 30 分</b><small>實驗性技術分數</small></div>
-    <div class="price">48.35 <small>TWD</small></div>
-    <div class="metrics"><div><small>MA20</small><b>55.62</b></div>
+    <div class="price">48.40 <small>TWD</small></div>
+    <div class="metrics"><div><small>MA20</small><b>55.63</b></div>
     <div><small>MA60</small><b>61.45</b></div>
-    <div><small>量比（前20日）</small><b>0.93 倍</b></div>
-    <div><small>當日漲跌</small><b>-5.01%</b></div>
+    <div><small>量比（前20日）</small><b>1.15 倍</b></div>
+    <div><small>當日漲跌</small><b>-4.91%</b></div>
     <div><small>RSI14</small><b>23.7</b></div>
-    <div><small>5日動能</small><b>-10.63%</b></div></div>
+    <div><small>5日動能</small><b>-10.54%</b></div></div>
     <p class="signal">量價訊號：<b>一般量能・下跌</b></p><p class="alert-line">⚠️ 研究提醒：位於20/60日均線下、RSI偏低、5日跌幅較大</p>
     <details class="carddetail"><summary>查看分數拆解</summary><p>均線 0/12 · 量價 2/10 · RSI／5日動能 1/8</p></details>
-    </article><article class="card"><div class="heading"><div><span class="ranking">#30</span>
-    <strong>中鋼</strong><small>2002.TW · 鋼鐵 · 2026-11-19</small></div>
-    <span class="tag ">未符合均線趨勢</span></div>
-    <div class="scoreline"><b>3 / 30 分</b><small>實驗性技術分數</small></div>
-    <div class="price">17.70 <small>TWD</small></div>
-    <div class="metrics"><div><small>MA20</small><b>18.86</b></div>
-    <div><small>MA60</small><b>18.98</b></div>
-    <div><small>量比（前20日）</small><b>0.91 倍</b></div>
-    <div><small>當日漲跌</small><b>-1.39%</b></div>
-    <div><small>RSI14</small><b>24.3</b></div>
-    <div><small>5日動能</small><b>-4.84%</b></div></div>
-    <p class="signal">量價訊號：<b>一般量能・下跌</b></p><p class="alert-line">⚠️ 研究提醒：位於20/60日均線下、RSI偏低</p>
-    <details class="carddetail"><summary>查看分數拆解</summary><p>均線 0/12 · 量價 2/10 · RSI／5日動能 1/8</p></details>
-    </article><article class="card"><div class="heading"><div><span class="ranking">#31</span>
-    <strong>台塑</strong><small>1301.TW · 塑化 · 2026-11-19</small></div>
-    <span class="tag ">未符合均線趨勢</span></div>
-    <div class="scoreline"><b>3 / 30 分</b><small>實驗性技術分數</small></div>
-    <div class="price">60.50 <small>TWD</small></div>
-    <div class="metrics"><div><small>MA20</small><b>69.52</b></div>
-    <div><small>MA60</small><b>68.87</b></div>
-    <div><small>量比（前20日）</small><b>0.87 倍</b></div>
-    <div><small>當日漲跌</small><b>-6.06%</b></div>
-    <div><small>RSI14</small><b>36.0</b></div>
-    <div><small>5日動能</small><b>-11.42%</b></div></div>
-    <p class="signal">量價訊號：<b>一般量能・下跌</b></p><p class="alert-line">⚠️ 研究提醒：位於20/60日均線下、5日跌幅較大</p>
-    <details class="carddetail"><summary>查看分數拆解</summary><p>均線 0/12 · 量價 2/10 · RSI／5日動能 1/8</p></details>
-    </article><article class="card"><div class="heading"><div><span class="ranking">#32</span>
-    <strong>微星</strong><small>2377.TW · 電腦／伺服器 · 2026-11-19</small></div>
-    <span class="tag ">未符合均線趨勢</span></div>
-    <div class="scoreline"><b>3 / 30 分</b><small>實驗性技術分數</small></div>
-    <div class="price">124.00 <small>TWD</small></div>
-    <div class="metrics"><div><small>MA20</small><b>147.18</b></div>
-    <div><small>MA60</small><b>151.46</b></div>
-    <div><small>量比（前20日）</small><b>0.85 倍</b></div>
-    <div><small>當日漲跌</small><b>-5.70%</b></div>
-    <div><small>RSI14</small><b>26.6</b></div>
-    <div><small>5日動能</small><b>-12.06%</b></div></div>
-    <p class="signal">量價訊號：<b>一般量能・下跌</b></p><p class="alert-line">⚠️ 研究提醒：位於20/60日均線下、RSI偏低、5日跌幅較大</p>
-    <details class="carddetail"><summary>查看分數拆解</summary><p>均線 0/12 · 量價 2/10 · RSI／5日動能 1/8</p></details>
-    </article><article class="card"><div class="heading"><div><span class="ranking">#33</span>
+    </article><article class="card"><div class="heading"><div><span class="ranking">#28</span>
     <strong>和碩</strong><small>4938.TW · 電腦／伺服器 · 2026-11-19</small></div>
     <span class="tag ">未符合均線趨勢</span></div>
     <div class="scoreline"><b>3 / 30 分</b><small>實驗性技術分數</small></div>
     <div class="price">81.90 <small>TWD</small></div>
     <div class="metrics"><div><small>MA20</small><b>96.42</b></div>
     <div><small>MA60</small><b>93.92</b></div>
-    <div><small>量比（前20日）</small><b>0.85 倍</b></div>
+    <div><small>量比（前20日）</small><b>1.12 倍</b></div>
     <div><small>當日漲跌</small><b>-4.10%</b></div>
     <div><small>RSI14</small><b>28.6</b></div>
     <div><small>5日動能</small><b>-11.17%</b></div></div>
     <p class="signal">量價訊號：<b>一般量能・下跌</b></p><p class="alert-line">⚠️ 研究提醒：位於20/60日均線下、RSI偏低、5日跌幅較大</p>
     <details class="carddetail"><summary>查看分數拆解</summary><p>均線 0/12 · 量價 2/10 · RSI／5日動能 1/8</p></details>
-    </article><article class="card"><div class="heading"><div><span class="ranking">#34</span>
+    </article><article class="card"><div class="heading"><div><span class="ranking">#29</span>
+    <strong>微星</strong><small>2377.TW · 電腦／伺服器 · 2026-11-19</small></div>
+    <span class="tag ">未符合均線趨勢</span></div>
+    <div class="scoreline"><b>3 / 30 分</b><small>實驗性技術分數</small></div>
+    <div class="price">124.50 <small>TWD</small></div>
+    <div class="metrics"><div><small>MA20</small><b>147.20</b></div>
+    <div><small>MA60</small><b>151.47</b></div>
+    <div><small>量比（前20日）</small><b>1.04 倍</b></div>
+    <div><small>當日漲跌</small><b>-5.32%</b></div>
+    <div><small>RSI14</small><b>26.8</b></div>
+    <div><small>5日動能</small><b>-11.70%</b></div></div>
+    <p class="signal">量價訊號：<b>一般量能・下跌</b></p><p class="alert-line">⚠️ 研究提醒：位於20/60日均線下、RSI偏低、5日跌幅較大</p>
+    <details class="carddetail"><summary>查看分數拆解</summary><p>均線 0/12 · 量價 2/10 · RSI／5日動能 1/8</p></details>
+    </article><article class="card"><div class="heading"><div><span class="ranking">#30</span>
+    <strong>台塑</strong><small>1301.TW · 塑化 · 2026-11-19</small></div>
+    <span class="tag ">未符合均線趨勢</span></div>
+    <div class="scoreline"><b>3 / 30 分</b><small>實驗性技術分數</small></div>
+    <div class="price">60.40 <small>TWD</small></div>
+    <div class="metrics"><div><small>MA20</small><b>69.51</b></div>
+    <div><small>MA60</small><b>68.86</b></div>
+    <div><small>量比（前20日）</small><b>1.03 倍</b></div>
+    <div><small>當日漲跌</small><b>-6.21%</b></div>
+    <div><small>RSI14</small><b>35.9</b></div>
+    <div><small>5日動能</small><b>-11.57%</b></div></div>
+    <p class="signal">量價訊號：<b>一般量能・下跌</b></p><p class="alert-line">⚠️ 研究提醒：位於20/60日均線下、5日跌幅較大</p>
+    <details class="carddetail"><summary>查看分數拆解</summary><p>均線 0/12 · 量價 2/10 · RSI／5日動能 1/8</p></details>
+    </article><article class="card"><div class="heading"><div><span class="ranking">#31</span>
     <strong>聯電</strong><small>2303.TW · 半導體 · 2026-11-19</small></div>
     <span class="tag ">未符合均線趨勢</span></div>
     <div class="scoreline"><b>3 / 30 分</b><small>實驗性技術分數</small></div>
-    <div class="price">88.50 <small>TWD</small></div>
-    <div class="metrics"><div><small>MA20</small><b>105.51</b></div>
-    <div><small>MA60</small><b>129.07</b></div>
-    <div><small>量比（前20日）</small><b>0.83 倍</b></div>
-    <div><small>當日漲跌</small><b>-4.84%</b></div>
-    <div><small>RSI14</small><b>27.5</b></div>
-    <div><small>5日動能</small><b>-12.38%</b></div></div>
+    <div class="price">88.20 <small>TWD</small></div>
+    <div class="metrics"><div><small>MA20</small><b>105.49</b></div>
+    <div><small>MA60</small><b>129.06</b></div>
+    <div><small>量比（前20日）</small><b>0.98 倍</b></div>
+    <div><small>當日漲跌</small><b>-5.16%</b></div>
+    <div><small>RSI14</small><b>27.4</b></div>
+    <div><small>5日動能</small><b>-12.67%</b></div></div>
     <p class="signal">量價訊號：<b>一般量能・下跌</b></p><p class="alert-line">⚠️ 研究提醒：位於20/60日均線下、RSI偏低、5日跌幅較大</p>
     <details class="carddetail"><summary>查看分數拆解</summary><p>均線 0/12 · 量價 2/10 · RSI／5日動能 1/8</p></details>
-    </article><article class="card"><div class="heading"><div><span class="ranking">#35</span>
+    </article><article class="card"><div class="heading"><div><span class="ranking">#32</span>
     <strong>台泥</strong><small>1101.TW · 水泥 · 2026-11-19</small></div>
     <span class="tag ">未符合均線趨勢</span></div>
     <div class="scoreline"><b>3 / 30 分</b><small>實驗性技術分數</small></div>
-    <div class="price">25.75 <small>TWD</small></div>
+    <div class="price">25.65 <small>TWD</small></div>
     <div class="metrics"><div><small>MA20</small><b>27.34</b></div>
-    <div><small>MA60</small><b>25.91</b></div>
-    <div><small>量比（前20日）</small><b>0.80 倍</b></div>
-    <div><small>當日漲跌</small><b>-1.90%</b></div>
-    <div><small>RSI14</small><b>39.0</b></div>
-    <div><small>5日動能</small><b>-5.16%</b></div></div>
+    <div><small>MA60</small><b>25.90</b></div>
+    <div><small>量比（前20日）</small><b>0.97 倍</b></div>
+    <div><small>當日漲跌</small><b>-2.29%</b></div>
+    <div><small>RSI14</small><b>38.3</b></div>
+    <div><small>5日動能</small><b>-5.52%</b></div></div>
     <p class="signal">量價訊號：<b>一般量能・下跌</b></p><p class="alert-line">⚠️ 研究提醒：位於20/60日均線下</p>
     <details class="carddetail"><summary>查看分數拆解</summary><p>均線 0/12 · 量價 2/10 · RSI／5日動能 1/8</p></details>
-    </article><article class="card"><div class="heading"><div><span class="ranking">#36</span>
-    <strong>臻鼎-KY</strong><small>4958.TW · 電力／散熱／電子零組件 · 2026-11-19</small></div>
-    <span class="tag ">未符合均線趨勢</span></div>
-    <div class="scoreline"><b>3 / 30 分</b><small>實驗性技術分數</small></div>
-    <div class="price">347.50 <small>TWD</small></div>
-    <div class="metrics"><div><small>MA20</small><b>449.77</b></div>
-    <div><small>MA60</small><b>490.51</b></div>
-    <div><small>量比（前20日）</small><b>0.79 倍</b></div>
-    <div><small>當日漲跌</small><b>-9.03%</b></div>
-    <div><small>RSI14</small><b>33.6</b></div>
-    <div><small>5日動能</small><b>-19.19%</b></div></div>
-    <p class="signal">量價訊號：<b>一般量能・下跌</b></p><p class="alert-line">⚠️ 研究提醒：位於20/60日均線下、5日跌幅較大</p>
-    <details class="carddetail"><summary>查看分數拆解</summary><p>均線 0/12 · 量價 2/10 · RSI／5日動能 1/8</p></details>
-    </article><article class="card"><div class="heading"><div><span class="ranking">#37</span>
+    </article><article class="card"><div class="heading"><div><span class="ranking">#33</span>
     <strong>台化</strong><small>1326.TW · 塑化 · 2026-11-19</small></div>
     <span class="tag ">未符合均線趨勢</span></div>
     <div class="scoreline"><b>3 / 30 分</b><small>實驗性技術分數</small></div>
-    <div class="price">63.30 <small>TWD</small></div>
-    <div class="metrics"><div><small>MA20</small><b>70.67</b></div>
-    <div><small>MA60</small><b>70.39</b></div>
-    <div><small>量比（前20日）</small><b>0.78 倍</b></div>
-    <div><small>當日漲跌</small><b>-6.77%</b></div>
-    <div><small>RSI14</small><b>39.9</b></div>
-    <div><small>5日動能</small><b>-11.10%</b></div></div>
+    <div class="price">62.70 <small>TWD</small></div>
+    <div class="metrics"><div><small>MA20</small><b>70.64</b></div>
+    <div><small>MA60</small><b>70.38</b></div>
+    <div><small>量比（前20日）</small><b>0.94 倍</b></div>
+    <div><small>當日漲跌</small><b>-7.66%</b></div>
+    <div><small>RSI14</small><b>39.3</b></div>
+    <div><small>5日動能</small><b>-11.94%</b></div></div>
     <p class="signal">量價訊號：<b>一般量能・下跌</b></p><p class="alert-line">⚠️ 研究提醒：位於20/60日均線下、5日跌幅較大</p>
     <details class="carddetail"><summary>查看分數拆解</summary><p>均線 0/12 · 量價 2/10 · RSI／5日動能 1/8</p></details>
-    </article><article class="card"><div class="heading"><div><span class="ranking">#38</span>
-    <strong>中租-KY</strong><small>5871.TW · 金融 · 2026-11-19</small></div>
+    </article><article class="card"><div class="heading"><div><span class="ranking">#34</span>
+    <strong>臻鼎-KY</strong><small>4958.TW · 電力／散熱／電子零組件 · 2026-11-19</small></div>
     <span class="tag ">未符合均線趨勢</span></div>
     <div class="scoreline"><b>3 / 30 分</b><small>實驗性技術分數</small></div>
-    <div class="price">99.10 <small>TWD</small></div>
-    <div class="metrics"><div><small>MA20</small><b>103.74</b></div>
-    <div><small>MA60</small><b>108.02</b></div>
-    <div><small>量比（前20日）</small><b>0.77 倍</b></div>
-    <div><small>當日漲跌</small><b>-0.20%</b></div>
-    <div><small>RSI14</small><b>36.6</b></div>
-    <div><small>5日動能</small><b>-2.84%</b></div></div>
-    <p class="signal">量價訊號：<b>一般量能・下跌</b></p><p class="alert-line">⚠️ 研究提醒：位於20/60日均線下</p>
+    <div class="price">344.00 <small>TWD</small></div>
+    <div class="metrics"><div><small>MA20</small><b>449.60</b></div>
+    <div><small>MA60</small><b>490.45</b></div>
+    <div><small>量比（前20日）</small><b>0.94 倍</b></div>
+    <div><small>當日漲跌</small><b>-9.95%</b></div>
+    <div><small>RSI14</small><b>33.3</b></div>
+    <div><small>5日動能</small><b>-20.00%</b></div></div>
+    <p class="signal">量價訊號：<b>一般量能・下跌</b></p><p class="alert-line">⚠️ 研究提醒：位於20/60日均線下、5日跌幅較大</p>
     <details class="carddetail"><summary>查看分數拆解</summary><p>均線 0/12 · 量價 2/10 · RSI／5日動能 1/8</p></details>
-    </article><article class="card"><div class="heading"><div><span class="ranking">#39</span>
+    </article><article class="card"><div class="heading"><div><span class="ranking">#35</span>
     <strong>亞德客-KY</strong><small>1590.TW · 重電／機械 · 2026-11-19</small></div>
     <span class="tag ">未符合均線趨勢</span></div>
     <div class="scoreline"><b>3 / 30 分</b><small>實驗性技術分數</small></div>
-    <div class="price">1,010.00 <small>TWD</small></div>
-    <div class="metrics"><div><small>MA20</small><b>1,071.25</b></div>
-    <div><small>MA60</small><b>1,206.58</b></div>
-    <div><small>量比（前20日）</small><b>0.72 倍</b></div>
-    <div><small>當日漲跌</small><b>-2.88%</b></div>
-    <div><small>RSI14</small><b>34.0</b></div>
-    <div><small>5日動能</small><b>-3.81%</b></div></div>
+    <div class="price">1,005.00 <small>TWD</small></div>
+    <div class="metrics"><div><small>MA20</small><b>1,071.00</b></div>
+    <div><small>MA60</small><b>1,206.50</b></div>
+    <div><small>量比（前20日）</small><b>0.89 倍</b></div>
+    <div><small>當日漲跌</small><b>-3.37%</b></div>
+    <div><small>RSI14</small><b>33.4</b></div>
+    <div><small>5日動能</small><b>-4.29%</b></div></div>
     <p class="signal">量價訊號：<b>一般量能・下跌</b></p><p class="alert-line">⚠️ 研究提醒：位於20/60日均線下</p>
     <details class="carddetail"><summary>查看分數拆解</summary><p>均線 0/12 · 量價 2/10 · RSI／5日動能 1/8</p></details>
-    </article><article class="card"><div class="heading"><div><span class="ranking">#40</span>
+    </article><article class="card"><div class="heading"><div><span class="ranking">#36</span>
     <strong>友達</strong><small>2409.TW · 面板／光學 · 2026-11-19</small></div>
     <span class="tag ">未符合均線趨勢</span></div>
     <div class="scoreline"><b>3 / 30 分</b><small>實驗性技術分數</small></div>
-    <div class="price">25.50 <small>TWD</small></div>
-    <div class="metrics"><div><small>MA20</small><b>29.98</b></div>
-    <div><small>MA60</small><b>31.42</b></div>
-    <div><small>量比（前20日）</small><b>0.70 倍</b></div>
-    <div><small>當日漲跌</small><b>-6.93%</b></div>
-    <div><small>RSI14</small><b>35.1</b></div>
-    <div><small>5日動能</small><b>-12.67%</b></div></div>
+    <div class="price">25.10 <small>TWD</small></div>
+    <div class="metrics"><div><small>MA20</small><b>29.96</b></div>
+    <div><small>MA60</small><b>31.41</b></div>
+    <div><small>量比（前20日）</small><b>0.89 倍</b></div>
+    <div><small>當日漲跌</small><b>-8.39%</b></div>
+    <div><small>RSI14</small><b>34.3</b></div>
+    <div><small>5日動能</small><b>-14.04%</b></div></div>
     <p class="signal">量價訊號：<b>一般量能・下跌</b></p><p class="alert-line">⚠️ 研究提醒：位於20/60日均線下、5日跌幅較大</p>
     <details class="carddetail"><summary>查看分數拆解</summary><p>均線 0/12 · 量價 2/10 · RSI／5日動能 1/8</p></details>
-    </article><article class="card"><div class="heading"><div><span class="ranking">#41</span>
+    </article><article class="card"><div class="heading"><div><span class="ranking">#37</span>
     <strong>聯詠</strong><small>3034.TW · 半導體 · 2026-11-19</small></div>
     <span class="tag ">未符合均線趨勢</span></div>
     <div class="scoreline"><b>3 / 30 分</b><small>實驗性技術分數</small></div>
-    <div class="price">439.00 <small>TWD</small></div>
-    <div class="metrics"><div><small>MA20</small><b>519.17</b></div>
-    <div><small>MA60</small><b>538.27</b></div>
-    <div><small>量比（前20日）</small><b>0.63 倍</b></div>
-    <div><small>當日漲跌</small><b>-4.15%</b></div>
-    <div><small>RSI14</small><b>26.2</b></div>
-    <div><small>5日動能</small><b>-4.98%</b></div></div>
+    <div class="price">436.50 <small>TWD</small></div>
+    <div class="metrics"><div><small>MA20</small><b>519.05</b></div>
+    <div><small>MA60</small><b>538.23</b></div>
+    <div><small>量比（前20日）</small><b>0.84 倍</b></div>
+    <div><small>當日漲跌</small><b>-4.69%</b></div>
+    <div><small>RSI14</small><b>25.8</b></div>
+    <div><small>5日動能</small><b>-5.52%</b></div></div>
     <p class="signal">量價訊號：<b>一般量能・下跌</b></p><p class="alert-line">⚠️ 研究提醒：位於20/60日均線下、RSI偏低</p>
     <details class="carddetail"><summary>查看分數拆解</summary><p>均線 0/12 · 量價 2/10 · RSI／5日動能 1/8</p></details>
-    </article><article class="card"><div class="heading"><div><span class="ranking">#42</span>
-    <strong>緯創</strong><small>3231.TW · 電腦／伺服器 · 2026-11-19</small></div>
-    <span class="tag ">未符合均線趨勢</span></div>
-    <div class="scoreline"><b>3 / 30 分</b><small>實驗性技術分數</small></div>
-    <div class="price">157.00 <small>TWD</small></div>
-    <div class="metrics"><div><small>MA20</small><b>174.47</b></div>
-    <div><small>MA60</small><b>181.57</b></div>
-    <div><small>量比（前20日）</small><b>0.59 倍</b></div>
-    <div><small>當日漲跌</small><b>-3.09%</b></div>
-    <div><small>RSI14</small><b>35.9</b></div>
-    <div><small>5日動能</small><b>-7.65%</b></div></div>
-    <p class="signal">量價訊號：<b>一般量能・下跌</b></p><p class="alert-line">⚠️ 研究提醒：位於20/60日均線下</p>
-    <details class="carddetail"><summary>查看分數拆解</summary><p>均線 0/12 · 量價 2/10 · RSI／5日動能 1/8</p></details>
-    </article><article class="card"><div class="heading"><div><span class="ranking">#43</span>
-    <strong>南亞</strong><small>1303.TW · 塑化 · 2026-11-19</small></div>
-    <span class="tag ">未符合均線趨勢</span></div>
-    <div class="scoreline"><b>3 / 30 分</b><small>實驗性技術分數</small></div>
-    <div class="price">228.50 <small>TWD</small></div>
-    <div class="metrics"><div><small>MA20</small><b>282.15</b></div>
-    <div><small>MA60</small><b>263.83</b></div>
-    <div><small>量比（前20日）</small><b>0.58 倍</b></div>
-    <div><small>當日漲跌</small><b>-9.86%</b></div>
-    <div><small>RSI14</small><b>38.6</b></div>
-    <div><small>5日動能</small><b>-22.01%</b></div></div>
-    <p class="signal">量價訊號：<b>一般量能・下跌</b></p><p class="alert-line">⚠️ 研究提醒：位於20/60日均線下、5日跌幅較大</p>
-    <details class="carddetail"><summary>查看分數拆解</summary><p>均線 0/12 · 量價 2/10 · RSI／5日動能 1/8</p></details>
-    </article><article class="card"><div class="heading"><div><span class="ranking">#44</span>
+    </article><article class="card"><div class="heading"><div><span class="ranking">#38</span>
     <strong>廣達</strong><small>2382.TW · 電腦／伺服器 · 2026-11-19</small></div>
     <span class="tag ">未符合均線趨勢</span></div>
     <div class="scoreline"><b>3 / 30 分</b><small>實驗性技術分數</small></div>
     <div class="price">262.50 <small>TWD</small></div>
     <div class="metrics"><div><small>MA20</small><b>298.12</b></div>
     <div><small>MA60</small><b>321.54</b></div>
-    <div><small>量比（前20日）</small><b>0.57 倍</b></div>
+    <div><small>量比（前20日）</small><b>0.75 倍</b></div>
     <div><small>當日漲跌</small><b>-0.94%</b></div>
     <div><small>RSI14</small><b>22.8</b></div>
     <div><small>5日動能</small><b>-5.75%</b></div></div>
     <p class="signal">量價訊號：<b>一般量能・下跌</b></p><p class="alert-line">⚠️ 研究提醒：位於20/60日均線下、RSI偏低</p>
     <details class="carddetail"><summary>查看分數拆解</summary><p>均線 0/12 · 量價 2/10 · RSI／5日動能 1/8</p></details>
-    </article><article class="card"><div class="heading"><div><span class="ranking">#45</span>
+    </article><article class="card"><div class="heading"><div><span class="ranking">#39</span>
+    <strong>緯創</strong><small>3231.TW · 電腦／伺服器 · 2026-11-19</small></div>
+    <span class="tag ">未符合均線趨勢</span></div>
+    <div class="scoreline"><b>3 / 30 分</b><small>實驗性技術分數</small></div>
+    <div class="price">156.00 <small>TWD</small></div>
+    <div class="metrics"><div><small>MA20</small><b>174.43</b></div>
+    <div><small>MA60</small><b>181.56</b></div>
+    <div><small>量比（前20日）</small><b>0.73 倍</b></div>
+    <div><small>當日漲跌</small><b>-3.70%</b></div>
+    <div><small>RSI14</small><b>35.3</b></div>
+    <div><small>5日動能</small><b>-8.24%</b></div></div>
+    <p class="signal">量價訊號：<b>一般量能・下跌</b></p><p class="alert-line">⚠️ 研究提醒：位於20/60日均線下、5日跌幅較大</p>
+    <details class="carddetail"><summary>查看分數拆解</summary><p>均線 0/12 · 量價 2/10 · RSI／5日動能 1/8</p></details>
+    </article><article class="card"><div class="heading"><div><span class="ranking">#40</span>
+    <strong>南亞</strong><small>1303.TW · 塑化 · 2026-11-19</small></div>
+    <span class="tag ">未符合均線趨勢</span></div>
+    <div class="scoreline"><b>3 / 30 分</b><small>實驗性技術分數</small></div>
+    <div class="price">228.50 <small>TWD</small></div>
+    <div class="metrics"><div><small>MA20</small><b>282.15</b></div>
+    <div><small>MA60</small><b>263.83</b></div>
+    <div><small>量比（前20日）</small><b>0.59 倍</b></div>
+    <div><small>當日漲跌</small><b>-9.86%</b></div>
+    <div><small>RSI14</small><b>38.6</b></div>
+    <div><small>5日動能</small><b>-22.01%</b></div></div>
+    <p class="signal">量價訊號：<b>一般量能・下跌</b></p><p class="alert-line">⚠️ 研究提醒：位於20/60日均線下、5日跌幅較大</p>
+    <details class="carddetail"><summary>查看分數拆解</summary><p>均線 0/12 · 量價 2/10 · RSI／5日動能 1/8</p></details>
+    </article><article class="card"><div class="heading"><div><span class="ranking">#41</span>
     <strong>台勝科</strong><small>3532.TW · 半導體 · 2026-11-19</small></div>
     <span class="tag ">未符合均線趨勢</span></div>
     <div class="scoreline"><b>3 / 30 分</b><small>實驗性技術分數</small></div>
     <div class="price">207.00 <small>TWD</small></div>
     <div class="metrics"><div><small>MA20</small><b>315.52</b></div>
     <div><small>MA60</small><b>389.93</b></div>
-    <div><small>量比（前20日）</small><b>0.50 倍</b></div>
+    <div><small>量比（前20日）</small><b>0.52 倍</b></div>
     <div><small>當日漲跌</small><b>-9.80%</b></div>
     <div><small>RSI14</small><b>23.8</b></div>
     <div><small>5日動能</small><b>-28.87%</b></div></div>
     <p class="signal">量價訊號：<b>一般量能・下跌</b></p><p class="alert-line">⚠️ 研究提醒：位於20/60日均線下、RSI偏低、5日跌幅較大</p>
     <details class="carddetail"><summary>查看分數拆解</summary><p>均線 0/12 · 量價 2/10 · RSI／5日動能 1/8</p></details>
-    </article><article class="card"><div class="heading"><div><span class="ranking">#46</span>
+    </article><article class="card"><div class="heading"><div><span class="ranking">#42</span>
     <strong>創意</strong><small>3443.TW · 半導體 · 2026-11-19</small></div>
     <span class="tag ">未符合均線趨勢</span></div>
     <div class="scoreline"><b>3 / 30 分</b><small>實驗性技術分數</small></div>
     <div class="price">6,000.00 <small>TWD</small></div>
     <div class="metrics"><div><small>MA20</small><b>7,273.50</b></div>
     <div><small>MA60</small><b>7,135.17</b></div>
-    <div><small>量比（前20日）</small><b>0.45 倍</b></div>
+    <div><small>量比（前20日）</small><b>0.46 倍</b></div>
     <div><small>當日漲跌</small><b>-9.98%</b></div>
     <div><small>RSI14</small><b>38.8</b></div>
     <div><small>5日動能</small><b>-23.66%</b></div></div>
     <p class="signal">量價訊號：<b>一般量能・下跌</b></p><p class="alert-line">⚠️ 研究提醒：位於20/60日均線下、5日跌幅較大</p>
     <details class="carddetail"><summary>查看分數拆解</summary><p>均線 0/12 · 量價 2/10 · RSI／5日動能 1/8</p></details>
-    </article><article class="card"><div class="heading"><div><span class="ranking">#47</span>
+    </article><article class="card"><div class="heading"><div><span class="ranking">#43</span>
     <strong>玉山金</strong><small>2884.TW · 金融 · 2026-11-19</small></div>
     <span class="tag ">未符合均線趨勢</span></div>
     <div class="scoreline"><b>1 / 30 分</b><small>實驗性技術分數</small></div>
-    <div class="price">40.55 <small>TWD</small></div>
-    <div class="metrics"><div><small>MA20</small><b>47.45</b></div>
+    <div class="price">40.35 <small>TWD</small></div>
+    <div class="metrics"><div><small>MA20</small><b>47.44</b></div>
     <div><small>MA60</small><b>45.59</b></div>
-    <div><small>量比（前20日）</small><b>1.99 倍</b></div>
-    <div><small>當日漲跌</small><b>-3.80%</b></div>
-    <div><small>RSI14</small><b>25.7</b></div>
-    <div><small>5日動能</small><b>-14.09%</b></div></div>
+    <div><small>量比（前20日）</small><b>2.37 倍</b></div>
+    <div><small>當日漲跌</small><b>-4.27%</b></div>
+    <div><small>RSI14</small><b>25.3</b></div>
+    <div><small>5日動能</small><b>-14.51%</b></div></div>
     <p class="signal">量價訊號：<b>放量下跌</b></p><p class="alert-line">⚠️ 研究提醒：放量下跌、位於20/60日均線下、RSI偏低、5日跌幅較大</p>
     <details class="carddetail"><summary>查看分數拆解</summary><p>均線 0/12 · 量價 0/10 · RSI／5日動能 1/8</p></details>
-    </article><article class="card"><div class="heading"><div><span class="ranking">#48</span>
-    <strong>元大金</strong><small>2885.TW · 金融 · 2026-11-19</small></div>
-    <span class="tag ">未符合均線趨勢</span></div>
-    <div class="scoreline"><b>1 / 30 分</b><small>實驗性技術分數</small></div>
-    <div class="price">63.30 <small>TWD</small></div>
-    <div class="metrics"><div><small>MA20</small><b>70.09</b></div>
-    <div><small>MA60</small><b>69.17</b></div>
-    <div><small>量比（前20日）</small><b>1.60 倍</b></div>
-    <div><small>當日漲跌</small><b>-2.47%</b></div>
-    <div><small>RSI14</small><b>32.6</b></div>
-    <div><small>5日動能</small><b>-11.96%</b></div></div>
-    <p class="signal">量價訊號：<b>放量下跌</b></p><p class="alert-line">⚠️ 研究提醒：放量下跌、位於20/60日均線下、5日跌幅較大</p>
-    <details class="carddetail"><summary>查看分數拆解</summary><p>均線 0/12 · 量價 0/10 · RSI／5日動能 1/8</p></details>
-    </article><article class="card"><div class="heading"><div><span class="ranking">#49</span>
+    </article><article class="card"><div class="heading"><div><span class="ranking">#44</span>
     <strong>國泰金</strong><small>2882.TW · 金融 · 2026-11-19</small></div>
     <span class="tag ">未符合均線趨勢</span></div>
     <div class="scoreline"><b>1 / 30 分</b><small>實驗性技術分數</small></div>
-    <div class="price">104.00 <small>TWD</small></div>
-    <div class="metrics"><div><small>MA20</small><b>112.12</b></div>
-    <div><small>MA60</small><b>111.29</b></div>
-    <div><small>量比（前20日）</small><b>1.58 倍</b></div>
-    <div><small>當日漲跌</small><b>-5.45%</b></div>
-    <div><small>RSI14</small><b>37.6</b></div>
-    <div><small>5日動能</small><b>-7.14%</b></div></div>
+    <div class="price">103.50 <small>TWD</small></div>
+    <div class="metrics"><div><small>MA20</small><b>112.10</b></div>
+    <div><small>MA60</small><b>111.28</b></div>
+    <div><small>量比（前20日）</small><b>1.93 倍</b></div>
+    <div><small>當日漲跌</small><b>-5.91%</b></div>
+    <div><small>RSI14</small><b>37.0</b></div>
+    <div><small>5日動能</small><b>-7.59%</b></div></div>
     <p class="signal">量價訊號：<b>放量下跌</b></p><p class="alert-line">⚠️ 研究提醒：放量下跌、位於20/60日均線下</p>
     <details class="carddetail"><summary>查看分數拆解</summary><p>均線 0/12 · 量價 0/10 · RSI／5日動能 1/8</p></details>
-    </article><article class="card"><div class="heading"><div><span class="ranking">#50</span>
+    </article><article class="card"><div class="heading"><div><span class="ranking">#45</span>
+    <strong>元大金</strong><small>2885.TW · 金融 · 2026-11-19</small></div>
+    <span class="tag ">未符合均線趨勢</span></div>
+    <div class="scoreline"><b>1 / 30 分</b><small>實驗性技術分數</small></div>
+    <div class="price">63.20 <small>TWD</small></div>
+    <div class="metrics"><div><small>MA20</small><b>70.09</b></div>
+    <div><small>MA60</small><b>69.17</b></div>
+    <div><small>量比（前20日）</small><b>1.91 倍</b></div>
+    <div><small>當日漲跌</small><b>-2.62%</b></div>
+    <div><small>RSI14</small><b>32.5</b></div>
+    <div><small>5日動能</small><b>-12.10%</b></div></div>
+    <p class="signal">量價訊號：<b>放量下跌</b></p><p class="alert-line">⚠️ 研究提醒：放量下跌、位於20/60日均線下、5日跌幅較大</p>
+    <details class="carddetail"><summary>查看分數拆解</summary><p>均線 0/12 · 量價 0/10 · RSI／5日動能 1/8</p></details>
+    </article><article class="card"><div class="heading"><div><span class="ranking">#46</span>
+    <strong>華城</strong><small>1519.TW · 重電／機械 · 2026-11-19</small></div>
+    <span class="tag ">未符合均線趨勢</span></div>
+    <div class="scoreline"><b>1 / 30 分</b><small>實驗性技術分數</small></div>
+    <div class="price">468.00 <small>TWD</small></div>
+    <div class="metrics"><div><small>MA20</small><b>521.60</b></div>
+    <div><small>MA60</small><b>643.58</b></div>
+    <div><small>量比（前20日）</small><b>1.80 倍</b></div>
+    <div><small>當日漲跌</small><b>-2.09%</b></div>
+    <div><small>RSI14</small><b>34.2</b></div>
+    <div><small>5日動能</small><b>-2.30%</b></div></div>
+    <p class="signal">量價訊號：<b>放量下跌</b></p><p class="alert-line">⚠️ 研究提醒：放量下跌、位於20/60日均線下</p>
+    <details class="carddetail"><summary>查看分數拆解</summary><p>均線 0/12 · 量價 0/10 · RSI／5日動能 1/8</p></details>
+    </article><article class="card"><div class="heading"><div><span class="ranking">#47</span>
     <strong>台達電</strong><small>2308.TW · 電力／散熱／電子零組件 · 2026-11-19</small></div>
     <span class="tag ">未符合均線趨勢</span></div>
     <div class="scoreline"><b>1 / 30 分</b><small>實驗性技術分數</small></div>
-    <div class="price">1,005.00 <small>TWD</small></div>
-    <div class="metrics"><div><small>MA20</small><b>1,273.75</b></div>
-    <div><small>MA60</small><b>1,619.33</b></div>
-    <div><small>量比（前20日）</small><b>1.52 倍</b></div>
-    <div><small>當日漲跌</small><b>-5.19%</b></div>
-    <div><small>RSI14</small><b>27.4</b></div>
-    <div><small>5日動能</small><b>-18.95%</b></div></div>
+    <div class="price">1,000.00 <small>TWD</small></div>
+    <div class="metrics"><div><small>MA20</small><b>1,273.50</b></div>
+    <div><small>MA60</small><b>1,619.25</b></div>
+    <div><small>量比（前20日）</small><b>1.77 倍</b></div>
+    <div><small>當日漲跌</small><b>-5.66%</b></div>
+    <div><small>RSI14</small><b>27.3</b></div>
+    <div><small>5日動能</small><b>-19.35%</b></div></div>
     <p class="signal">量價訊號：<b>放量下跌</b></p><p class="alert-line">⚠️ 研究提醒：放量下跌、位於20/60日均線下、RSI偏低、5日跌幅較大</p>
+    <details class="carddetail"><summary>查看分數拆解</summary><p>均線 0/12 · 量價 0/10 · RSI／5日動能 1/8</p></details>
+    </article><article class="card"><div class="heading"><div><span class="ranking">#48</span>
+    <strong>國巨</strong><small>2327.TW · 電力／散熱／電子零組件 · 2026-11-19</small></div>
+    <span class="tag ">未符合均線趨勢</span></div>
+    <div class="scoreline"><b>1 / 30 分</b><small>實驗性技術分數</small></div>
+    <div class="price">322.50 <small>TWD</small></div>
+    <div class="metrics"><div><small>MA20</small><b>439.27</b></div>
+    <div><small>MA60</small><b>526.14</b></div>
+    <div><small>量比（前20日）</small><b>1.57 倍</b></div>
+    <div><small>當日漲跌</small><b>-8.38%</b></div>
+    <div><small>RSI14</small><b>25.2</b></div>
+    <div><small>5日動能</small><b>-20.76%</b></div></div>
+    <p class="signal">量價訊號：<b>放量下跌</b></p><p class="alert-line">⚠️ 研究提醒：放量下跌、位於20/60日均線下、RSI偏低、5日跌幅較大</p>
+    <details class="carddetail"><summary>查看分數拆解</summary><p>均線 0/12 · 量價 0/10 · RSI／5日動能 1/8</p></details>
+    </article><article class="card"><div class="heading"><div><span class="ranking">#49</span>
+    <strong>亞泥</strong><small>1102.TW · 水泥 · 2026-11-19</small></div>
+    <span class="tag ">未符合均線趨勢</span></div>
+    <div class="scoreline"><b>1 / 30 分</b><small>實驗性技術分數</small></div>
+    <div class="price">33.55 <small>TWD</small></div>
+    <div class="metrics"><div><small>MA20</small><b>36.78</b></div>
+    <div><small>MA60</small><b>36.09</b></div>
+    <div><small>量比（前20日）</small><b>1.56 倍</b></div>
+    <div><small>當日漲跌</small><b>-2.89%</b></div>
+    <div><small>RSI14</small><b>26.1</b></div>
+    <div><small>5日動能</small><b>-7.83%</b></div></div>
+    <p class="signal">量價訊號：<b>放量下跌</b></p><p class="alert-line">⚠️ 研究提醒：放量下跌、位於20/60日均線下、RSI偏低</p>
+    <details class="carddetail"><summary>查看分數拆解</summary><p>均線 0/12 · 量價 0/10 · RSI／5日動能 1/8</p></details>
+    </article><article class="card"><div class="heading"><div><span class="ranking">#50</span>
+    <strong>萬海</strong><small>2615.TW · 海運 · 2026-11-19</small></div>
+    <span class="tag ">未符合均線趨勢</span></div>
+    <div class="scoreline"><b>1 / 30 分</b><small>實驗性技術分數</small></div>
+    <div class="price">103.50 <small>TWD</small></div>
+    <div class="metrics"><div><small>MA20</small><b>112.72</b></div>
+    <div><small>MA60</small><b>114.69</b></div>
+    <div><small>量比（前20日）</small><b>1.54 倍</b></div>
+    <div><small>當日漲跌</small><b>-6.76%</b></div>
+    <div><small>RSI14</small><b>39.1</b></div>
+    <div><small>5日動能</small><b>-3.27%</b></div></div>
+    <p class="signal">量價訊號：<b>放量下跌</b></p><p class="alert-line">⚠️ 研究提醒：放量下跌、位於20/60日均線下</p>
     <details class="carddetail"><summary>查看分數拆解</summary><p>均線 0/12 · 量價 0/10 · RSI／5日動能 1/8</p></details>
     </article></section></details><h2>🇺🇸 美股｜技術排名前10</h2><p class="muted">僅此固定測試池內的排名，非全市場名次。</p>
         <section class="grid"><article class="card"><div class="heading"><div><span class="ranking">#1</span>
