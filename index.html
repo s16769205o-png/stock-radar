@@ -1,5 +1,5 @@
 <!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>小G股票雷達 1.15</title><style>
+    <title>小G股票雷達 1.16</title><style>
     *{box-sizing:border-box}body{margin:0;background:#f5f7fb;color:#202a3c;font-family:system-ui,-apple-system,'Noto Sans TC',sans-serif}
     main{max-width:1010px;margin:auto;padding:28px 16px 64px}h1{font-size:2.1rem;margin:8px 0}h2{margin:32px 0 12px;font-size:1.35rem}h3{margin:20px 0 10px}
     .muted,small{color:#6b7789}.muted{line-height:1.7;font-size:.92rem}.eyebrow{font-size:.79rem;letter-spacing:.07em;color:#325e96;font-weight:750}
@@ -56,9 +56,59 @@
   #radar-market-tabs button { font-size: .91rem; padding: 10px 4px; }
   #radar-market-tabs button[aria-selected="true"] { padding: 9px 3px; }
 }
+</style><style>
+/* stock-radar-villa-1.16 */
+#radar-market-tabs {
+  display:flex;grid-template-columns:none;overflow-x:auto;overscroll-behavior-x:contain;
+  scroll-snap-type:x proximity;scrollbar-width:thin;gap:7px;
+  padding:10px 1px 12px;align-items:stretch;
+}
+#radar-market-tabs button {
+  flex:1 0 auto;min-width:103px;padding:11px 8px;white-space:nowrap;
+  scroll-snap-align:start;font-size:.91rem;
+}
+#radar-market-tabs button[aria-selected="true"] {padding:10px 7px;}
+#radar-market-tabs button[data-target="famous"],
+#radar-market-tabs button[data-target="kitchen"] {min-width:110px;}
+.villa-h1 {font-size:1.42rem;margin:20px 0 8px;color:#243e62;}
+.villa-muted {color:#6b7789;font-size:.9rem;line-height:1.7;}
+.villa-cards {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:16px 0;}
+.villa-card {background:#fff;border:1px solid #dce5ef;border-radius:14px;
+  padding:14px;text-align:left;color:#243851;font:inherit;line-height:1.65;}
+.villa-card strong {display:block;font-size:1rem;}
+.villa-card small {display:block;margin-top:3px;color:#6b7789;font-size:.77rem;}
+button.villa-card {cursor:pointer;}
+button.villa-card:focus-visible {outline:3px solid #4b87d1;}
+.villa-card-label {font-size:.78rem;color:#4776a1;}
+.villa-note {background:#f0f5fc;border:1px solid #d8e4f2;border-radius:13px;padding:13px;margin:12px 0;line-height:1.7;font-size:.88rem;}
+.villa-form {display:flex;gap:8px;flex-wrap:wrap;margin:14px 0;align-items:center;}
+.villa-input {border:1px solid #b9c9db;border-radius:12px;background:white;padding:12px 10px;
+  font:inherit;color:#243851;flex:1 1 170px;min-width:0;}
+.villa-action {border:1px solid #4076ac;border-radius:12px;background:#2d6ca5;color:#fff;
+  padding:12px 15px;cursor:pointer;font:700 .92rem system-ui,sans-serif;}
+.villa-action:focus-visible,.villa-subtle:focus-visible {outline:3px solid #76a7df;outline-offset:2px;}
+.villa-subtle {border:1px solid #ccd8e6;border-radius:10px;background:#fff;color:#365b85;
+  padding:10px 11px;font:600 .84rem system-ui,sans-serif;cursor:pointer;}
+.villa-subtle[disabled] {opacity:.5;cursor:not-allowed;}
+.villa-list {display:grid;gap:10px;}
+.villa-item {border:1px solid #dfe6f0;border-radius:14px;background:#fff;padding:13px;}
+.villa-item-head {display:flex;justify-content:space-between;align-items:flex-start;gap:10px;}
+.villa-item h3 {font-size:1.04rem;margin:0 0 3px;}
+.villa-item p {margin:6px 0;font-size:.86rem;line-height:1.65;}
+.villa-item .villa-data {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;
+  margin-top:10px;padding:10px;border-radius:9px;background:#f6f9fd;font-size:.85rem;}
+.villa-data b {display:block;font-size:1rem;color:#233c5f;margin-top:3px;}
+.villa-data small {display:block;color:#758196;}
+.villa-private-actions {display:flex;gap:8px;flex-wrap:wrap;margin:12px 0;align-items:center;}
+.villa-blank {border:1px dashed #bfcedd;border-radius:14px;background:#f8fafe;padding:20px 15px;line-height:1.7;color:#64758c;}
+#villa-message {font-size:.88rem;min-height:1.2rem;color:#315f91;line-height:1.6;}
+.villa-visually-hidden {position:absolute;clip:rect(0,0,0,0);height:1px;width:1px;overflow:hidden;white-space:nowrap;}
+@media(max-width:600px) {.villa-cards {grid-template-columns:1fr;}
+#radar-market-tabs button {flex:0 0 auto;min-width:100px;}
+.villa-item .villa-data {grid-template-columns:repeat(2,minmax(0,1fr));}}
 </style></head><body><main>
-    <div class="eyebrow">STOCK RESEARCH LAB · 1.15</div><h1>📡 小G股票雷達</h1>
-    <p class="muted">台股50＋美股50｜產業一句話、營收、獲利、技術排名及績效追蹤<br>台灣時間產生：2026-11-19 13:51。各股票請以卡片上的交易日為準。</p>
+    <div class="eyebrow">STOCK RESEARCH LAB · 1.16</div><h1>📡 小G股票雷達</h1>
+    <p class="muted">台股50＋美股50｜產業一句話、營收、獲利、技術排名及績效追蹤<br>台灣時間產生：2026-11-19 14:10。各股票請以卡片上的交易日為準。</p>
     <div class="stats"><div><small>成功掃描</small><strong>100</strong></div><div><small>符合均線</small><strong>13</strong></div>
     <div><small>明顯放量</small><strong>18</strong></div></div>
     <h2>四大引擎（目前開發狀態）</h2><div class="weights"><div><b>30%</b>技術分析<small>均線／量價／RSI動能：試驗評分已啟用</small></div>
@@ -1586,5 +1636,230 @@
   });
   const initial = location.hash.replace('#','');
   select(panels[initial] ? initial : 'overview',false,false);
+})();
+</script><script>
+(function(){
+  'use strict';
+  const nav=document.getElementById('radar-market-tabs');
+  const views=document.getElementById('radar-market-views');
+  const overview=document.getElementById('panel-overview');
+  if(!nav||!views||!overview||document.getElementById('tab-kitchen')) return;
+  const tabs=[
+    ['overview','🏠 總覽'],['tw','🇹🇼 台股'],['us','🇺🇸 美股'],
+    ['famous','🏦 名人'],['kitchen','🍳 廚房']
+  ];
+  function addTab(key,label){
+    const btn=document.createElement('button');
+    btn.type='button';btn.id='tab-'+key;btn.textContent=label;
+    btn.dataset.target=key;btn.setAttribute('role','tab');
+    btn.setAttribute('aria-controls','panel-'+key);
+    btn.setAttribute('aria-selected','false');btn.tabIndex=-1;
+    nav.appendChild(btn);
+    const panel=document.createElement('section');
+    panel.id='panel-'+key;panel.className='radar-panel';
+    panel.setAttribute('role','tabpanel');panel.setAttribute('aria-labelledby',btn.id);
+    panel.hidden=true;views.appendChild(panel);return panel;
+  }
+  const famous=addTab('famous','🏦 名人');
+  const kitchen=addTab('kitchen','🍳 廚房');
+  function select(key,changeHash,scroll){
+    if(!tabs.some(x=>x[0]===key))key='overview';
+    for(const [id] of tabs){
+      const btn=document.getElementById('tab-'+id);
+      const panel=document.getElementById('panel-'+id);
+      const active=id===key;
+      if(!btn||!panel)continue;
+      btn.setAttribute('aria-selected',String(active));
+      btn.tabIndex=active?0:-1;panel.hidden=!active;
+    }
+    if(changeHash){
+      try {history.replaceState(null,'',location.pathname+location.search+'#'+key);}
+      catch(err){/* local file preview can still switch tabs */}
+    }
+    if(scroll){
+      const button=document.getElementById('tab-'+key);
+      if(button)button.scrollIntoView({block:'nearest',inline:'nearest',behavior:'auto'});
+      nav.scrollIntoView({block:'start',behavior:'auto'});
+    }
+  }
+  // Capture first so the legacy three-tab handlers cannot deselect the new rooms.
+  nav.addEventListener('click',e=>{
+    const button=e.target.closest('button[data-target]');
+    if(!button||!nav.contains(button))return;
+    e.stopImmediatePropagation();e.preventDefault();
+    select(button.dataset.target,true,true);
+  },true);
+  nav.addEventListener('keydown',e=>{
+    if(!['ArrowLeft','ArrowRight','Home','End'].includes(e.key))return;
+    e.preventDefault();e.stopImmediatePropagation();
+    const index=tabs.findIndex(t=>t[0]===document.activeElement.dataset.target);
+    const i=Math.max(0,index);
+    const dest=e.key==='Home'?0:e.key==='End'?tabs.length-1:
+      (i+(e.key==='ArrowRight'?1:-1)+tabs.length)%tabs.length;
+    select(tabs[dest][0],true,false);
+    document.getElementById('tab-'+tabs[dest][0]).focus();
+  },true);
+  const direct=location.hash.replace(/^#/,'');
+  if(direct==='famous'||direct==='kitchen')select(direct,false,false);
+
+  const plan=document.createElement('section');
+  plan.className='radar-subgroup';
+  plan.innerHTML=`<h2 class="villa-h1">🏡 小G股票研究別墅｜樓層導覽</h2>
+    <p class="villa-muted">先把架構蓋好，再慢慢裝潢。研究報告與私人自選股分開保存。</p>
+    <div class="villa-cards">
+      <button class="villa-card" data-room="tw" type="button"><span class="villa-card-label">已運作</span><strong>🇹🇼 台股研究室</strong><small>排名、營收、季報、產業透視鏡與懶人提醒</small></button>
+      <button class="villa-card" data-room="us" type="button"><span class="villa-card-label">已運作</span><strong>🇺🇸 美股研究室</strong><small>技術排名、產業動能與紙上績效觀察</small></button>
+      <button class="villa-card" data-room="famous" type="button"><span class="villa-card-label">預留房間</span><strong>🏦 名人持股室</strong><small>申報資料與季度變化功能待接入</small></button>
+      <button class="villa-card" data-room="kitchen" type="button"><span class="villa-card-label">基本功能可使用</span><strong>🍳 soso 炒股廚房</strong><small>私人自選股新增、刪除及 JSON 備份</small></button>
+    </div>`;
+  overview.insertBefore(plan,overview.firstChild);
+  plan.addEventListener('click',e=>{
+    const btn=e.target.closest('button[data-room]');if(btn)select(btn.dataset.room,true,true);
+  });
+
+  famous.innerHTML=`<h2 class="villa-h1">🏦 名人持股觀察室</h2>
+    <p class="villa-muted">這間先蓋好入口與資料架構，持股比較尚未接入；不會顯示假的持股變化。</p>
+    <div class="villa-note"><b>第一位研究對象：波克夏·海瑟威（Berkshire Hathaway）</b><p>
+    未來會比較不同季度的 13F 申報：新增、增持、減持與不再列示的部位。
+    13F 是機構的延遲季度申報，不代表巴菲特本人全部持倉，也不等於申報當天的買賣。
+    </p><a href="https://www.sec.gov/edgar/search/" target="_blank" rel="noopener noreferrer">前往美國 SEC EDGAR 查詢官方申報</a></div>
+    <div class="villa-card"><strong>預計施工順序</strong>
+    <small>申報來源查證 → 兩季持股對照 → 變動摘要 → 更多機構</small></div>`;
+
+  kitchen.innerHTML=`<h2 class="villa-h1">🍳 soso 炒股廚房</h2>
+    <p class="villa-muted">自由輸入想追蹤的股票，不受固定 100 檔限制；不必修改 GitHub 程式。
+    目前先完成清單管理，行情與技術分析只顯示雷達已掃描的股票。</p>
+    <div class="villa-note"><b>🔐 私人資料提醒</b>：這個清單只保存在目前瀏覽器的本機儲存空間，不會寫進公開 GitHub。
+    換手機、無痕模式或清除網站資料可能使清單消失，請定期匯出備份。
+    此版本沒有帳戶同步，也不儲存成本、股數或實際損益。</div>
+    <form class="villa-form" id="villa-add-form">
+      <label class="villa-visually-hidden" for="villa-ticker">股票代號</label>
+      <input id="villa-ticker" class="villa-input" placeholder="例：1303、NVDA、0883.HK" autocomplete="off" maxlength="20" required>
+      <button class="villa-action" type="submit">＋ 加入清單</button>
+    </form>
+    <p id="villa-message" role="status" aria-live="polite"></p>
+    <div class="villa-private-actions">
+      <button class="villa-subtle" type="button" id="villa-export">匯出 JSON 備份</button>
+      <button class="villa-subtle" type="button" id="villa-import">匯入備份</button>
+      <input type="file" id="villa-file" accept=".json,application/json" class="villa-visually-hidden">
+    </div>
+    <p class="villa-muted" id="villa-count"></p>
+    <div id="villa-list" class="villa-list"></div>`;
+
+  const SNAPSHOT=[{"symbol":"2330.TW","name":"台積電","market":"台股","date":"2026-11-19","price":2100.0,"score":3,"change":-3.45,"trend":"否","alert":"位於20/60日均線下、5日跌幅較大"},{"symbol":"2454.TW","name":"聯發科","market":"台股","date":"2026-11-19","price":3720.0,"score":3,"change":-5.58,"trend":"否","alert":"放量下跌、位於20/60日均線下"},{"symbol":"2317.TW","name":"鴻海","market":"台股","date":"2026-11-19","price":220.5,"score":3,"change":-0.23,"trend":"否","alert":"位於20/60日均線下、5日跌幅較大"},{"symbol":"2308.TW","name":"台達電","market":"台股","date":"2026-11-19","price":1000.0,"score":1,"change":-5.66,"trend":"否","alert":"放量下跌、位於20/60日均線下、RSI偏低、5日跌幅較大"},{"symbol":"2382.TW","name":"廣達","market":"台股","date":"2026-11-19","price":262.5,"score":3,"change":-0.94,"trend":"否","alert":"位於20/60日均線下、RSI偏低"},{"symbol":"2303.TW","name":"聯電","market":"台股","date":"2026-11-19","price":88.2,"score":3,"change":-5.16,"trend":"否","alert":"位於20/60日均線下、RSI偏低、5日跌幅較大"},{"symbol":"2327.TW","name":"國巨","market":"台股","date":"2026-11-19","price":322.5,"score":1,"change":-8.38,"trend":"否","alert":"放量下跌、位於20/60日均線下、RSI偏低、5日跌幅較大"},{"symbol":"2357.TW","name":"華碩","market":"台股","date":"2026-11-19","price":800.0,"score":3,"change":-4.88,"trend":"否","alert":"位於20/60日均線下、5日跌幅較大"},{"symbol":"2376.TW","name":"技嘉","market":"台股","date":"2026-11-19","price":260.0,"score":3,"change":-5.97,"trend":"否","alert":"位於20/60日均線下、RSI偏低、5日跌幅較大"},{"symbol":"2377.TW","name":"微星","market":"台股","date":"2026-11-19","price":124.5,"score":3,"change":-5.32,"trend":"否","alert":"位於20/60日均線下、RSI偏低、5日跌幅較大"},{"symbol":"2408.TW","name":"南亞科","market":"台股","date":"2026-11-19","price":293.5,"score":3,"change":-9.69,"trend":"否","alert":"位於20/60日均線下、RSI偏低、5日跌幅較大"},{"symbol":"2409.TW","name":"友達","market":"台股","date":"2026-11-19","price":25.1,"score":3,"change":-8.39,"trend":"否","alert":"位於20/60日均線下、5日跌幅較大"},{"symbol":"2412.TW","name":"中華電","market":"台股","date":"2026-11-19","price":166.0,"score":28,"change":0.91,"trend":"是","alert":""},{"symbol":"3008.TW","name":"大立光","market":"台股","date":"2026-11-19","price":3980.0,"score":3,"change":-9.75,"trend":"否","alert":"位於20/60日均線下、5日跌幅較大"},{"symbol":"3017.TW","name":"奇鋐","market":"台股","date":"2026-11-19","price":2445.0,"score":5,"change":-9.94,"trend":"否","alert":"位於20/60日均線下、5日跌幅較大"},{"symbol":"3034.TW","name":"聯詠","market":"台股","date":"2026-11-19","price":436.5,"score":3,"change":-4.69,"trend":"否","alert":"位於20/60日均線下、RSI偏低"},{"symbol":"3231.TW","name":"緯創","market":"台股","date":"2026-11-19","price":156.0,"score":3,"change":-3.7,"trend":"否","alert":"位於20/60日均線下、5日跌幅較大"},{"symbol":"3443.TW","name":"創意","market":"台股","date":"2026-11-19","price":6000.0,"score":3,"change":-9.98,"trend":"否","alert":"位於20/60日均線下、5日跌幅較大"},{"symbol":"3532.TW","name":"台勝科","market":"台股","date":"2026-11-19","price":207.0,"score":3,"change":-9.8,"trend":"否","alert":"位於20/60日均線下、RSI偏低、5日跌幅較大"},{"symbol":"3661.TW","name":"世芯-KY","market":"台股","date":"2026-11-19","price":3600.0,"score":9,"change":-8.86,"trend":"否","alert":"放量下跌"},{"symbol":"3711.TW","name":"日月光投控","market":"台股","date":"2026-11-19","price":504.0,"score":3,"change":-8.03,"trend":"否","alert":"位於20/60日均線下、5日跌幅較大"},{"symbol":"4938.TW","name":"和碩","market":"台股","date":"2026-11-19","price":81.9,"score":3,"change":-4.1,"trend":"否","alert":"位於20/60日均線下、RSI偏低、5日跌幅較大"},{"symbol":"4958.TW","name":"臻鼎-KY","market":"台股","date":"2026-11-19","price":344.0,"score":3,"change":-9.95,"trend":"否","alert":"位於20/60日均線下、5日跌幅較大"},{"symbol":"5269.TW","name":"祥碩","market":"台股","date":"2026-11-19","price":1180.0,"score":11,"change":1.29,"trend":"否","alert":"位於20/60日均線下"},{"symbol":"1301.TW","name":"台塑","market":"台股","date":"2026-11-19","price":60.4,"score":3,"change":-6.21,"trend":"否","alert":"位於20/60日均線下、5日跌幅較大"},{"symbol":"1303.TW","name":"南亞","market":"台股","date":"2026-11-19","price":228.5,"score":3,"change":-9.86,"trend":"否","alert":"位於20/60日均線下、5日跌幅較大"},{"symbol":"1326.TW","name":"台化","market":"台股","date":"2026-11-19","price":62.7,"score":3,"change":-7.66,"trend":"否","alert":"位於20/60日均線下、5日跌幅較大"},{"symbol":"2002.TW","name":"中鋼","market":"台股","date":"2026-11-19","price":17.6,"score":3,"change":-1.95,"trend":"否","alert":"位於20/60日均線下、RSI偏低"},{"symbol":"1101.TW","name":"台泥","market":"台股","date":"2026-11-19","price":25.65,"score":3,"change":-2.29,"trend":"否","alert":"位於20/60日均線下"},{"symbol":"1102.TW","name":"亞泥","market":"台股","date":"2026-11-19","price":33.55,"score":1,"change":-2.89,"trend":"否","alert":"放量下跌、位於20/60日均線下、RSI偏低"},{"symbol":"1216.TW","name":"統一","market":"台股","date":"2026-11-19","price":78.7,"score":14,"change":-0.13,"trend":"否","alert":""},{"symbol":"2207.TW","name":"和泰車","market":"台股","date":"2026-11-19","price":546.0,"score":30,"change":1.49,"trend":"是","alert":""},{"symbol":"2603.TW","name":"長榮","market":"台股","date":"2026-11-19","price":247.0,"score":5,"change":-4.08,"trend":"否","alert":"位於20/60日均線下"},{"symbol":"2609.TW","name":"陽明","market":"台股","date":"2026-11-19","price":57.3,"score":3,"change":-5.29,"trend":"否","alert":"位於20/60日均線下"},{"symbol":"2615.TW","name":"萬海","market":"台股","date":"2026-11-19","price":103.5,"score":1,"change":-6.76,"trend":"否","alert":"放量下跌、位於20/60日均線下"},{"symbol":"2610.TW","name":"華航","market":"台股","date":"2026-11-19","price":22.5,"score":19,"change":-1.75,"trend":"是","alert":""},{"symbol":"2618.TW","name":"長榮航","market":"台股","date":"2026-11-19","price":46.4,"score":19,"change":-0.85,"trend":"是","alert":""},{"symbol":"2634.TW","name":"漢翔","market":"台股","date":"2026-11-19","price":48.4,"score":3,"change":-4.91,"trend":"否","alert":"位於20/60日均線下、RSI偏低、5日跌幅較大"},{"symbol":"1476.TW","name":"儒鴻","market":"台股","date":"2026-11-19","price":384.5,"score":28,"change":0.13,"trend":"是","alert":""},{"symbol":"1519.TW","name":"華城","market":"台股","date":"2026-11-19","price":468.0,"score":1,"change":-2.09,"trend":"否","alert":"放量下跌、位於20/60日均線下"},{"symbol":"1590.TW","name":"亞德客-KY","market":"台股","date":"2026-11-19","price":1005.0,"score":3,"change":-3.37,"trend":"否","alert":"位於20/60日均線下"},{"symbol":"2881.TW","name":"富邦金","market":"台股","date":"2026-11-19","price":148.0,"score":5,"change":-0.67,"trend":"否","alert":"位於20/60日均線下"},{"symbol":"2882.TW","name":"國泰金","market":"台股","date":"2026-11-19","price":103.5,"score":1,"change":-5.91,"trend":"否","alert":"放量下跌、位於20/60日均線下"},{"symbol":"2884.TW","name":"玉山金","market":"台股","date":"2026-11-19","price":40.35,"score":1,"change":-4.27,"trend":"否","alert":"放量下跌、位於20/60日均線下、RSI偏低、5日跌幅較大"},{"symbol":"2885.TW","name":"元大金","market":"台股","date":"2026-11-19","price":63.2,"score":1,"change":-2.62,"trend":"否","alert":"放量下跌、位於20/60日均線下、5日跌幅較大"},{"symbol":"2886.TW","name":"兆豐金","market":"台股","date":"2026-11-19","price":53.4,"score":19,"change":1.52,"trend":"否","alert":""},{"symbol":"2891.TW","name":"中信金","market":"台股","date":"2026-11-19","price":73.1,"score":7,"change":-0.41,"trend":"否","alert":"放量下跌"},{"symbol":"2892.TW","name":"第一金","market":"台股","date":"2026-11-19","price":40.15,"score":7,"change":-2.07,"trend":"否","alert":"放量下跌"},{"symbol":"5871.TW","name":"中租-KY","market":"台股","date":"2026-11-19","price":99.5,"score":6,"change":0.2,"trend":"否","alert":"位於20/60日均線下"},{"symbol":"5880.TW","name":"合庫金","market":"台股","date":"2026-11-19","price":27.4,"score":9,"change":-0.36,"trend":"否","alert":""},{"symbol":"AAPL","name":"","market":"美股","date":"2026-11-18","price":352.45,"score":22,"change":0.15,"trend":"是","alert":""},{"symbol":"MSFT","name":"","market":"美股","date":"2026-11-18","price":508.29,"score":8,"change":0.4,"trend":"否","alert":"位於20/60日均線下"},{"symbol":"NVDA","name":"","market":"美股","date":"2026-11-18","price":150.96,"score":3,"change":-2.89,"trend":"否","alert":"位於20/60日均線下、RSI偏低、5日跌幅較大"},{"symbol":"GOOGL","name":"","market":"美股","date":"2026-11-18","price":282.44,"score":6,"change":0.8,"trend":"否","alert":"位於20/60日均線下"},{"symbol":"AMZN","name":"","market":"美股","date":"2026-11-18","price":267.74,"score":25,"change":3.82,"trend":"是","alert":""},{"symbol":"META","name":"","market":"美股","date":"2026-11-18","price":616.38,"score":5,"change":-0.4,"trend":"否","alert":"位於20/60日均線下"},{"symbol":"AVGO","name":"","market":"美股","date":"2026-11-18","price":354.05,"score":21,"change":3.64,"trend":"否","alert":""},{"symbol":"AMD","name":"","market":"美股","date":"2026-11-18","price":530.14,"score":14,"change":5.31,"trend":"否","alert":""},{"symbol":"ORCL","name":"","market":"美股","date":"2026-11-18","price":113.89,"score":3,"change":-0.97,"trend":"否","alert":"位於20/60日均線下、5日跌幅較大"},{"symbol":"CRM","name":"","market":"美股","date":"2026-11-18","price":190.4,"score":3,"change":-2.12,"trend":"否","alert":"位於20/60日均線下、RSI偏低、5日跌幅較大"},{"symbol":"ADBE","name":"","market":"美股","date":"2026-11-18","price":226.2,"score":3,"change":-3.97,"trend":"否","alert":"位於20/60日均線下"},{"symbol":"PLTR","name":"","market":"美股","date":"2026-11-18","price":156.67,"score":6,"change":0.07,"trend":"否","alert":"位於20/60日均線下、5日跌幅較大"},{"symbol":"MU","name":"","market":"美股","date":"2026-11-18","price":705.27,"score":3,"change":-1.0,"trend":"否","alert":"位於20/60日均線下、5日跌幅較大"},{"symbol":"INTC","name":"","market":"美股","date":"2026-11-18","price":54.67,"score":3,"change":-0.91,"trend":"否","alert":"位於20/60日均線下、RSI偏低、5日跌幅較大"},{"symbol":"AMAT","name":"","market":"美股","date":"2026-11-18","price":352.3,"score":6,"change":0.88,"trend":"否","alert":"位於20/60日均線下、5日跌幅較大"},{"symbol":"LRCX","name":"","market":"美股","date":"2026-11-18","price":211.67,"score":6,"change":0.47,"trend":"否","alert":"位於20/60日均線下、5日跌幅較大"},{"symbol":"KLAC","name":"","market":"美股","date":"2026-11-18","price":144.88,"score":8,"change":0.22,"trend":"否","alert":"位於20/60日均線下、5日跌幅較大"},{"symbol":"QCOM","name":"","market":"美股","date":"2026-11-18","price":159.81,"score":5,"change":-4.12,"trend":"否","alert":"位於20/60日均線下、5日跌幅較大"},{"symbol":"TXN","name":"","market":"美股","date":"2026-11-18","price":292.43,"score":9,"change":-1.16,"trend":"否","alert":""},{"symbol":"ADI","name":"","market":"美股","date":"2026-11-18","price":381.98,"score":5,"change":-0.44,"trend":"否","alert":"位於20/60日均線下"},{"symbol":"PANW","name":"","market":"美股","date":"2026-11-18","price":339.92,"score":16,"change":9.9,"trend":"否","alert":"位於20/60日均線下"},{"symbol":"CRWD","name":"","market":"美股","date":"2026-11-18","price":237.03,"score":13,"change":7.95,"trend":"否","alert":"位於20/60日均線下"},{"symbol":"NOW","name":"","market":"美股","date":"2026-11-18","price":90.59,"score":3,"change":-2.49,"trend":"否","alert":"位於20/60日均線下、RSI偏低、5日跌幅較大"},{"symbol":"ANET","name":"","market":"美股","date":"2026-11-18","price":193.94,"score":18,"change":4.03,"trend":"否","alert":""},{"symbol":"UBER","name":"","market":"美股","date":"2026-11-18","price":68.76,"score":9,"change":-0.07,"trend":"否","alert":""},{"symbol":"TSLA","name":"","market":"美股","date":"2026-11-18","price":383.72,"score":14,"change":0.95,"trend":"否","alert":""},{"symbol":"GM","name":"","market":"美股","date":"2026-11-18","price":82.13,"score":5,"change":-2.28,"trend":"否","alert":"位於20/60日均線下"},{"symbol":"CAT","name":"","market":"美股","date":"2026-11-18","price":558.77,"score":3,"change":-2.11,"trend":"否","alert":"位於20/60日均線下、RSI偏低"},{"symbol":"DE","name":"","market":"美股","date":"2026-11-18","price":644.75,"score":5,"change":-0.69,"trend":"否","alert":"位於20/60日均線下"},{"symbol":"GE","name":"","market":"美股","date":"2026-11-18","price":328.1,"score":18,"change":0.52,"trend":"否","alert":""},{"symbol":"GEV","name":"","market":"美股","date":"2026-11-18","price":772.22,"score":3,"change":-0.99,"trend":"否","alert":"位於20/60日均線下"},{"symbol":"BA","name":"","market":"美股","date":"2026-11-18","price":162.91,"score":3,"change":-0.61,"trend":"否","alert":"位於20/60日均線下"},{"symbol":"LLY","name":"","market":"美股","date":"2026-11-18","price":1382.75,"score":19,"change":-2.32,"trend":"是","alert":""},{"symbol":"UNH","name":"","market":"美股","date":"2026-11-18","price":349.91,"score":1,"change":-10.21,"trend":"否","alert":"放量下跌、位於20/60日均線下、RSI偏低、5日跌幅較大"},{"symbol":"JNJ","name":"","market":"美股","date":"2026-11-18","price":272.7,"score":9,"change":-2.15,"trend":"否","alert":""},{"symbol":"ABBV","name":"","market":"美股","date":"2026-11-18","price":286.01,"score":9,"change":-2.33,"trend":"否","alert":""},{"symbol":"MRK","name":"","market":"美股","date":"2026-11-18","price":137.78,"score":3,"change":-3.9,"trend":"否","alert":"位於20/60日均線下"},{"symbol":"PFE","name":"","market":"美股","date":"2026-11-18","price":28.06,"score":3,"change":-1.44,"trend":"否","alert":"位於20/60日均線下"},{"symbol":"JPM","name":"","market":"美股","date":"2026-11-18","price":324.11,"score":3,"change":-1.77,"trend":"否","alert":"位於20/60日均線下"},{"symbol":"BAC","name":"","market":"美股","date":"2026-11-18","price":48.91,"score":3,"change":-1.07,"trend":"否","alert":"位於20/60日均線下"},{"symbol":"GS","name":"","market":"美股","date":"2026-11-18","price":873.18,"score":5,"change":-0.49,"trend":"否","alert":"位於20/60日均線下"},{"symbol":"V","name":"","market":"美股","date":"2026-11-18","price":415.22,"score":11,"change":-0.37,"trend":"否","alert":""},{"symbol":"MA","name":"","market":"美股","date":"2026-11-18","price":643.37,"score":11,"change":-0.37,"trend":"否","alert":""},{"symbol":"COST","name":"","market":"美股","date":"2026-11-18","price":1096.62,"score":22,"change":-1.21,"trend":"是","alert":""},{"symbol":"WMT","name":"","market":"美股","date":"2026-11-18","price":127.36,"score":22,"change":-0.13,"trend":"是","alert":""},{"symbol":"KO","name":"","market":"美股","date":"2026-11-18","price":98.09,"score":22,"change":-0.71,"trend":"是","alert":""},{"symbol":"PG","name":"","market":"美股","date":"2026-11-18","price":170.29,"score":22,"change":-0.83,"trend":"是","alert":""},{"symbol":"XOM","name":"","market":"美股","date":"2026-11-18","price":160.58,"score":3,"change":-3.97,"trend":"否","alert":"位於20/60日均線下"},{"symbol":"CVX","name":"","market":"美股","date":"2026-11-18","price":205.88,"score":3,"change":-3.95,"trend":"否","alert":"位於20/60日均線下"},{"symbol":"NEE","name":"","market":"美股","date":"2026-11-18","price":84.78,"score":22,"change":0.43,"trend":"是","alert":""}];
+  const bySymbol=new Map(SNAPSHOT.map(r=>[r.symbol,r]));
+  const KEY='soso-stock-radar-watchlist-v1';
+  const MAX_ITEMS=80;
+  const msg=document.getElementById('villa-message');
+  const tickerInput=document.getElementById('villa-ticker');
+  const list=document.getElementById('villa-list');
+  const count=document.getElementById('villa-count');
+  function say(text){msg.textContent=text;}
+  function normalize(ticker){
+    let x=String(ticker||'').trim().toUpperCase().replace(/\s+/g,'');
+    if(/^\d{4,6}$/.test(x))x+='.TW';
+    // TW/TWO/HK ticker or ordinary US symbol; avoid user-controlled HTML.
+    if(/^\d{4,6}\.(TW|TWO|HK)$/.test(x)||/^[A-Z][A-Z0-9.\-]{0,14}$/.test(x))return x;
+    return null;
+  }
+  function marketOf(symbol){
+    return symbol.endsWith('.TW')||symbol.endsWith('.TWO')?'台股':
+      symbol.endsWith('.HK')?'港股':'美股／其他';
+  }
+  function readList(){
+    try{
+      const data=JSON.parse(localStorage.getItem(KEY)||'[]');
+      if(!Array.isArray(data))return [];
+      return Array.from(new Set(data.filter(x=>typeof x==='string').map(normalize).filter(Boolean))).slice(0,MAX_ITEMS);
+    }catch(err){return [];}
+  }
+  let saved=readList();
+  function saveList(){
+    try{localStorage.setItem(KEY,JSON.stringify(saved));return true;}
+    catch(err){say('瀏覽器未允許儲存：這次修改無法持久保存，請檢查網站儲存設定。');return false;}
+  }
+  function el(tag,className,text){
+    const node=document.createElement(tag);
+    if(className)node.className=className;
+    if(text!==undefined)node.textContent=text;
+    return node;
+  }
+  function metric(parent,label,value){
+    const box=el('div');box.append(el('small','',label),el('b','',value));parent.append(box);
+  }
+  function renderList(){
+    list.replaceChildren();
+    count.textContent='目前清單：'+saved.length+' 檔（最多 '+MAX_ITEMS+' 檔）';
+    if(!saved.length){list.appendChild(el('div','villa-blank','這裡還沒有股票。輸入代號就能建立第一筆私人觀察清單。'));return;}
+    for(const symbol of saved){
+      const stock=bySymbol.get(symbol);
+      const item=el('article','villa-item');
+      const head=el('div','villa-item-head');
+      const titleWrap=el('div');
+      titleWrap.append(el('h3','',stock&&stock.name?stock.name+' · '+symbol:symbol),
+        el('p','villa-muted',marketOf(symbol)));
+      const remove=el('button','villa-subtle','移除');remove.type='button';
+      remove.setAttribute('aria-label','移除'+symbol);
+      remove.addEventListener('click',()=>{
+        saved=saved.filter(x=>x!==symbol);
+        if(saveList()){say('已從此裝置的清單移除 '+symbol);renderList();}
+      });
+      head.append(titleWrap,remove);item.appendChild(head);
+      if(stock){
+        const data=el('div','villa-data');
+        const price=Number(stock.price),score=Number(stock.score),change=Number(stock.change);
+        metric(data,'調整收盤價',Number.isFinite(price)?price.toLocaleString('en-US',{maximumFractionDigits:2})+' '+(stock.market==='台股'?'TWD':'USD'):'—');
+        metric(data,'實驗性技術分數',Number.isFinite(score)?score+'/30':'—');
+        metric(data,'均線趨勢',stock.trend==='是'?'符合':stock.trend==='否'?'未符合':'—');
+        metric(data,'當日漲跌',Number.isFinite(change)?(change>0?'+':'')+change.toFixed(2)+'%':'—');
+        item.appendChild(data);
+        item.appendChild(el('p','villa-muted','資料日期：'+(stock.date||'—')+'；非即時報價。'+(stock.alert?'研究提醒：'+stock.alert:'目前無預設技術警示。')));
+      }else{
+        item.appendChild(el('p','villa-muted','此股票不在雷達現有的固定 100 檔掃描池；目前只保存代號，不會假裝有自動更新或即時行情。'));
+      }
+      list.appendChild(item);
+    }
+  }
+  document.getElementById('villa-add-form').addEventListener('submit',e=>{
+    e.preventDefault();const symbol=normalize(tickerInput.value);
+    if(!symbol){say('代號格式不符合。範例：1303、1303.TW、NVDA、0883.HK');return;}
+    if(saved.includes(symbol)){say('清單裡已經有 '+symbol);return;}
+    if(saved.length>=MAX_ITEMS){say('清單最多 '+MAX_ITEMS+' 檔，請先移除部分股票。');return;}
+    saved.push(symbol);
+    if(saveList()){tickerInput.value='';say('已加入 '+symbol+'（此裝置專用）');renderList();}
+  });
+  document.getElementById('villa-export').addEventListener('click',()=>{
+    const file={type:'soso-radar-watchlist',version:1,exportedAt:new Date().toISOString(),symbols:saved};
+    const blob=new Blob([JSON.stringify(file,null,2)],{type:'application/json'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');a.href=url;a.download='soso_炒股廚房_備份.json';
+    document.body.appendChild(a);a.click();a.remove();
+    // Revoke at a later event turn so browsers have time to start the download.
+    setTimeout(()=>URL.revokeObjectURL(url),1000);
+    say('已產生 JSON 備份。請確認檔案已儲存在手機裡。');
+  });
+  const fileInput=document.getElementById('villa-file');
+  document.getElementById('villa-import').addEventListener('click',()=>fileInput.click());
+  fileInput.addEventListener('change',async()=>{
+    const file=fileInput.files&&fileInput.files[0];if(!file)return;
+    try{
+      if(file.size>150000)throw Error('檔案過大');
+      const payload=JSON.parse(await file.text());
+      if(!payload||payload.type!=='soso-radar-watchlist'||payload.version!==1||!Array.isArray(payload.symbols))
+        throw Error('不是炒股廚房支援的 JSON 備份');
+      if(payload.symbols.length>MAX_ITEMS)throw Error('備份超過 '+MAX_ITEMS+' 檔限制');
+      const next=[];
+      for(const item of payload.symbols){
+        if(typeof item!=='string'||!normalize(item))throw Error('備份有無效股票代號');
+        const value=normalize(item);if(!next.includes(value))next.push(value);
+      }
+      // Merge, do not silently overwrite current holdings.
+      const merged=Array.from(new Set([...saved,...next]));
+      if(merged.length>MAX_ITEMS)throw Error('合併後超過 '+MAX_ITEMS+' 檔');
+      saved=merged;if(saveList()){say('已合併備份，現在共有 '+saved.length+' 檔');renderList();}
+    }catch(err){say('匯入失敗：'+err.message);}
+    finally{fileInput.value='';}
+  });
+  renderList();
 })();
 </script></body></html>
