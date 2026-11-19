@@ -1,0 +1,163 @@
+name: 小G 1.13 產業前景評分地基（安裝與週更）
+
+on:
+  push:
+    paths:
+      - '.github/workflows/readiness-v113.yml'
+  workflow_dispatch:
+  schedule:
+    # 台灣時間每週日15:20。官方月營收與季度財報保留新快照。
+    - cron: '20 7 * * 0'
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: radar-readiness-v113
+  cancel-in-progress: false
+
+jobs:
+  upgrade:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 取得原有雷達
+        uses: actions/checkout@v4
+      - name: 安裝1.13產業評分地基（不修改既有工作流程）
+        shell: bash
+        run: |
+          python - <<'PY_UPGRADE'
+          from pathlib import Path
+          import base64, gzip
+          source = """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"""
+          module = gzip.decompress(base64.b64decode(''.join(source.split()))).decode('utf-8')
+          compile(module, 'industry_readiness.py', 'exec')
+          file = Path('radar.py')
+          original = file.read_text(encoding='utf-8')
+          if 'STOCK RESEARCH LAB · 1.13' in original:
+              updated = original
+              print('1.13 已安裝；不重複修改')
+          else:
+              if 'STOCK RESEARCH LAB · 1.12' not in original:
+                  raise SystemExit('偵測到不是1.12版本，停止升級，避免破壞既有雷達')
+              patches = [
+                  ('from fundamental_crosscheck import fundamental_crosscheck_section',
+                   'from fundamental_crosscheck import fundamental_crosscheck_section\nfrom industry_readiness import industry_readiness_section'),
+                  ('    {fundamental_crosscheck_section(UNIVERSE, INDUSTRY, TW_NAMES)}',
+                   '    {fundamental_crosscheck_section(UNIVERSE, INDUSTRY, TW_NAMES)}\n    {industry_readiness_section(UNIVERSE, INDUSTRY)}'),
+                  ('建置中：已有族群動能、台股月營收與一般業季報獲利率觀察；尚未給30分',
+                   '建置中：加入官方資料跨期可比性觀察，30分評分尚未啟用'),
+                  ('台股50＋美股50｜產業動能、月營收、季報獲利、基本面交叉驗證、排名變動、績效追蹤、風險提示',
+                   '台股50＋美股50｜產業資料可比性、營收、獲利、技術排名及績效追蹤'),
+                  ('小G 股票雷達 1.12：', '小G 股票雷達 1.13：'),
+                  ('小G股票雷達 1.12', '小G股票雷達 1.13'),
+                  ('STOCK RESEARCH LAB · 1.12', 'STOCK RESEARCH LAB · 1.13'),
+              ]
+              updated = original
+              for old,new in patches:
+                  count = updated.count(old)
+                  if count != 1:
+                      raise SystemExit(f'升級定位點不唯一：{old[:40]}，找到{count}次；沒有修改檔案')
+                  updated = updated.replace(old,new,1)
+              compile(updated, 'radar.py', 'exec')
+          # Validate everything before touching the repo checkout.
+          Path('industry_readiness.py').write_text(module, encoding='utf-8')
+          if updated != original:
+              file.write_text(updated, encoding='utf-8')
+          print('1.13 產業資料可比性研究室就緒')
+          PY_UPGRADE
+      - name: 保存1.13程式
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add radar.py industry_readiness.py
+          if ! git diff --cached --quiet; then
+            git commit -m 'Radar 1.13: industry fundamentals data readiness'
+            git push
+          fi
+      - name: 設定Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: 安裝工具
+        run: pip install -r requirements.txt
+      - name: 更新雷達與已發布財報快照
+        run: python radar.py
+      - name: 保存報告與兩種財報歷史檔
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html data/history.csv
+          for path in data/monthly_revenue.csv data/quarterly_profit.csv; do
+            if [ -f "$path" ]; then git add "$path"; fi
+          done
+          if ! git diff --cached --quiet; then
+            git commit -m 'Update v1.13 report and archived fundamentals'
+            git push
+          fi
+      - name: 準備手機網頁
+        run: |
+          mkdir -p _site/data
+          cp index.html _site/index.html
+          cp data/history.csv _site/data/history.csv
+          for path in data/monthly_revenue.csv data/quarterly_profit.csv; do
+            if [ -f "$path" ]; then cp "$path" _site/data/; fi
+          done
+      - name: 上傳網頁
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
+  publish:
+    needs: upgrade
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.publish.outputs.page_url }}
+    steps:
+      - name: 發布股票雷達1.13
+        id: publish
+        uses: actions/deploy-pages@v4
