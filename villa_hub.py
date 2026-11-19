@@ -1,4 +1,4 @@
-"""Stock Radar 1.16: site architecture + private browser watchlist foundation.
+"""Stock Radar 1.18: optional private holdings and watchlist, with score changes.
 
 Existing markets/analytics remain unchanged. Visitors' watchlists live only in
 local browser storage; they are never transmitted to GitHub or embedded into the
@@ -10,7 +10,7 @@ import json
 from pathlib import Path
 
 CSS = r"""
-/* stock-radar-villa-1.16 */
+/* stock-radar-villa-1.18 */
 #radar-market-tabs {
   display:flex;grid-template-columns:none;overflow-x:auto;overscroll-behavior-x:contain;
   scroll-snap-type:x proximity;scrollbar-width:thin;gap:7px;
@@ -53,6 +53,19 @@ button.villa-card:focus-visible {outline:3px solid #4b87d1;}
 .villa-data b {display:block;font-size:1rem;color:#233c5f;margin-top:3px;}
 .villa-data small {display:block;color:#758196;}
 .villa-private-actions {display:flex;gap:8px;flex-wrap:wrap;margin:12px 0;align-items:center;}
+
+.villa-preference {margin-top:12px;padding:10px 11px;background:#f8fafe;border:1px solid #e0e9f4;border-radius:10px;}
+.villa-preference summary {cursor:pointer;font-size:.88rem;font-weight:680;color:#326594;}
+.villa-preference label {display:block;margin:10px 0 4px;font-size:.82rem;color:#53647a;}
+.villa-preference input,.villa-preference select,.villa-preference textarea {
+  width:100%;padding:9px 10px;box-sizing:border-box;border:1px solid #b9c9db;
+  border-radius:9px;background:#fff;color:#253851;font:inherit;
+}
+.villa-preference textarea {resize:vertical;min-height:60px;}
+.villa-preference .villa-save {margin-top:12px;}
+.villa-pref-badge {display:inline-block;margin:0 0 3px;padding:3px 8px;border-radius:20px;
+  background:#edf5ff;color:#225d9f;font-size:.76rem;}
+.villa-movement {font-size:.84rem;margin-top:8px;color:#365b85;}
 .villa-blank {border:1px dashed #bfcedd;border-radius:14px;background:#f8fafe;padding:20px 15px;line-height:1.7;color:#64758c;}
 #villa-message {font-size:.88rem;min-height:1.2rem;color:#315f91;line-height:1.6;}
 .villa-visually-hidden {position:absolute;clip:rect(0,0,0,0);height:1px;width:1px;overflow:hidden;white-space:nowrap;}
@@ -134,7 +147,7 @@ SCRIPT = r"""
       <button class="villa-card" data-room="tw" type="button"><span class="villa-card-label">已運作</span><strong>🇹🇼 台股研究室</strong><small>排名、營收、季報、產業透視鏡與懶人提醒</small></button>
       <button class="villa-card" data-room="us" type="button"><span class="villa-card-label">已運作</span><strong>🇺🇸 美股研究室</strong><small>技術排名、產業動能與紙上績效觀察</small></button>
       <button class="villa-card" data-room="famous" type="button"><span class="villa-card-label">預留房間</span><strong>🏦 名人持股室</strong><small>申報資料與季度變化功能待接入</small></button>
-      <button class="villa-card" data-room="kitchen" type="button"><span class="villa-card-label">基本功能可使用</span><strong>🍳 soso 炒股廚房</strong><small>私人自選股新增、刪除及 JSON 備份</small></button>
+      <button class="villa-card" data-room="kitchen" type="button"><span class="villa-card-label">持股觀察功能</span><strong>🍳 soso 炒股廚房</strong><small>持有／觀察分類、成本備註、技術分數變化</small></button>
     </div>`;
   overview.insertBefore(plan,overview.firstChild);
   plan.addEventListener('click',e=>{
@@ -152,10 +165,10 @@ SCRIPT = r"""
 
   kitchen.innerHTML=`<h2 class="villa-h1">🍳 soso 炒股廚房</h2>
     <p class="villa-muted">自由輸入想追蹤的股票，不受固定 100 檔限制；不必修改 GitHub 程式。
-    目前先完成清單管理，行情與技術分析只顯示雷達已掃描的股票。</p>
+    新增、刪除和編輯都在這裡完成，無需修改 GitHub；只有雷達已掃描的股票可顯示技術分析。</p>
     <div class="villa-note"><b>🔐 私人資料提醒</b>：這個清單只保存在目前瀏覽器的本機儲存空間，不會寫進公開 GitHub。
     換手機、無痕模式或清除網站資料可能使清單消失，請定期匯出備份。
-    此版本沒有帳戶同步，也不儲存成本、股數或實際損益。</div>
+    持有股數、成本和備註為選填，僅保留在這台裝置；沒有雲端同步。調整後歷史價格不能直接對比原始買入成本，所以暫不計算實際損益。</div>
     <form class="villa-form" id="villa-add-form">
       <label class="villa-visually-hidden" for="villa-ticker">股票代號</label>
       <input id="villa-ticker" class="villa-input" placeholder="例：1303、NVDA、0883.HK" autocomplete="off" maxlength="20" required>
@@ -173,6 +186,7 @@ SCRIPT = r"""
   const SNAPSHOT=__SNAPSHOT_JSON__;
   const bySymbol=new Map(SNAPSHOT.map(r=>[r.symbol,r]));
   const KEY='soso-stock-radar-watchlist-v1';
+  const META_KEY='soso-stock-radar-holdings-v1';
   const MAX_ITEMS=80;
   const msg=document.getElementById('villa-message');
   const tickerInput=document.getElementById('villa-ticker');
@@ -197,6 +211,33 @@ SCRIPT = r"""
       return Array.from(new Set(data.filter(x=>typeof x==='string').map(normalize).filter(Boolean))).slice(0,MAX_ITEMS);
     }catch(err){return [];}
   }
+
+  function finiteAmount(v){
+    if(v===null||v===undefined||v==='')return null;
+    if(typeof v==='boolean')return null;
+    const n=Number(v);return Number.isFinite(n)&&n>=0&&n<=1000000000?n:null;
+  }
+  function cleanMeta(obj){
+    if(!obj||typeof obj!=='object'||Array.isArray(obj))return {};
+    const out={};
+    for(const [key,item] of Object.entries(obj)){
+      const symbol=normalize(key);
+      if(!symbol||!item||typeof item!=='object'||Array.isArray(item))continue;
+      const status=item.status==='holding'?'holding':'watch';
+      const note=typeof item.note==='string'?item.note.slice(0,180):'';
+      out[symbol]={status:status,quantity:finiteAmount(item.quantity),cost:finiteAmount(item.cost),note:note};
+    }
+    return out;
+  }
+  function readMeta(){
+    try{return cleanMeta(JSON.parse(localStorage.getItem(META_KEY)||'{}'));}
+    catch(err){return {};}
+  }
+  let metadata=readMeta();
+  function saveMeta(){
+    try{localStorage.setItem(META_KEY,JSON.stringify(metadata));return true;}
+    catch(err){say('這台瀏覽器暫時無法保存持有資料，請檢查網站儲存設定。');return false;}
+  }
   let saved=readList();
   function saveList(){
     try{localStorage.setItem(KEY,JSON.stringify(saved));return true;}
@@ -217,6 +258,7 @@ SCRIPT = r"""
     if(!saved.length){list.appendChild(el('div','villa-blank','這裡還沒有股票。輸入代號就能建立第一筆私人觀察清單。'));return;}
     for(const symbol of saved){
       const stock=bySymbol.get(symbol);
+      const pref=metadata[symbol]||{status:'watch',quantity:null,cost:null,note:''};
       const item=el('article','villa-item');
       const head=el('div','villa-item-head');
       const titleWrap=el('div');
@@ -226,8 +268,12 @@ SCRIPT = r"""
       remove.setAttribute('aria-label','移除'+symbol);
       remove.addEventListener('click',()=>{
         saved=saved.filter(x=>x!==symbol);
-        if(saveList()){say('已從此裝置的清單移除 '+symbol);renderList();}
+        if(saveList()){
+          delete metadata[symbol];saveMeta();
+          say('已從此裝置的清單移除 '+symbol);renderList();
+        }
       });
+      titleWrap.prepend(el('span','villa-pref-badge',pref.status==='holding'?'已持有':'觀察中'));
       head.append(titleWrap,remove);item.appendChild(head);
       if(stock){
         const data=el('div','villa-data');
@@ -236,11 +282,65 @@ SCRIPT = r"""
         metric(data,'實驗性技術分數',Number.isFinite(score)?score+'/30':'—');
         metric(data,'均線趨勢',stock.trend==='是'?'符合':stock.trend==='否'?'未符合':'—');
         metric(data,'當日漲跌',Number.isFinite(change)?(change>0?'+':'')+change.toFixed(2)+'%':'—');
+        const previous=Number(stock.previous_score);
+        if(stock.previous_date&&Number.isFinite(previous)&&Number.isFinite(score)){
+          const diff=score-previous;
+          metric(data,'技術分數變化', (diff>0?'+':'')+diff+' 分（較 '+stock.previous_date+'）');
+        }else metric(data,'技術分數變化','待累積可比較的交易日');
         item.appendChild(data);
-        item.appendChild(el('p','villa-muted','資料日期：'+(stock.date||'—')+'；非即時報價。'+(stock.alert?'研究提醒：'+stock.alert:'目前無預設技術警示。')));
+        item.appendChild(el('p','villa-muted','資料日期：'+(stock.date||'—')+'；調整後收盤價，非即時報價。'+(stock.alert?'研究提醒：'+stock.alert:'目前無預設技術警示。')));
       }else{
         item.appendChild(el('p','villa-muted','此股票不在雷達現有的固定 100 檔掃描池；目前只保存代號，不會假裝有自動更新或即時行情。'));
       }
+      if(pref.status==='holding' || pref.note){
+        const summary=el('p','villa-muted','');
+        const parts=[];
+        if(pref.status==='holding'){
+          if(pref.quantity!==null)parts.push('股數 '+pref.quantity.toLocaleString());
+          if(pref.cost!==null)parts.push('平均成本 '+pref.cost+' '+(marketOf(symbol)==='台股'?'TWD':marketOf(symbol)==='港股'?'HKD':'USD'));
+          if(parts.length===0)parts.push('已持有（股數及成本尚未填寫）');
+        }
+        if(pref.note)parts.push('備註：'+pref.note);
+        summary.textContent=parts.join('｜');item.appendChild(summary);
+      }
+      const edit=el('details','villa-preference');
+      const summary=el('summary','','✏️ 編輯狀態／成本／備註（選填）');
+      edit.append(summary);
+      const form=el('form');form.className='villa-edit-form';
+      function field(label,type,value,options){
+        const wrap=el('label');wrap.append(el('span','',label));
+        let input;
+        if(type==='select'){
+          input=el('select');
+          for(const [v,name] of options){const opt=el('option','',name);opt.value=v;input.append(opt);}
+        }else if(type==='textarea'){
+          input=el('textarea');input.maxLength=180;input.rows=2;
+        }else{
+          input=el('input');input.type='number';input.step='any';input.min='0';input.max='1000000000';
+        }
+        input.value=value===null||value===undefined?'':String(value);
+        wrap.append(input);form.append(wrap);return input;
+      }
+      const status=field('類型','select',pref.status,[['watch','只是觀察'],['holding','實際持有']]);
+      const qty=field('持有股數（選填）','number',pref.quantity);
+      const cost=field('平均買進成本（交易幣別，選填）','number',pref.cost);
+      const note=field('私人備註（最多180字）','textarea',pref.note||'');
+      const save=el('button','villa-action villa-save','保存這檔');save.type='submit';form.append(save);
+      form.addEventListener('submit',event=>{
+        event.preventDefault();
+        if((qty.value!==''&&finiteAmount(qty.value)===null)||
+           (cost.value!==''&&finiteAmount(cost.value)===null)){
+          say('股數和成本必須是有效的非負數。');return;
+        }
+        const latest={status:status.value,quantity:finiteAmount(qty.value),
+                      cost:finiteAmount(cost.value),note:note.value.trim().slice(0,180)};
+        metadata[symbol]=latest;
+        if(saveMeta()){
+          say('已保存在這台裝置：'+symbol);
+          renderList();
+        }
+      });
+      edit.append(form);item.append(edit);
       list.appendChild(item);
     }
   }
@@ -253,7 +353,7 @@ SCRIPT = r"""
     if(saveList()){tickerInput.value='';say('已加入 '+symbol+'（此裝置專用）');renderList();}
   });
   document.getElementById('villa-export').addEventListener('click',()=>{
-    const file={type:'soso-radar-watchlist',version:1,exportedAt:new Date().toISOString(),symbols:saved};
+    const file={type:'soso-radar-watchlist',version:2,exportedAt:new Date().toISOString(),symbols:saved,meta:metadata};
     const blob=new Blob([JSON.stringify(file,null,2)],{type:'application/json'});
     const url=URL.createObjectURL(blob);
     const a=document.createElement('a');a.href=url;a.download='soso_炒股廚房_備份.json';
@@ -269,7 +369,7 @@ SCRIPT = r"""
     try{
       if(file.size>150000)throw Error('檔案過大');
       const payload=JSON.parse(await file.text());
-      if(!payload||payload.type!=='soso-radar-watchlist'||payload.version!==1||!Array.isArray(payload.symbols))
+      if(!payload||payload.type!=='soso-radar-watchlist'||![1,2].includes(payload.version)||!Array.isArray(payload.symbols))
         throw Error('不是炒股廚房支援的 JSON 備份');
       if(payload.symbols.length>MAX_ITEMS)throw Error('備份超過 '+MAX_ITEMS+' 檔限制');
       const next=[];
@@ -280,7 +380,13 @@ SCRIPT = r"""
       // Merge, do not silently overwrite current holdings.
       const merged=Array.from(new Set([...saved,...next]));
       if(merged.length>MAX_ITEMS)throw Error('合併後超過 '+MAX_ITEMS+' 檔');
-      saved=merged;if(saveList()){say('已合併備份，現在共有 '+saved.length+' 檔');renderList();}
+      const imported=payload.version===2?cleanMeta(payload.meta):{};
+      // Merge without overwriting current private annotations. Never evaluate code from import.
+      for(const symbol of next){if(!metadata[symbol] && imported[symbol])metadata[symbol]=imported[symbol];}
+      saved=merged;
+      if(saveList()&&saveMeta()){
+        say('已合併備份，現在共有 '+saved.length+' 檔');renderList();
+      }
     }catch(err){say('匯入失敗：'+err.message);}
     finally{fileInput.value='';}
   });
@@ -292,22 +398,40 @@ SCRIPT = r"""
 def install_villa_hub(path: Path, records) -> None:
     """Augment rendered HTML; never modify scanner, archives, or workflows."""
     text = path.read_text(encoding='utf-8')
-    if '/* stock-radar-villa-1.16 */' in text:
+    if '/* stock-radar-villa-1.18 */' in text:
         return
     if text.count('</head>') != 1 or text.count('</body>') != 1:
         raise ValueError('網頁結構異常，拒絕安裝別墅入口')
     if 'id="radar-market-tabs"' not in text and '/* Stock Radar 1.12: market navigation */' not in text:
         raise ValueError('三分頁導覽尚未安裝；停止以免破壞舊網頁')
+    import csv
+    historic = {}
+    archive = path.parent / 'data' / 'history.csv'
+    if archive.is_file():
+        try:
+            with archive.open(encoding='utf-8-sig', newline='') as handle:
+                for old in csv.DictReader(handle):
+                    ticker = old.get('股票')
+                    date = old.get('交易日期')
+                    score = old.get('技術分數')
+                    if ticker and date and score not in (None, ''):
+                        historic.setdefault(ticker, []).append((date, score))
+        except (OSError, UnicodeError, csv.Error):
+            historic = {}
     snapshot = []
     for r in records:
         if r.get('市場') not in ('台股', '美股') or not r.get('股票'):
             continue
+        prior = [(day, pts) for day, pts in historic.get(str(r['股票']), [])
+                 if day < str(r.get('交易日期') or '')]
+        previous_date, previous_score = max(prior, default=('', None))
         snapshot.append({
             'symbol': str(r['股票']), 'name': str(r.get('中文名稱') or ''),
             'market': str(r['市場']), 'date': str(r.get('交易日期') or ''),
             'price': r.get('調整收盤價'), 'score': r.get('技術分數'),
             'change': r.get('單日漲跌幅'), 'trend': str(r.get('符合趨勢') or ''),
             'alert': str(r.get('研究警示') or ''),
+            'previous_date': previous_date, 'previous_score': previous_score,
         })
     json_text = json.dumps(snapshot, ensure_ascii=False, allow_nan=False, separators=(',', ':'))
     # No page input is allowed to terminate or mutate the embedded script.
