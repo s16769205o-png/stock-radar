@@ -1,0 +1,25 @@
+{
+  "checked_at": "2026-11-19 23:39",
+  "purpose": "Verify retired weekly workflows, not daily-market scan success",
+  "legacy_workflows": [
+    {
+      "filename": "revenue-v19.yml",
+      "verified_disabled": true,
+      "state": "disabled_manually",
+      "previous_state": "active"
+    },
+    {
+      "filename": "profit-v110.yml",
+      "verified_disabled": true,
+      "state": "disabled_manually",
+      "previous_state": "active"
+    },
+    {
+      "filename": "readiness-v113.yml",
+      "verified_disabled": true,
+      "state": "disabled_manually",
+      "previous_state": "active"
+    }
+  ],
+  "all_disabled": true
+}
