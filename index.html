@@ -1,5 +1,5 @@
 <!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>小G股票雷達 1.19</title><style>
+    <title>小G股票雷達 1.20</title><style>
     *{box-sizing:border-box}body{margin:0;background:#f5f7fb;color:#202a3c;font-family:system-ui,-apple-system,'Noto Sans TC',sans-serif}
     main{max-width:1010px;margin:auto;padding:28px 16px 64px}h1{font-size:2.1rem;margin:8px 0}h2{margin:32px 0 12px;font-size:1.35rem}h3{margin:20px 0 10px}
     .muted,small{color:#6b7789}.muted{line-height:1.7;font-size:.92rem}.eyebrow{font-size:.79rem;letter-spacing:.07em;color:#325e96;font-weight:750}
@@ -135,8 +135,27 @@ button.villa-card:focus-visible {outline:3px solid #4b87d1;}
 .famous-mark.new,.famous-mark.added {background:#e3f4e8;color:#237247}
 .famous-mark.gone,.famous-mark.reduced {background:#fff0e9;color:#99512c}
 @media(max-width:600px){.famous-stats{grid-template-columns:repeat(3,minmax(0,1fr));}}
+</style><style>
+/* stock-radar-villa-search-1.20 */
+#villa-quickfind {background:#fff;border:1px solid #dbe5f1;border-radius:16px;
+ padding:15px;margin:20px 0;box-shadow:0 3px 10px rgba(36,76,116,.04);}
+#villa-quickfind h2 {font-size:1.12rem;margin:1px 0 7px;color:#28466a}
+#villa-quickfind .quick-hint {color:#63758a;font-size:.83rem;line-height:1.6;margin:4px 0 12px}
+#villa-quick-input {display:block;width:100%;font:inherit;color:#24384f;box-sizing:border-box;
+ border:1px solid #a8c1dc;border-radius:10px;padding:12px 13px;background:#fbfdff;}
+#villa-quick-input:focus-visible {outline:2px solid #3778b7;outline-offset:1px;}
+#villa-quick-results {list-style:none;margin:10px 0 0;padding:0;display:grid;gap:7px;max-height:355px;overflow:auto;}
+#villa-quick-results li {list-style:none;margin:0;padding:0;}
+#villa-quick-results button {display:flex;align-items:center;justify-content:space-between;gap:7px;
+ background:#f4f8fe;border:1px solid #d9e6f5;color:#263f5a;border-radius:11px;
+ width:100%;text-align:left;padding:11px;cursor:pointer;font:inherit;}
+#villa-quick-results button:focus-visible {outline:2px solid #3778b7;}
+#villa-quick-results small {font-size:.75rem;color:#64758b;display:block;line-height:1.45;}
+#villa-quick-results .quick-symbol {font-size:.8rem;white-space:nowrap;color:#3d6c97;}
+#villa-quick-status {font-size:.8rem;color:#65768c;line-height:1.6;margin:9px 0 0;}
+@media(max-width:600px){#villa-quickfind{padding:12px;margin-top:12px}}
 </style></head><body><main>
-    <div class="eyebrow">STOCK RESEARCH LAB · 1.19</div><h1>📡 小G股票雷達</h1>
+    <div class="eyebrow">STOCK RESEARCH LAB · 1.20</div><h1>📡 小G股票雷達</h1>
     <p class="muted">台股50＋美股50｜產業一句話、營收、獲利、技術排名及績效追蹤<br>台灣時間產生：2026-11-20 12:16。各股票請以卡片上的交易日為準。</p>
     <div class="stats"><div><small>成功掃描</small><strong>100</strong></div><div><small>符合均線</small><strong>10</strong></div>
     <div><small>明顯放量</small><strong>3</strong></div></div>
@@ -2007,5 +2026,76 @@ button.villa-card:focus-visible {outline:3px solid #4b87d1;}
       tr.hidden=value!=='all'&&tr.dataset.change!==value;
     }
   }));
+})();
+</script><script>
+(function(){
+  'use strict';
+  const overview=document.getElementById('panel-overview');
+  const nav=document.getElementById('radar-market-tabs');
+  if(!overview || !nav || document.getElementById('villa-quickfind'))return;
+  const entries=[];
+  for(const market of ['tw','us']){
+    const panel=document.getElementById('panel-'+market);
+    if(!panel)continue;
+    // Only ranking cards, not every document whose heading happens to be similar.
+    for(const card of panel.querySelectorAll('article.card')){
+      const name=card.querySelector('.heading strong')?.textContent?.trim() || '';
+      const meta=card.querySelector('.heading small')?.textContent?.trim() || '';
+      const symbol=meta.split('·')[0]?.trim() || '';
+      if(!symbol || !name)continue;
+      entries.push({market,card,name,symbol,key:(name+' '+symbol).toUpperCase()});
+    }
+  }
+  const unique=new Map();
+  for(const row of entries)unique.set(row.market+'-'+row.symbol,row);
+  const stocks=Array.from(unique.values());
+  const root=document.createElement('section');
+  root.id='villa-quickfind';root.setAttribute('aria-label','股票研究快速搜尋');
+  root.innerHTML='<h2>🔎 股票快速搜尋</h2>'+
+    '<p class="quick-hint">直接搜尋固定 100 檔裡的股票名稱或代號；點結果即可跳到它的研究卡片。</p>'+
+    '<label for="villa-quick-input" class="villa-visually-hidden">股票名稱或代號</label>'+
+    '<input id="villa-quick-input" type="search" placeholder="例：南亞、2330、NVDA" autocomplete="off" maxlength="35">'+
+    '<p id="villa-quick-status" role="status" aria-live="polite"></p>'+
+    '<ul id="villa-quick-results"></ul>';
+  const plan=overview.querySelector('.radar-subgroup') || overview.firstChild;
+  overview.insertBefore(root,plan);
+  const input=root.querySelector('input');
+  const status=root.querySelector('#villa-quick-status');
+  const results=root.querySelector('#villa-quick-results');
+  function render(){
+    const query=input.value.trim().toUpperCase();
+    results.replaceChildren();
+    if(!query){status.textContent='可查詢已掃描的 '+stocks.length+' 檔股票。';return;}
+    const matched=stocks.filter(row=>row.key.includes(query)).slice(0,15);
+    status.textContent=matched.length?('符合條件：顯示 '+matched.length+' 檔'+
+      (stocks.filter(row=>row.key.includes(query)).length>15?'（僅顯示前 15 檔）':'')):
+      '固定掃描池找不到這檔股票。可至「🍳 廚房」加入私人觀察清單，但尚無額外行情。';
+    for(const row of matched){
+      const li=document.createElement('li');
+      const button=document.createElement('button');button.type='button';
+      const group=document.createElement('span');
+      const strong=document.createElement('strong');strong.textContent=row.name;
+      const small=document.createElement('small');small.textContent=row.market==='tw'?'🇹🇼 台股':'🇺🇸 美股';
+      group.append(strong,small);
+      const ticker=document.createElement('span');ticker.className='quick-symbol';ticker.textContent=row.symbol+' ›';
+      button.append(group,ticker);
+      button.addEventListener('click',()=>{
+        const tab=document.getElementById('tab-'+row.market);
+        if(!tab)return;
+        tab.click();
+        // Ranking positions 11-50 are behind an expandable disclosure.
+        let ancestor=row.card.parentElement;
+        while(ancestor){if(ancestor.tagName==='DETAILS')ancestor.open=true;ancestor=ancestor.parentElement;}
+        input.blur();
+        requestAnimationFrame(()=>{
+          row.card.scrollIntoView({block:'start',behavior:'auto'});
+          row.card.setAttribute('tabindex','-1');row.card.focus({preventScroll:true});
+        });
+      });
+      li.appendChild(button);results.appendChild(li);
+    }
+  }
+  input.addEventListener('input',render);
+  render();
 })();
 </script></body></html>
