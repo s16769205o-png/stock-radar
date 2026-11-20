@@ -191,7 +191,8 @@ def _highlights(rows, key, names=3):
         return '<div class="sector-highlight"><small>'+_text(label)+'</small>'+''.join(
             '<div><span>'+_text(r['name'])+'</span><b>'+_format_pct(r[key])+'</b></div>' for r in items
         )+'</div>'
-    return '<div class="sector-highlights">'+render_set('相對較強（僅價格變化）',leaders)+render_set('相對較弱（僅價格變化）',laggers)+'</div>'
+    leader_label = '相對較強（仍可能下跌）' if all(r[key] < 0 for r in leaders) else '相對較強（僅價格變化）'
+    return '<div class="sector-highlights">'+render_set(leader_label,leaders)+render_set('相對較弱（僅價格變化）',laggers)+'</div>'
 
 
 def _sector_table(rows, us=False):
@@ -238,14 +239,19 @@ def render_sections(tw, us):
         current_date=max(r['date'] for r in usrows)
         usrows=[r for r in usrows if r['date']==current_date]
         usrows=sorted(usrows,key=lambda x:(x.get('week_pct') is None, -(x.get('week_pct') or 0),x['name']))
+        found={r.get('ticker') for r in usrows}
+        unavailable=[ticker+'（'+label+'）' for ticker,label in ETF_INFO.items() if ticker not in found]
+        coverage=('<p class="sector-note"><b>本次行情覆蓋 '+str(len(found))+'/'+str(len(ETF_INFO))+' 個產業 ETF。</b>'
+                  +(' 暫缺：'+_text('、'.join(unavailable))+'。缺值不代表停止交易或股價下跌。' if unavailable else ' 全部板塊均有本交易日資料。')
+                  +'</p>')
         uscontent=(
-            _highlights(usrows, 'week_pct')+
+            coverage+_highlights(usrows, 'week_pct')+
             '<details class="sector-detail"><summary>展開全部 '+str(len(usrows))+' 個產業 ETF</summary>'+
             '<p class="sector-note">表格可以左右滑動查看。</p>'+_sector_table(usrows,us=True)+'</details>'
         )
     else:
         current_date='尚未取得'
-        uscontent='<p class="sector-unavailable">暫時無法取得產業 ETF 行情（'+_text(us.get('error') or '行情缺漏')+'）。原本報告仍可正常使用。</p>'
+        uscontent='<p class="sector-unavailable">本次行情覆蓋 0/'+str(len(ETF_INFO))+' 個產業 ETF。暫時無法取得產業 ETF 行情（'+_text(us.get('error') or '行情缺漏')+'）。原本報告仍可正常使用。</p>'
     ussection=(
         '<section class="sector-index-section" id="sector-index-us">'
         '<h2>🔭 產業指數觀景台｜美股</h2>'

@@ -1,4 +1,4 @@
-"""小G 股票雷達 1.21：1.5 的績效追蹤＋前十名升降榜。
+"""小G 股票雷達 1.22：1.5 的績效追蹤＋前十名升降榜。
 
 免費 GitHub Actions、無券商連線，僅供研究。5/10/20 個交易日績效是
 「訊號當日調整收盤價 -> 第 N 個後續交易日調整收盤價」的紙上觀察報酬，
@@ -27,6 +27,7 @@ from villa_hub import install_villa_hub
 from famous_13f import install_famous_room
 from villa_search import install_stock_search
 from sector_indices import install_sector_indices
+from site_quality import verify_site
 from system_health import health_section
 
 ROOT = Path(__file__).resolve().parent
@@ -586,7 +587,7 @@ def render(records,errors,history_rows,history_frames,benchmark_frames,benchmark
         <section class="grid">{primary}</section><details class="rest"><summary>展開其餘 {len(rows[10:])} 檔</summary><section class="grid">{rest}</section></details>'''
 
     page=f'''<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>小G股票雷達 1.21</title><style>
+    <title>小G股票雷達 1.22</title><style>
     *{{box-sizing:border-box}}body{{margin:0;background:#f5f7fb;color:#202a3c;font-family:system-ui,-apple-system,'Noto Sans TC',sans-serif}}
     main{{max-width:1010px;margin:auto;padding:28px 16px 64px}}h1{{font-size:2.1rem;margin:8px 0}}h2{{margin:32px 0 12px;font-size:1.35rem}}h3{{margin:20px 0 10px}}
     .muted,small{{color:#6b7789}}.muted{{line-height:1.7;font-size:.92rem}}.eyebrow{{font-size:.79rem;letter-spacing:.07em;color:#325e96;font-weight:750}}
@@ -610,7 +611,7 @@ def render(records,errors,history_rows,history_frames,benchmark_frames,benchmark
     .movetag.up{{color:#176f4a;background:#e2f6ea}}.movetag.down{{color:#a64d36;background:#feede7}}.movetag.same{{color:#576476;background:#edf0f5}}
     @media(max-width:640px){{.movelist{{grid-template-columns:1fr}}.grid{{grid-template-columns:1fr}}.weights{{grid-template-columns:repeat(2,1fr)}}.stats strong{{font-size:1.3rem}}.stats>div{{padding:11px}}}}
     </style></head><body><main>
-    <div class="eyebrow">STOCK RESEARCH LAB · 1.21</div><h1>📡 小G股票雷達</h1>
+    <div class="eyebrow">STOCK RESEARCH LAB · 1.22</div><h1>📡 小G股票雷達</h1>
     <p class="muted">台股50＋美股50｜產業一句話、營收、獲利、技術排名及績效追蹤<br>台灣時間產生：{updated}。各股票請以卡片上的交易日為準。</p>
     <div class="stats"><div><small>成功掃描</small><strong>{len(records)}</strong></div><div><small>符合均線</small><strong>{sum(r['符合趨勢']=='是' for r in records)}</strong></div>
     <div><small>明顯放量</small><strong>{sum(str(r['量價訊號']).startswith('放量') for r in records)}</strong></div></div>
@@ -645,13 +646,17 @@ def render(records,errors,history_rows,history_frames,benchmark_frames,benchmark
     此網站使用調整後歷史價格，非保證即時；未連接券商，不下單。<br>
     <a href="data/history.csv">查看CSV歷史紀錄</a>（既有紀錄保留，新增欄位在舊日期可留空）。</div>
     </main></body></html>'''
-    SITE_FILE.write_text(page,encoding='utf-8')
-    add_industry_briefs(SITE_FILE, UNIVERSE, INDUSTRY, records)
-    install_mobile_tabs(SITE_FILE)
-    install_villa_hub(SITE_FILE, records)
-    install_famous_room(SITE_FILE)
-    install_stock_search(SITE_FILE)
-    install_sector_indices(SITE_FILE)
+    # Build in a temporary file. A broken add-on must not replace a good report.
+    stage_file = ROOT / 'index.stage.html'
+    stage_file.write_text(page,encoding='utf-8')
+    add_industry_briefs(stage_file, UNIVERSE, INDUSTRY, records)
+    install_mobile_tabs(stage_file)
+    install_villa_hub(stage_file, records)
+    install_famous_room(stage_file)
+    install_stock_search(stage_file)
+    install_sector_indices(stage_file)
+    verify_site(stage_file, records)
+    stage_file.replace(SITE_FILE)
 
 
 def main():
