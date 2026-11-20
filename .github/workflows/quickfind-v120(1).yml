@@ -1,0 +1,181 @@
+name: 小G股票雷達 1.20｜全棟股票快速搜尋
+
+on:
+  push:
+    paths:
+      - '.github/workflows/quickfind-v120*.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: stock-radar-v120-quickfind
+  cancel-in-progress: false
+
+jobs:
+  upgrade:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 取得已運作的股票研究別墅
+        uses: actions/checkout@v4
+
+      - name: 安裝 1.20 全棟搜尋（不影響原本五房間與私人資料）
+        shell: bash
+        run: |
+          python - <<'PY_UPGRADE'
+          from pathlib import Path
+          import base64,gzip,hashlib,re
+          packed="""
+          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
+          US//H+rhpLaIGAAA
+          """
+          source=gzip.decompress(base64.b64decode(packed))
+          if hashlib.sha256(source).hexdigest()!='c9b7090b0c7e73e69f6df1201d8cf8e6f365b7dfe0f8c585c0a4b10176b0d6c9':
+              raise SystemExit('1.20 模組校驗失敗，拒絕修改程式')
+          compile(source.decode('utf-8'),'villa_search.py','exec')
+          path=Path('radar.py')
+          original=path.read_text(encoding='utf-8')
+          match=re.search(r'<div class="eyebrow">STOCK RESEARCH LAB · ([0-9.]+)</div>',original)
+          if not match:raise SystemExit('無法查證目前雷達版本')
+          version=match.group(1)
+          if version=='1.19':
+              if 'from system_health import health_section' not in original:
+                  raise SystemExit('1.17 健康模組缺失；停止升級')
+              changes=[
+                ('from famous_13f import install_famous_room',
+                 'from famous_13f import install_famous_room\nfrom villa_search import install_stock_search'),
+                ('    install_famous_room(SITE_FILE)',
+                 '    install_famous_room(SITE_FILE)\n    install_stock_search(SITE_FILE)'),
+                ('小G 股票雷達 1.19：','小G 股票雷達 1.20：'),
+                ('<title>小G股票雷達 1.19</title>','<title>小G股票雷達 1.20</title>'),
+                ('STOCK RESEARCH LAB · 1.19','STOCK RESEARCH LAB · 1.20'),
+              ]
+              modified=original
+              for before,after in changes:
+                  if modified.count(before)!=1:
+                      raise SystemExit('版本修改點異常，停止：'+before[:50])
+                  modified=modified.replace(before,after,1)
+              compile(modified,'radar.py','exec')
+              path.write_text(modified,encoding='utf-8')
+              Path('villa_search.py').write_bytes(source)
+              print('已從 1.19 安裝 1.20 搜尋；每日掃描與自選股資料不變')
+          elif version=='1.20':
+              if not Path('villa_search.py').is_file():
+                  Path('villa_search.py').write_bytes(source)
+              print('目前已是 1.20，跳過重複修改')
+          else:
+              raise SystemExit('只允許由 1.19 升到 1.20，或重跑 1.20；目前 '+version)
+          PY_UPGRADE
+
+      - name: 保存搜尋模組
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add radar.py villa_search.py
+          if ! git diff --cached --quiet; then
+            git commit -m 'Install 1.20 client-side stock search'
+            git push || { git fetch origin main; git rebase origin/main; git push; }
+          fi
+
+      - name: 直接為已保存的網頁加上搜尋（不需要重新抓行情）
+        shell: bash
+        run: |
+          python - <<'PY_HTML'
+          from pathlib import Path
+          from villa_search import install_stock_search
+          path=Path('index.html')
+          original=path.read_text(encoding='utf-8')
+          version='STOCK RESEARCH LAB · 1.19'
+          if version in original:
+              changes=[
+                (version,'STOCK RESEARCH LAB · 1.20'),
+                ('<title>小G股票雷達 1.19</title>','<title>小G股票雷達 1.20</title>'),
+              ]
+              for a,b in changes:
+                  if original.count(a)!=1:raise SystemExit('舊頁面版本不唯一，停止覆寫')
+                  original=original.replace(a,b,1)
+              path.write_text(original,encoding='utf-8')
+          elif 'STOCK RESEARCH LAB · 1.20' not in original:
+              raise SystemExit('舊頁面不是 1.19 或 1.20，停止覆寫')
+          install_stock_search(path)
+          assert 'stock-radar-villa-search-1.20' in path.read_text(encoding='utf-8')
+          print('1.20 手機網頁搜尋已安裝；原本行情快照保留')
+          PY_HTML
+
+      - name: 保存網頁
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish 1.20 overview stock finder'
+            git push || { git fetch origin main; git rebase origin/main; git push; }
+          fi
+
+      - name: 打包手機網站
+        shell: bash
+        run: |
+          mkdir -p _site/data
+          cp index.html _site/index.html
+          cp data/history.csv _site/data/history.csv
+          for f in monthly_revenue.csv quarterly_profit.csv maintenance_status.json berkshire_13f.json; do
+            if [ -f "data/$f" ]; then cp "data/$f" "_site/data/$f"; fi
+          done
+
+      - name: 上傳網頁檔案
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
+  deploy:
+    needs: upgrade
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.publish.outputs.page_url }}
+    steps:
+      - name: 發布小G股票雷達 1.20
+        id: publish
+        uses: actions/deploy-pages@v4
