@@ -1,0 +1,260 @@
+name: 小G股票雷達 1.22｜別墅封頂與品質驗收
+
+on:
+  push:
+    paths:
+      - '.github/workflows/finish-v122*.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: stock-radar-finish-v122
+  cancel-in-progress: false
+
+jobs:
+  upgrade:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 取得現有別墅程式
+        uses: actions/checkout@v4
+      - name: 安裝完工驗收與資料完整度提示（不更動舊排程）
+        shell: bash
+        run: |
+          python - <<'PY_UPGRADE'
+          from pathlib import Path
+          import base64, gzip, hashlib, re
+          
+          MODULES = {
+                    'sector_indices.py': ('bcf95989eb5d50fe553e43531e6ed3bdad89c48772d231245e92a92b31292cba', '''
+                    H4sIAAAAAAAC/607a3PURrbf/St6TWWlwfM02Iaxx3uzhNRSSSAFZh/Xd+6UZtTyKGikiaTx2JlylQkhvANsDAnghJCELJsEyGM3
+                    IWDCf9kwD3/i/oR7TndLas2Mgdy7LrClfpxz+vR5d2t0dPSQ71SOkIOarrkklx7P5YljGGbF1Cwy96dDe4lHK77jEtPWzQr1iGbr
+                    5PAh0ZraO/cyqbvOkkm99MjIQepRza1UU45tLSeJ5zTcCk3pmk91GAXTSaWq2QvUSxKbLlKXVBzbsKAbwSKGhue7y/hAl0aapl8l
+                    fpUSF0lTPGKYSwDHY+R6Wq1uUQJ0wUQkgo02fY+UqV2p1jT3CAeTHtlP/aYDr4ZmWg2XEtMji6ZnlmE6roUTopUdFyYjOrpker5p
+                    LxAEQn3i0jr0pUdGR0dHDNepkVLJaPgAqVQiZg37AI7t+JpvOrY3MiLaqn7NCp7f8Bw7eK5pfjV4dmnw1HAtyyyn65rr9be59M0G
+                    9XyOG3npmzUaYA7ekwR/69TyNT6wDmhgdjDudcTKOt5ybGrahhP0/Ce874N32L0DB+ZIgQ1VYY2mBStMAHrPsRapmkDiqO2PoFCU
+                    Dh98FYYqVd+ve/lMptlspv2mR9MVpwYPGbepZ96qZjTDp+4c7B+wM/PavtK+/S/t/bMycujA4YN79pZe3bf/lacBAQC+mFuFLXFA
+                    gDQrUzNTfGORwcoI7D2AffkAAGqNEPhR/vzqK0qeKL3vT/Rune7+7WLn9KqSxOa9rPnYw879C7zhZWzYPHGx9/E5JRlM3oeN7R9v
+                    dm7e5qP+yEa9+1X3ytuPH33UPnqTN/+FNX/0cfvR8c311c4PJ3vfPYigvI69nW8udteuxwdg5+8Ziveud0/9vXP5Cm87zNqOf91d
+                    u/X4/hmGPIB1kBH++N659plL3bVP+fg9DP3qVVhjZx16AMzIysjIiE4NUvLpkq8uJfIMgktBWG0mj2nqVbQ6VUHLoDtJ3mw4Pi3M
+                    uQ2aCKbajVqZuuFk0yBLqDH7QUpQ20BxbM/X7ApVl5Kk7DiWGChhwrGsrWJRzQaVLUBP2muUVVeZmf/v2eLYLK4B/nM6Emn4a9ZV
+                    lLW6pQFoJckGSA0v8IaApgCyaRMVASkp/PWv1TX2zF72Z17EP3bDspSn0Aj2JupcBFINy9F8VSBI9M9bROyowmnTM0zb9Km6mCDU
+                    8mgEki5VaN0n6txyne51XcdNkj9qVoM/b0GK4L7huAC8VK/4ADa2fWxxiHwx3A6G1VBai/mx9Lix8oLSB6ViOR79VXCSCCcEA4tz
+                    S74GhtJTdacSSQQYO1kQoC9JwDn4A2sLJsQHpxeoryocsAJSaIFyS1OBesI6cXdh+HwwtBiNGYTLxgyQEfwsm9TSOdSn0WTgsIgm
+                    5h+GjQOrqw2hnGNpBWDyjHjxUgRZZNN4K3ssrowECzZxsS76RjWXJLkJmR8MQBJNvQbyGRBhCMgtcwVJiZpxHGscGc6pAN7wJcLk
+                    gXUNW1sAJVgU/A7MD3NiJbTkJR4llETsIEkRONMXK0xNyg44bosuaJVltsRchoPOMdIgQPApOioN4gIuB4Tai9Ry6hBxoEt+lkyi
+                    1UI7E24ejPC5NUmkG/U6GLsE+Q24oQPgNvp1s8V3KIh9CkFDTEa3UJRo72DefNwCbpct4GJCMnSEk8YwLCJ0BjcmnkkyX0wUQxy2
+                    VqMlE3DYaPVVk8tTkhg4m4I9py4ECWLbE8grgxRgvZ2zJzqX7qHsoBWIpIWZjV8HUOms/dC99rmAiMOMAbBg034t0I3vej+e7V75
+                    uX3y3c7dtS3geuaC/X8CrI5lUgkOFGVEtD7ZOAntTzZObYEORY0zXPKKAcukJr5c0RBXJZRp027QmMVznWbfbjPFYns9YPf6hB3m
+                    BuoMkCxqY0uCzBTAUy2pnNxkQGSSkzbESA7QFUjX0x044JrnOIqRK4/B2EZeZ8G/inT7EClbKa5fQDVG39oCuHKWYsAL5AqJIOeo
+                    WJrnmZCM8Ng6PYwPiDpNbd3DDEBVNm98HAg239W/vd+58YhtJlsKtrXPn2tfuBi2PScnGP/QDJvWMnAkiJRw+YK1RZAWuZkxupjo
+                    p5qNHhAf3K4svnEEUrdWBrOCjQkySyayz0kuIBKqAaCQUQwc2lTRPBNKyiBEHAJrDLaXzygO312BDEIwZCibiUx+snEu3vCvk3/t
+                    a7i8ETYMkoA/Aa9TEQsGxlELkY/1Iz/Tj+u758S1BSrhApikF9ERKGzXlLwQC1DXZYzb0BXC5BU55hJzg7gKtJt5R0CzLHgPLlOr
+                    oZ+Q88A0vEAy6+hUbSmQhtVBBQChgtmkwj0vRXTLuC0G5n8QJ//lhdoLOhp1xYfwE0ZDzqWsJAQ5b0YoRFqZPsj/qkFaN6b8Thnj
+                    9CRJlWo6db1CK+SFctijburFBcgEAfhrzlumZWmZiXSWqJC2QdaJifU0pP6ek2Kpeoql7xmsLJB6o2yZFamiQJeAKF4zSIiEhyHh
+                    sQEg0Op1S6h/BtedxNQmA77StJPbM9vFHLE+VgPoWx68QqgAck7f5Dmy0/ALkxD3eCRgaSQPdW0Zon+esPA+gKPpaq60K5stZbO5
+                    MAFB1RGjUSuDAZJyupoJSh0F/qrCqikBYLCDDrE0d4EqCVlWtg6ecPlpROgFmNM6ZdKhNHwjtSsFsg0xTZTJAVuBA6GowfJdk3qF
+                    nULmtpE/OJYJHbym07DZ7nhVsMWYdlNWW/BIRbMD2sazWc5jDQyKnTrwCq6mYfncLlNcJYt1imGMZEdhLUMumRqAq5uIAmNabZmk
+                    ogoGUusV7JjTDYenm5QegQEQtc0WyMQzXGssvWNsdppIY6SEIeABOy3Mo8cQTQ5aDcGViDLTc3jqpYL+4Ux0krFpnEdpkGrwWKrS
+                    fedGZ/1U59JJ7rJ6N25JUbtII/eyPyD/KLLQln8KQFR5FcYk0qUSc8mlfke8x3IaOqk6nu+BjtZY7Qg1oULNRUp2ZndMQybB3AVE
+                    pBQLd2AUq1oNoiheHLP1umPa/oArBn5qPrgLwA6rRrFUROjEknSAnCQ7x3cn+ooIbLg6x/VSJMt7HNsG0Ycl84x5iH8qg1oeiaW1
+                    gK21AqA4Q+ZTuSJSJWSSZbhK+5urnfUv28e/bt87pgRqYlC/UuWSIPD4DopjISytpW2nqQZVMlV50TO1zJxm1qmJGQSOEg4RHyHM
+                    arhYJkuSZpWHCbIaMtiBIk4m5ORFzBtMQYSdhxUqKFNKfr6YVNjClDziQPfGTEvn6ldYJDp/t7t2S+EOqO6aYEE4YXXNA6pKAzSF
+                    68TyYCTCTCXE8gaVcyoRmZMRSa9k3dewLLmIBhBFQKwvDclSzVOlPXUsNLhIHYt7+bTWSoJHwdzLRmIM+1BCCwBTcmCOthOVYZgX
+                    A4skwwCmSI7F+viM1g3/zkJ8Fa/UBIQH+tNSELuS5zQEHj6OQHb1oid4xz6kjXcGlK7E7HsrdNuwJwrbHyUvbZPYY2E9xDYrykpM
+                    XBteifpGyMWYkRNl3WXDtFHD0GosGyORBdg79zIYfBfr3LwYn2LWXmdl/GVepgfU+w/MMYVvgJN2rWWsh3N/zdYsheKiLLFspHWn
+                    aaNbUmPq6puVIxhCYH6iBtVakB5IvE1HLyjjNQd0F0wKdQF0Qcnp8LrgOo16qbxcUPh0KTbAH63hOyVNf6Ph+YWXNQvjL6B+AWTa
+                    C979KnpujxU3I8e/OwSTiAlAYb4Yrz8xrJCeaGVqofQGhA+K71Avw+C4PHVCBs1zgMX+whN0pSuO1ajZwPJSie9dqaQqdRBazVMS
+                    6dfAv5r7kPOizIhzhsbfe5h88tzQ5tgD2PnhKUKY1aDmsgnzAkoxrbtO3daGhPrhBP4wL95BuYrDyEInyodAQkrGn0IJ7D6CZXIi
+                    ZgyMAVMclmhxPNr5wVHbyGsaqAnIBK1gEMbUi4izhBRa90Dc8CDKIYZWxrMFPKViMU96ACIra1V8ZvsSw/MHsVYEylJvHJofKDf3
+                    /4CK2f0rQgq9IcuSrAiYvu2QTTczbH5g7NjLcCs31NoNxSBMIJN8zCK4/uUDjQiMIiBPDp8fWkdkWC4Rs4nYNIFNNZCCatQ2nk1s
+                    Cc0PkiwvzSwQ7nks40m9UEuxnGcAwkqciUFh/hW6LEKNoSX6JGH6Jp5fhKjGLDf8gfL9ljFnaOmHm3LcKeYteVSCh5e9G2c7x45j
+                    cHL+cvvnD4TzfmYA2IdovhihGYwEw8OhqrlQteC/76mctCMUQhIc5BV2iPWBJJp6Yd7lpSkWxCPFSDlzyzAlIdcVinIkwyaHoq/M
+                    1HkdpzAqzoxhDB2d7T262Fm/3rm71ts41vv+ROfyFRGfMRb8svr2TKY+y6NnS2ShnoPVIZXBZ2QXLK1W1jWylF+ah9di0sVykieO
+                    tOaZH/c4bZa2sPBcMOLTkGMQtgB6SMd8lWsF8wGDBznKjG4u9q01ZPbo7IxX0yxrVhnjx3MMVGJMmckE7YqSfgNi67j7ZEBhLjiE
+                    cKo7z5W0yKdj10wZe6XjI5cvBgeUZ2cyCESJdpOtIPKFOIqNkNhd4r6vQJTutXvtb87BNrU3fnyycfLxA4wxe8cePr53hhVMTzGR
+                    hjUIpGDnsxEqsXnCe/UDax873j72U+eTjd6d0+2zlxHYyPOy1BuFNcubI9GdDNDKA2Tk3w5HnhRyIrFEqI3IxlmBVihOQ0Qb0clY
+                    w4ukIqidsJpk++RNiExB1yGKb997G9CSw4degpfc4/ufdz58v/PBTXiZkF/Gs9Ebt2PIwWHwe7dP4dBTq921Tzs3b4v6Z1JU5Tcf
+                    fMxfu5d+4JC7/3jn8b3VzdVvBdyyoy8XpMhd1KJxkVK+Ti0L4iQhgU4zlEEyRlRDEdLdivpHucsYLSZWQhnnPBKiMMRix48uAUos
+                    CcDyqiziQXfgcRJbA4yND/1RQjpG4bvHlxl4yKGzI9eFxZYwIwUehnn9jO9K+gyvOrwuokjhU3S2w5AxUcMJiWdJvldxHcsCS8KE
+                    EP6gCMzGkUU1NOgOLUaVI6kK5FVEXg00hKPHbg4OlyJBxFc+iHXAX449ph6hlrG83VP9JqqHUAx+DwhMCbBCIxCYG4VRZUwqOAZF
+                    sQJeUvitVqtPo/8q7Nv/0ihR+rZU8bFo5hdGS2VLs4+MAmqrMGo7WOWjkHU6AB6cIAjebKgX7Tsfdi7/BGrYe/sG146ZjBYw3G+K
+                    3NUXG8y8aXK+GKbnfEReTnkoGz/Pw5PiNA8xCwEEntYlFSlvDbEIB8TfkzEHpC71y2dwDJAkqSGdsJMQN5GlUBVldOzk1PaR67LL
+                    F3gjMLhAHiBzrQyVaWxoQIaCSX3NhFg9Lpy8Fd1co1bT3OXZ9reXNi+faR+/tXnsFlHG8CwBA2ROQAIkioRnNWAfxCRlS6xbRBE3
+                    boH9Bn/0+MHN9o9ftM9/33lwsX3mUuf6ze76mSCKGItbb0ECM/F8LbPSTjFm4A2pgvJk41poK3mk0r5+v3P/Mgn0io1N9LMQpslz
+                    eHTTufpVd+O+MsSQh3tVGFxlw9YWgUAke3S2e+1O+9Q5LBp+f6l34ktYJg+Whtp/8G8BlYFY8tiQn4sJoqJ62BiQfQoY1vng0876
+                    KVCU7s1b3U/Wun//of3Jt+2Lp1lp6YP2w283rz+KRWeBRhQUOYBTpiU+KkLRhHkoyFZKtPWtm0X6KdE3SiAYjff4zVEJvTJTHZ/9
+                    n+trt4nMgd7fVjtX7rbPf/Pk4Tr8hiXNZGCcPG24UMHg7tHPQq5CbMUNCAfePvkuCO4vq2d57MBx/bJ6DgMtFJh/ftu7dRIcLUS3
+                    oZywYtpYyJExBTgo0cFhdD68+/jeaYwO4N8n/+BRAwh49/zPTzbOAv+7t091Lm90Tl5sr15sX7vfvnOVTGRJ58u17tV3+FZ1f/68
+                    +893gAoBcf3r3n0sCkK01r32j857N3vf/dj7/jPEPsatMiMlvpljoUCOPZtVEg9QQi58hSb26F0gATgUKg+wB1bXO3kCFgivEIdB
+                    +B+GN0C+HKpALygOLFniEMAGAMGiSXv1TDgb6O+duSlSqPsX5CooZ1tn/Rg8b35yoXfrNoBv3/6g99n65sPTYuFgfLiYCRZwS9Dw
+                    WF2o4W3hE3i/FB7x8iYr4hXw2N0NnEMUCvM5kaUROOQ0izexRCuYXyjIsIv9s4U/4W//Dn8yzJ0YTsPWCy1XXN3iNYFEP9krEW2R
+                    2SqI2hfaF7BILDpntkaRK21bFtqY/2VjwsoW0hKxoeLwGwQQB28ho6C/oAidr29wGel98W7v/TOSR2IA0SFlorawUIl+CqSNqz5S
+                    x6SmPKsM8VNjqkK4mX+ycTVQfdCvoyKSkriCcAESDG2vboCMPn7wGWh6++h65/anQrJPXgZVAv3iaRaqLJO7CIbwNoS72M5Hj9o3
+                    Trc/OoEnSutfh+rBDT1OH1ZRQh9Yl71fwwuckdp3ssbZPCYHE0LopApPX9Tw/w0WhMYMbMKWAcO/NU4Qy2vwKnI8XugrJMc9eswY
+                    xN3iEEY/w+sPkd3s80oqSGPnyts8YuAERN2i6iTFCYGxi8UJbBDIaWfjfBQktN+7DmSJwIDVAzq3P2vfu/f44SMwtTGP0vD+fV6/
+                    4f06r9/9+b3n9/p8MLqPBzcJ2IxDr790kEjs4mk76j4Bbe1eeBcwte9e79y60rly5/G9B70vjnIdFF4H3JUUNXDiuIPrc/7rq7Iz
+                    DGMGWYgY469NPNk4Pw4OH2ILFlh2377fXb8OnAcHGs7fvPz+5tW1OApGPqvZgAvuPXrY+0nc1WufuA/RRe+7B2zXjm4ePwe+OxzT
+                    +/Lz9o93YrGHFFaESjMo0s+OG4DHEArAAlAzLnwFROA9fBY6wGI4v3loIW7lnY2M5IWvcNS9hyB+m8e/Br5IK+VxHvI+FpwdFZv7
+                    4V1pKwFo+/jfe6vH2+c/a/98kYUvAlP7zjqPl7qXfoBGCGIQEuz0e38FhXhq4CDy9zDYTUYaALnynkOH8HYJXlzNbCfSBZlUJOh4
+                    AJdi92W2Z0bSw1SDtMD2LZh2PrervkSyZHxnfWm6rul4vpHPTcJL2XEhH0fQZsPjTSOkrFWO4Mmaree3GYYhBuVzAMPDqyBkm16h
+                    k0YOOgBVVdOdZj5LsHsH/N+mT+gGNSYmple2oKo6HhKWBapy44C14liOm982vnPnjsmpaQPkI+WZb9E8rG/CpbUtYaUlcSGtaF56
+                    1xROE2Anc1M7d2nTlmnTVJWiUwLAUxPTggrOnRxyJ8IT+S/S0k2vbmnL+QXX1KfxVwpvG+MXSang6Izfg1DHkzXTxrgum8wZbiIx
+                    vaDV87sBcLATk4hrGBrSGuQz3Uk1Y8d0bEMmjF2G3r9x4/LG4gtQkWqaul/ND0U2ywpt0cLKFkhYyK0s4xZjZpNzayqbFStIlR3f
+                    d2r5XBawSPye2hXfpggVFqhCRIZFl6Y16LBTLHLLlzWP4r5M4ymtaSynhG3Ie3WtQlNl6kPQYDM2TjDplPd4EnEKzu7ekrHluGBM
+                    SIIxvntiakqfblaBmBTDiCdWrlaXAHFfPisiCdKS+Ux2DyjRbkmad01Udumx7YP9HIftk3k7OSGTzYt3pIVxlGE5zdRSHo+xA+77
+                    Tp1v8BBhydIpIztMMgag8zvpQuBQhC2tDoFJ8CBJz87duM/8OZfNviBv+a7x+JYHwKsAWV4yNXYY2jQ6qxTb+byL6x7gwVM3IYSd
+                    N0zX81OVqmnpyf5eXe4lLQmlRQ1/CLhBENWtNziQfInlu2FxE8Pgwgp8VaYmQVpDFjicKYuaa2rwl91KNyt52K6GBbYf3r2hyORV
+                    D9VsWVEnZcNYmSqDhErCtSMmL3Ia0erzCxO0EnAGuYszQ/+wQ8tO9hupSdlG7WS6HDfIkxMBWVNTExPjOtDxHzWqm5oKBlXI48Q4
+                    yGOiNWikW8PNMhjh6ZWhrqMVo2VlhX24eWjPwX2vzwWuVzUaNhurJvAQXGlAHoVXmyGBAeLxRNfzSVDLLszP43UMaqX8ppIsleb+
+                    VPrD3GuvlkrFZNDR8LDj8KGgo4hQILtVOaR5NmqfniTCBhaJY4TwE/wcng9lIwu6UwEJsdmFqL0WxcffL+/TVQEnMS2qEOpvWEsi
+                    OIKeliDhHb8IUMXFy3wClqqA6VYEFByXNm2bukh8QVAoQwridzaSSaSAswflMqRFDEswkgCiR13/9xS4QIOuJO9iINhcRsLKyEpC
+                    hSfcGH6YwO7HWFb/BVj8pDX6fGivXWX3m/o/12U4PHZP1Wn4pObo4Hywv+pYKBYe+yCIn0jwz0qXw++IEEOBff/KcIm2BVrAV3YV
+                    mIfm7FY2wCrwm7fRd4nKcwV17CY6wt3qeznsS1dAIWGrIHvBYxmFfaSUY5+WxHr5aQ3vfdrtY/kzb9xpFPhGxWdfRNvsOHzrZSzi
+                    JW+gPreLUS8KMX0rGMCIN8tNl3qETWQw0EF5wbmLfGnKbxbkm5jPd/8BJrUG70QOu/owgA9y+r6rdM+HEub9GpRNPNDCDAD/FoYc
+                    kjVEORDF3tMM+obHLoUNXi5gt7/1Rq3uiW/0qO3hN+iaVzFNcQwdfUU2oyRd5b8a2eyOivwV7WzYTOXm3wbN45Nib97wCtxiRoMk
+                    w6ckBal8ffLna5IVDEfx1Sdi6rRAJWKFhCeVGc9ftiiklJAmsasN7DXszz0FBFcDBFFxzboPMN7wGAj+Gg4IYYBCN13w2+IgB8Al
+                    B9X6fwEEgC5DH0EAAA==
+                    '''),
+                    'site_quality.py': ('1b90192600235e5592043d664310b0a0b986cbe319fce119acd6a4e30f74eae3', '''
+                    H4sIAAAAAAAC/51UXU8bRxR9319x45e1AzY2UtsUAVJKUKiafpn0qa2s8e4snrLecWZnDVYUCRpRTCE4UoGUQARJQDi0IWnVBos4
+                    itSf0rJr+4n+hN7dNcSRSqnwi2fnfp177rkTiURGJdfGIU10IqCYSvT29oFBmAmayW2qA7eAWMAsjecLJpUUxqhFBZFoGrn+8TUQ
+                    tMCFTCjKUI5q4zbYkkimAXdkwZHdYHEJdFJSYRETdCIJEE1zBNFKwAWYrEjhKpMjThZIEauSLDOZLCWUKzwILThZk9k5IFAgQjLM
+                    EdYDZvh33JZxQS2dCqBWjlgaHjRB7By1E0okElEMwfOQyRiOdATNZIDlg2hiYXLEyS1bCX0KROZMlj12+Aw/lfZZUEVJD3/+xYfp
+                    4SswAFEF8KeOXv906CNID48OX04PjcC1yx/AH/vg86d2hx49F6GT21QihdTmiRinEixSZGMBALjY0xFg+wFx4QfEi8w0SRzDLp3u
+                    Y5A8d2zf6f0OpzDyhsO0cYNZ+imxNtUkF3F0YBr1c/SmOnL8vbG2eVSrgFvedh/NeE82WmsvG7VX3uKOu7eFTjFFUXRqQJEKZpQy
+                    NpM06pPYF3DXjaxpXOh2DOKD8Am3aF+QFmdy1SFCB5mjgNhwoG/01B5tlhpcUCCS55lGTLPkG0yiMWsMdajTyURO5s2EP14/ZYGM
+                    URyLXzUAEEsISvSMRNVFKcpWx7gB1ZFG/JIaCyJQOya1on5gDPrh3XcyyWTSl2OgOLxNmLYUrBCNJUw+QQX+o6qFtCcY1lD7L+hc
+                    k6UCBR/HoBoLW/N/gjCbQtqxJMvTYSG4iKqNF782flptPbnnLb1wt37xlu8d1e8Hq+Nu7TY2nnrlFW+z7tYrrYVnzd2to/ra4esH
+                    jeVVd3HDW//Ze/oYTZijtTn9Bn4AUuNYB+H05LBfhAEXBiDlt/G2Ncv10unWdguB9bx9NH6/6+3MN+oHXr1yNnyStaklcWJfBrsg
+                    AKcN7SOz4GTTsM32rT8WtPjAvz5mIMxyDsSt21W3/J1Xft1a+cFb33X35pqPHxzVy2qX2g1q4hvOrGiYPNYF6lF97uyO6GQBVwkF
+                    PBDo6lj5YbeadFDkx5aEv4+o6ahQ+/0HTTPpV3aXZhLbHohouBgRRBEI82TW7Qw4oJM6SNjJuR/eS751MQipZPI/iTH+nZnmtw8b
+                    21X3zsPG3Ky3XIObYeVb0CzPeou3vUoFbh5XuQWHtTuHtanm7G//S7CqzW0e73x9JojU8MXFB7yYUjtHfI6ZNnamDw8OvNqMu7LX
+                    qM779esHaD0bWkEw3AND/XN9Bty9BXd/O0yNSU/a93aXQmr+msIyS6gejMdzWNV9eR/FhJ/e3XX3+bx/WPDpa+5MeavP3MpzZM+d
+                    3nYP9r3dR97GtlddbVZ/bL363p2pIoh/AGUUW9uBBwAA
+                    '''),
+          }
+          
+          def unpack(module,expected,packed):
+              data=gzip.decompress(base64.b64decode(''.join(packed.split())))
+              if hashlib.sha256(data).hexdigest()!=expected:
+                  raise SystemExit('模組完整性驗證失敗：'+module)
+              source=data.decode('utf-8')
+              compile(source,module,'exec')
+              return source
+          
+          sources={name:unpack(name,*content) for name,content in MODULES.items()}
+          path=Path('radar.py')
+          original=path.read_text(encoding='utf-8')
+          m=re.search(r'<div class="eyebrow">STOCK RESEARCH LAB · (\d+\.\d+)</div>',original)
+          if not m: raise SystemExit('找不到版本標記，拒絕修改研究別墅')
+          version=m.group(1)
+          if version not in ('1.21','1.22'):
+              raise SystemExit('目前版本 '+version+'，僅允許 1.21 → 1.22 或重跑 1.22')
+          
+          if version=='1.21':
+              replacements=[
+                  ('小G 股票雷達 1.21：','小G 股票雷達 1.22：'),
+                  ('<title>小G股票雷達 1.21</title>','<title>小G股票雷達 1.22</title>'),
+                  ('STOCK RESEARCH LAB · 1.21','STOCK RESEARCH LAB · 1.22'),
+                  ('from sector_indices import install_sector_indices',
+                   'from sector_indices import install_sector_indices\nfrom site_quality import verify_site'),
+                  ('''    SITE_FILE.write_text(page,encoding='utf-8')
+              add_industry_briefs(SITE_FILE, UNIVERSE, INDUSTRY, records)
+              install_mobile_tabs(SITE_FILE)
+              install_villa_hub(SITE_FILE, records)
+              install_famous_room(SITE_FILE)
+              install_stock_search(SITE_FILE)
+              install_sector_indices(SITE_FILE)''',
+                  '''    # Build in a temporary file. A broken add-on must not replace a good report.
+              stage_file = ROOT / 'index.stage.html'
+              stage_file.write_text(page,encoding='utf-8')
+              add_industry_briefs(stage_file, UNIVERSE, INDUSTRY, records)
+              install_mobile_tabs(stage_file)
+              install_villa_hub(stage_file, records)
+              install_famous_room(stage_file)
+              install_stock_search(stage_file)
+              install_sector_indices(stage_file)
+              verify_site(stage_file, records)
+              stage_file.replace(SITE_FILE)''')
+              ]
+              changed=original
+              for a,b in replacements:
+                  if changed.count(a)!=1:
+                      raise SystemExit('升級標記不符合預期：'+a[:80])
+                  changed=changed.replace(a,b,1)
+              compile(changed,'radar.py','exec')
+              for name,source in sources.items():
+                  Path(name).write_text(source,encoding='utf-8')
+              path.write_text(changed,encoding='utf-8')
+              print('1.22 最終驗收功能已安裝。原先交易資料與私人瀏覽器清單不受影響。')
+          else:
+              for name,source in sources.items():
+                  if not Path(name).exists():
+                      Path(name).write_text(source,encoding='utf-8')
+              if 'from site_quality import verify_site' not in original:
+                  raise SystemExit('標記為1.22但缺少驗收整合；停止以避免誤覆蓋')
+              print('1.22 重複執行：保留現有版本與資料')
+          PY_UPGRADE
+
+      - name: 提交模組與網站版本
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add radar.py sector_indices.py site_quality.py
+          if ! git diff --cached --quiet; then
+            git commit -m 'Finish stock radar v1.22 with site quality checks'
+            git push || { git fetch origin main; git rebase origin/main; git push; }
+          fi
+
+      - name: 準備 Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: 安裝原有行情研究工具
+        run: pip install -r requirements.txt
+      - name: 產生並驗收完整股票研究網站
+        run: python radar.py
+
+      - name: 保存正常產生的報告與研究歷史
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html data/history.csv
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish validated stock radar v1.22 report'
+            git push || echo '::warning::其他掃描同時存檔；頁面仍可正常發布，後續自動排程會再保存'
+          fi
+
+      - name: 準備網頁發布檔案
+        shell: bash
+        run: |
+          mkdir -p _site/data
+          cp index.html _site/index.html
+          cp data/history.csv _site/data/history.csv
+          for f in monthly_revenue.csv quarterly_profit.csv maintenance_status.json berkshire_13f.json; do
+            if [ -f "data/$f" ]; then cp "data/$f" "_site/data/$f"; fi
+          done
+      - name: 上傳完整網站
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
+  deploy:
+    needs: upgrade
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.publish.outputs.page_url }}
+    steps:
+      - name: 正式發布 1.22 完工驗收版
+        id: publish
+        uses: actions/deploy-pages@v4
