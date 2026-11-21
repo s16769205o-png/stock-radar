@@ -1,4 +1,4 @@
-"""Stock Radar v1.22: fail closed on an incomplete generated HTML report.
+"""Stock Radar v1.23: fail closed on an incomplete generated HTML report.
 
 Checks static output, not external data accuracy or live GitHub availability.
 Do not publish a partial report if a post-render enhancer crashes.
@@ -9,13 +9,15 @@ from pathlib import Path
 import re
 
 REQUIRED = (
-    'STOCK RESEARCH LAB · 1.22',
+    'STOCK RESEARCH LAB · 1.23',
     '/* Stock Radar 1.12: market navigation */',
     '/* stock-radar-villa-1.18 */',
     '/* stock-radar-famous-1.19 */',
     'villa-quickfind',
     '/* stock-radar-sector-indices-1.21 */',
     '🛠️ 別墅機電總控室',
+    '🇺🇸 美股｜行情日期一致性診斷・1.23',
+    '🇹🇼 台股｜產業前景引擎・基本面試算 1.23',
 )
 
 
