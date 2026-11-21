@@ -1,0 +1,212 @@
+name: 小G股票雷達 1.25｜國際重大事件觀察室
+
+on:
+  push:
+    paths:
+      # 手機下載的檔名有時會被附加 (1)；兩種情況都可觸發。
+      - '.github/workflows/world-events-v125*.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: stock-radar-world-events-v125
+  cancel-in-progress: false
+
+jobs:
+  upgrade:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 取得現有股票研究別墅
+        uses: actions/checkout@v4
+
+      - name: 安裝 1.25 官方公告觀察模組（先檢查才更動）
+        shell: bash
+        run: |
+          python - <<'PY_UPGRADE'
+          from pathlib import Path
+          import gzip,base64,hashlib,re
+          BLOB = """
+          H4sIAAAAAAAC/8U6a1MbV5bf9SvuyuXq1iC1hMf4ISOqPBmmxrU7yZZNdjbDUqqW+gr1uNXd6W4hCEUVmNgSwTYkdkgMjPHbkPhB
+          nITYmCQ/JnRL+uT9CXvOvd2tF3i8+2UpB7rvPfe8n7cTjUYvOEb+IjkvK7JFJvqlYwNpYhQKal6VNaLqDrV02VENHd7oBNUdUqSy
+          oqk6teNEN4hOK3bCzhsWlSKRYTlfDPeJahOZKLJDlRZC2yhbeUpg/6JERooAAv90wwHIvFEyNepQhpIUKFXiEZlYFNZLVFcYE3Fi
+          WAiqyWqJOEUZz4X08nLZBloysZlEJWOCwkFHipynJQPwFmRVK1sUuLIosYtGBdDJugL0JqhFchoecoqUGPDL4kgSAE5lC6SyDKNk
+          S5FoNBopWEaJZLOFsgPYslmilkzDAk50kINxaUci/lrRKWnBs0WDp7KlaWpOMmXL7l6z6MdlajvB6mRJk6hjUSoNa0yYEXgmsk2G
+          RzgbeUPPly0LxeT82AE7I0ULFPPvhqENT9J82TEsfgIN4qglGsAF73GCvxWqOTJ//MTQKT9CS6A5qeyoWoid8Y5Hs46RDVBwaDyn
+          6gUjAP0bvJ+D90jkCPkg8AM0r00MXZuSyL9SaoLiwRGAupqjFqDTpohdkjWNOAaRJwxVISXVRqxWiakYcDFiZR1spxZUsLttIOak
+          PD5u0XEZ5G15KjMzncxT21YnKHnvHNjcqRjWRaIZsiJFLnzw4fn3hi+QDBEjBH5Eof7LdXd9sfFi031137v5a/3pihAnwp9APxZw
+          fx68wpqguFTgSxZfkcaNCSHOcBCh6DimnU4mK5WK1AuWZCpImrBkZ0ugI0e2piQwOGJ1a1v169U3e0vIx+V5eGhWP2/cvibE4j6D
+          jfmfvd3l/V/WmuuzeOJD6YJEhs+dxWeqyocy4u8lLdtOOoYiT4F+dGqNh6TrG997L14BRffBVv3THW/7PlJfe+1+ttai7m5/5z18
+          2qhV6zs3vF83Qgb+8G8X8Dmn2Ycy4O8x8ZPwktXA3LYjAUOMPFM8R+t9+dK7sdom8/dV99lC895mc/WbkOR75y4wofOqfbjUwWYy
+          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
+          /WthEyZrRzxsOo+Npk+lUtBl/Q+FL1sZ3CQAAA==
+          """
+          raw=gzip.decompress(base64.b64decode(''.join(BLOB.split())))
+          if hashlib.sha256(raw).hexdigest() != 'e1046c0e703271dc52a657d5a851b76b9def7eb0346725499c0474e7e4ce9c3a':
+              raise SystemExit('1.25 模組檔案校驗失敗；原有網站未更動')
+          code=raw.decode('utf-8')
+          compile(code,'world_events_v125.py','exec')
+          radar=Path('radar.py')
+          quality=Path('site_quality.py')
+          original=radar.read_text(encoding='utf-8')
+          checks=quality.read_text(encoding='utf-8')
+          match=re.search(r'^"""小G 股票雷達 ([0-9.]+)：',original)
+          version=match.group(1) if match else 'unknown'
+
+          def replace_once(body,before,after):
+              if body.count(before)!=1:
+                  raise SystemExit('停止安裝：1.24 程式與預期不同（'+before[:65]+'）')
+              return body.replace(before,after,1)
+
+          if version=='1.24':
+              changes=[
+                  ('小G 股票雷達 1.24：','小G 股票雷達 1.25：'),
+                  ('<title>小G股票雷達 1.24</title>','<title>小G股票雷達 1.25</title>'),
+                  ('STOCK RESEARCH LAB · 1.24</div>','STOCK RESEARCH LAB · 1.25</div>'),
+                  ('from institutional_flow import institutional_section',
+                   'from institutional_flow import institutional_section\nfrom world_events_v125 import official_events_section'),
+                  ('    {institutional_section(UNIVERSE, INDUSTRY, history_rows, records)}\n'
+                   '    {health_section(records,errors,history_rows,UNIVERSE,INDUSTRY)}',
+                   '    {institutional_section(UNIVERSE, INDUSTRY, history_rows, records)}\n'
+                   '    {official_events_section()}\n'
+                   '    {health_section(records,errors,history_rows,UNIVERSE,INDUSTRY)}'),
+                  ('國際新聞<small>尚未接入</small>',
+                   '國際新聞<small>已接入官方公告觀察；15分評分尚未啟用</small>'),
+                  ('國際新聞尚未接入。',
+                   '國際新聞目前只顯示部分國際官方公告，不提供15分評分。')
+              ]
+              updated=original
+              for a,b in changes:
+                  updated=replace_once(updated,a,b)
+              qc=replace_once(checks,"'STOCK RESEARCH LAB · 1.24',",
+                              "'STOCK RESEARCH LAB · 1.25',")
+              qc=replace_once(qc,"    '🇹🇼 台股｜法人買賣超研究室・1.24',",
+                              "    '🇹🇼 台股｜法人買賣超研究室・1.24',\n"
+                              "    '📰 國際重大事件觀察室・1.25',")
+              compile(updated,'radar.py','exec')
+              compile(qc,'site_quality.py','exec')
+              # Only modify disk after all replacements and syntax checks succeed.
+              Path('world_events_v125.py').write_text(code,encoding='utf-8')
+              quality.write_text(qc,encoding='utf-8')
+              radar.write_text(updated,encoding='utf-8')
+              print('✅ 1.25 國際事件觀察室已安裝，既有法人/技術/產業/廚房保持不變')
+          elif version=='1.25':
+              if 'from world_events_v125 import official_events_section' not in original or \
+                      '📰 國際重大事件觀察室・1.25' not in checks:
+                  raise SystemExit('1.25 既有安裝不完整，停止以免覆蓋')
+              target=Path('world_events_v125.py')
+              if not target.exists():
+                  target.write_text(code,encoding='utf-8')
+              print('✅ 已是 1.25；重複執行不會插入第二次')
+          else:
+              raise SystemExit('目前版本 '+version+'；僅允許 1.24 升級或重跑 1.25，拒絕覆寫')
+
+          PY_UPGRADE
+
+      - name: 保存程式模組與版本
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add radar.py site_quality.py world_events_v125.py
+          if ! git diff --cached --quiet; then
+            git commit -m 'Install stock radar v1.25 official events observer'
+            git push || { git fetch origin main; git rebase origin/main; git push; }
+          fi
+
+      - name: 安裝 Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 安裝原有股票研究依賴
+        run: pip install -r requirements.txt
+
+      - name: 產生並驗收完整股票研究網站
+        run: python radar.py
+
+      - name: 保存研究網站與原有歷史
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html data/history.csv
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish validated stock radar v1.25'
+            git push || echo '::warning::儲存競爭衝突，請檢查後續每日自動更新是否保存成功'
+          fi
+
+      - name: 準備手機靜態網站
+        shell: bash
+        run: |
+          mkdir -p _site/data
+          cp index.html _site/index.html
+          cp data/history.csv _site/data/history.csv
+          for f in monthly_revenue.csv quarterly_profit.csv maintenance_status.json berkshire_13f.json; do
+            if [ -f "data/$f" ]; then cp "data/$f" "_site/data/$f"; fi
+          done
+
+      - name: 上傳已驗收的網站
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
+  deploy:
+    needs: upgrade
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.publish.outputs.page_url }}
+    steps:
+      - name: 發布股票研究別墅 1.25
+        id: publish
+        uses: actions/deploy-pages@v4
