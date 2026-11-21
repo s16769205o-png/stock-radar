@@ -1,4 +1,4 @@
-"""小G 股票雷達 1.23：1.5 的績效追蹤＋前十名升降榜。
+"""小G 股票雷達 1.24：1.5 的績效追蹤＋前十名升降榜。
 
 免費 GitHub Actions、無券商連線，僅供研究。5/10/20 個交易日績效是
 「訊號當日調整收盤價 -> 第 N 個後續交易日調整收盤價」的紙上觀察報酬，
@@ -27,6 +27,7 @@ from villa_hub import install_villa_hub
 from famous_13f import install_famous_room
 from villa_search import install_stock_search
 from sector_indices import install_sector_indices
+from institutional_flow import institutional_section
 from site_quality import verify_site
 from market_health_v123 import us_date_health_section
 from sector_evidence_v123 import sector_evidence_section
@@ -111,6 +112,8 @@ FIELDS = [
     '均線分數','量價分數','動能分數','技術分數','產業','研究警示',
     '5日觀察報酬','5日基準報酬','10日觀察報酬','10日基準報酬',
     '20日觀察報酬','20日基準報酬',
+    '外資買賣超股數','投信買賣超股數','自營商買賣超股數',
+    '三大法人買賣超股數','法人資料狀態',
 ]
 PERFORMANCE_FIELDS = {h:(f'{h}日觀察報酬',f'{h}日基準報酬') for h in HORIZONS}
 
@@ -233,6 +236,10 @@ def persist(records):
                 for field in (stock_field,bench_field):
                     if merged[key].get(field,'')!='' and row.get(field,'')=='':
                         row[field]=merged[key][field]
+            for field in ('外資買賣超股數','投信買賣超股數','自營商買賣超股數',
+                          '三大法人買賣超股數','法人資料狀態'):
+                if merged[key].get(field,'')!='' and row.get(field,'')=='':
+                    row[field]=merged[key][field]
         merged[key]=row
     rows=list(merged.values())
     save_history(rows)
@@ -589,7 +596,7 @@ def render(records,errors,history_rows,history_frames,benchmark_frames,benchmark
         <section class="grid">{primary}</section><details class="rest"><summary>展開其餘 {len(rows[10:])} 檔</summary><section class="grid">{rest}</section></details>'''
 
     page=f'''<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>小G股票雷達 1.23</title><style>
+    <title>小G股票雷達 1.24</title><style>
     *{{box-sizing:border-box}}body{{margin:0;background:#f5f7fb;color:#202a3c;font-family:system-ui,-apple-system,'Noto Sans TC',sans-serif}}
     main{{max-width:1010px;margin:auto;padding:28px 16px 64px}}h1{{font-size:2.1rem;margin:8px 0}}h2{{margin:32px 0 12px;font-size:1.35rem}}h3{{margin:20px 0 10px}}
     .muted,small{{color:#6b7789}}.muted{{line-height:1.7;font-size:.92rem}}.eyebrow{{font-size:.79rem;letter-spacing:.07em;color:#325e96;font-weight:750}}
@@ -613,13 +620,13 @@ def render(records,errors,history_rows,history_frames,benchmark_frames,benchmark
     .movetag.up{{color:#176f4a;background:#e2f6ea}}.movetag.down{{color:#a64d36;background:#feede7}}.movetag.same{{color:#576476;background:#edf0f5}}
     @media(max-width:640px){{.movelist{{grid-template-columns:1fr}}.grid{{grid-template-columns:1fr}}.weights{{grid-template-columns:repeat(2,1fr)}}.stats strong{{font-size:1.3rem}}.stats>div{{padding:11px}}}}
     </style></head><body><main>
-    <div class="eyebrow">STOCK RESEARCH LAB · 1.23</div><h1>📡 小G股票雷達</h1>
+    <div class="eyebrow">STOCK RESEARCH LAB · 1.24</div><h1>📡 小G股票雷達</h1>
     <p class="muted">台股50＋美股50｜產業一句話、營收、獲利、技術排名及績效追蹤<br>台灣時間產生：{updated}。各股票請以卡片上的交易日為準。</p>
     <div class="stats"><div><small>成功掃描</small><strong>{len(records)}</strong></div><div><small>符合均線</small><strong>{sum(r['符合趨勢']=='是' for r in records)}</strong></div>
     <div><small>明顯放量</small><strong>{sum(str(r['量價訊號']).startswith('放量') for r in records)}</strong></div></div>
     <h2>四大引擎（目前開發狀態）</h2><div class="weights"><div><b>30%</b>技術分析<small>均線／量價／RSI動能：試驗評分已啟用</small></div>
     <div><b>30%</b>產業前景<small>建置中：加入官方資料跨期可比性觀察，30分評分尚未啟用</small></div>
-    <div><b>25%</b>法人買賣<small>尚未接入</small></div><div><b>15%</b>國際新聞<small>尚未接入</small></div></div>
+    <div><b>25%</b>法人買賣<small>建置中：台股官方三大法人方向觀察，25分評分尚未啟用</small></div><div><b>15%</b>國際新聞<small>尚未接入</small></div></div>
     {warning}
     {ranking_changes_section(records,history_rows)}
     <h2>🏊 績效游泳池（前十名追蹤）</h2>
@@ -635,6 +642,7 @@ def render(records,errors,history_rows,history_frames,benchmark_frames,benchmark
     {fundamental_crosscheck_section(UNIVERSE, INDUSTRY, TW_NAMES)}
     {industry_readiness_section(UNIVERSE, INDUSTRY)}
     {sector_evidence_section(UNIVERSE, INDUSTRY)}
+    {institutional_section(UNIVERSE, INDUSTRY, history_rows, records)}
     {health_section(records,errors,history_rows,UNIVERSE,INDUSTRY)}
     {us_date_health_section(records,UNIVERSE)}
     <h2>🏭 產業觀察大廳</h2><p class="muted">依各群組在本測試池的平均技術分排序；不是資金流向、產業成長率或未來漲幅。</p>
@@ -646,7 +654,7 @@ def render(records,errors,history_rows,history_frames,benchmark_frames,benchmark
     <h2>📘 系統說明</h2><div class="note">技術分數最高30分：均線12、量價10、RSI／5日動能8。這些是實驗性規則，未完成足夠的歷史回測及樣本外驗證。<br>
     明顯放量＝當日量達到<strong>前20個交易日（不含當日）平均量的1.5倍</strong>；放量下跌也會提示。<br>
     產業分類是手工整理的研究群組，不是官方產業分類；某些企業跨多個領域。產業平均技術分較高，不代表該產業前景更好。<br>
-    預定四大權重30／30／25／15未變，目前只有技術面提供分數；尚無產業前景、法人、新聞完整量化評分。<br>
+    預定四大權重30／30／25／15未變，目前僅技術面提供正式試驗分數；產業前景與台股法人已有觀察資料但尚未正式評分，國際新聞尚未接入。<br>
     此網站使用調整後歷史價格，非保證即時；未連接券商，不下單。<br>
     <a href="data/history.csv">查看CSV歷史紀錄</a>（既有紀錄保留，新增欄位在舊日期可留空）。</div>
     </main></body></html>'''
