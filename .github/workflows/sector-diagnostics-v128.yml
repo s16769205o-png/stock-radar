@@ -1,0 +1,236 @@
+name: 小G股票雷達 1.28｜異常原因排查室
+
+on:
+  push:
+    paths:
+      - '.github/workflows/sector-diagnostics-v128.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: stock-radar-sector-diagnostics-v128
+  cancel-in-progress: false
+
+jobs:
+  upgrade:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 取得既有股票雷達
+        uses: actions/checkout@v4
+      - name: 安全安裝 1.28 研究排查室
+        shell: bash
+        run: |
+          python - <<'PY_UPGRADE'
+          from pathlib import Path
+          import base64,gzip,hashlib,re
+          MODULE_B64 = """
+                    H4sIAAAAAAAC/7Va61PbWJb/zl9x16le2RMD5mEg5jG7VZOp6qre3t2e7FZtUZRLtq6xJrLklmQeS1FF0iExCYRkGkgCpIGEPKeTkEcHQki6av+U
+                    DpLNp+yfsOfcK1kPzCuz4w9gSeeec+65v/OUI5HIn0wte57ooiTqpKWptStFzonysKgSgz0QVa0gKqOEDskSVbOUZPM0e16RDbOpoeFPpl7KmiVd
+                    VIhODSrq2XycqJpJsmLJgJuiaepypmTKmko0ncjqEDXMAlVNIkpDcpY2kT+IJpVIUYeLeENBU808yNLpEFVLNE7+69wfiJjNaiXVlNVB0EUiWi4n
+                    Z2XgLauGKZuMN1zlFG2YqLBOJxma1Qq0QVNBV62QkVUQYGQ1HaT9i2wYyMjQSjpsRcsYVB8SkYUBQguirJICJ2lqiEQiDTldK5B0OleCPdJ0msiF
+                    oqaD8irskS9raHDu5c2CwumzmqLQLGfqPJRoTiwppiRnzQZOZACFpqcl0chnNFGX0kMtrR0ueVotFeIkrWvDBvwTjbSsSnQEvrIjSesU1FHj5Luz
+                    /3n22/84m/7j19+cjZN/++5f//j1OXYREGHqVDRQfZDQ6UpwT8uVAXaTczKV0j6rNjQ0gN4kTY1sdEhUSjSWaiDw4eLZhpvgmVikUcPUHZI4+b6k
+                    mbT3nA4XLodi1uSP46Skymav8JUQ5CX8NjEnEDlHGBWRDfItHh9VDEpywhi7mzrd1JIbH0MG44LL2ciLsJV66h2HJWkmLYlEInU63tSaGyfWzi81
+                    xkUwiCalFdEw06Ngquj3JVE3qe4IAb5Rhaq1u6S3l3QwfDp3+tsH8J7w70LgbnIAcEuElta2doExcj9+olT7QJNsSPKgbEZjjkDfztDYsmpGfeSx
+                    xpYYOe3JTg0ETFHbles86aQkjkbz4MSaPupgwBgtZDQlTkwIBRSAOepIBj84OyJmTZIkBc1A6GSZAwN65CHmWhArJHBj4MEdEDCmAJYgCICJMKxk
+                    NfTfkmyONqFXIVe2gPSCJ4LGUnQMN6U3DVIzKuxur9u3f7RvPbCXV4Q4aB+LkRxED4wfxK9zwIDuB07G4WNtXbRW3wjsbARrdqN6cY0fRj05sbrM
+                    GHV/kHKA9PR6RhqPs2ilGy7kcZlBMQCABXr5PvtTyQEXNoga93mM9JDkvvNFnMZJIh4kZVSZ0TQyBL5jdTeRAiMdy1THtxJcVx485s85RBrqGame
+                    NqiEq/84WwVeJ6NV+usGnKizPcZLipOxcefkJT8nbkmWExA/pUJ0CL0bsw7zcFwwhAuYsJhrd77gH3oPNDgjiJOk33MY9/62gTBTIENK7lWSLA6q
+                    mkGjEJoYEuJAKJUA0aPgEWIBHQOcRtMl+MIPRcZ7GUin+YKon6/ddlwxaGAnGbJHvVzVoq7lZNO743hqRjQQGoHYfkKl6noB+xyobUDBgG4x56Qk
+                    5uljRpMBcQFQ0iTE+hPcpgba1FXRASTHYJxA7OOoccuCXp4So/68F2NQ9mkQjPT+J4yXEyJ93Hx5kzHzbSDIy/fAUytOCjqycpN01FEW4lb19RV7
+                    4Y717o29XBbi3A4xvxKQK4Nra8rBauvZfWv7YXAdlEmQ0L/HNQfmJx8hV5iZ3ouu1uTP1uzW7vv71TtudA1EjZoOB0VXVwmf2zu6shjhPD4wnB6o
+                    CovzoADbLz/4WpSFPSC4+wX4LvAAwPDYmkBb+KuiqIfTAJxi/sSG2/B4s8PFY2Z8tZJZLKHR+rkchlJWSaFyXItBXSsVDWHAiyRMBcNbVVvJamgW
+                    vZBFv8AJ/Usds2L8Yg+BRh6EkjZMw32JJVJKyCkyhMU6ItTMUyLpsqI0StqwykMVPOusle5ZKHWCGQBtjMGTy8MrYSBAwApyj4Jdhkh0qkAJPIRU
+                    nLqxdiYcJVkaiMt4+DUC3/2g+d2P40bobSCgwBGDirK0ECydstlSoaRgI5Ee1ZhjQ/0c9XHgSKi8eVF9XAZ/tO79VLl+BeAWlCjqg3BQtT3z69Cm
+                    oaEoirpsaEgYZXL8vhbU0i+2cmXFfvDMKj+pLF0F4V+Fpe9zMxcwDGtQdEDmEvau3Kz+NCN4Jqu3g7REFVNE9fh1o09n4OtsM3wyfiLv0SEqcm9u
+                    hPoZ6yHfcrjCmwfoiH0a5E78l2a51PlOR4puyXR4leq4CKtEhAG/VwcPqqTrUKay8sI7U7wKnegp8h1lLRFvBrFsRXfhsQp0giolCz6lgJKNpSLv
+                    fkGPbyEHfUci2FtBnxfB7pa7LfijRjKl0aagOm7THAwRbinmupKTb+o4fq3pFotFKKoBVjvb1sbNavlKIpFMWDemoeiqLF5qTXgl2Iu56s4Pn3eW
+                    rMly9f7y3oer1g/v7NUda2Xb3l4IFbxU8avRQxqTx9JhacvamEEF9tZmrPWF6i8b1s7LzzuL9soDHtzx782rnyYuVObuIf6ZBqA0rzp3dzasiZ3q
+                    86vWtflDFeojJ9QHdm5fvVXdnAZldt/P7K2W7af3UCtXAfTHubf27RfWjYdoveWVvYUf9+lgHOsonENg5kfD77wCwdbm8+rm3d0tsMsjUAIOgWtg
+                    z7/Z++sc37+1tFp5sxqSir7P0QrBDBw/7KmBh30ksV9D4BCOiQcCq/6OrIXnULRwG/GA+XlnevfDZS+Wge0YvgCGvM5xTh3AtbwCBrGnL1S2p+2J
+                    R3U6K3a2YQ0hbCS+XD1EmC+828tPqx+m7Gf3QavK/B370uzuh+vH1M04oZUQTD6zVBYvuxZD5FUfXqjc264+neFQA62s6YXKxW2eDyozryAl1AFA
+                    KPj3esH/OIDkpMAf4Ld34Ull7vHu1kS1/DNKvLKCSej6FQgMe8sT1uzDyvI1a/KttVEGsuqrNevaHXv6iv34Tj2H9JLHccOUtbEIELGXp+z5Mi8T
+                    a8Zy9ZgG37CWfkL0XF+xHl1DstWXh4ivD5U64aBe5vVDw17FeGG/WIKngKDqq/doAwAI0K8v2DdmYMnBejiJ9iQxO7h1gAHTg3kWhPPr7xE5LBi5
+                    PjVdubRmv563yuv2wiaHkD33zlq4dKRaEMNbv0AncOmaHnAQu1vX9u7MoKl48CrfsJd/RsTP3bN+vFD55ZJ1o7wfvizJn8Qw9vJE9debSWsCDv+2
+                    /XSulsQgpsL2d7edIAN4rr59jRbbmrGvP7aeL+5N3Adfrr7arL6+by+8s27crGcZrlDP8WDjKbP7613Qx8uoTBPYMRgMxFXfTmJgvzzDYYTKl12a
+                    2as88x2sTN//pzKwfaYMmKXybMpe2IGWB1KdtXHFmp2xPoSPiDchroyx3/2O3YBm0E24Qsr9BjdrHVVrQkg5FXz8sMpQCMV2IRW6cfhqP4yFlP8K
+                    lGHGE1K8jDyUjVdicnK33BQC9abzzL08nGXteIRU7auvGXEztxE8WN5R1qztBPVUKMaDYk5vmOL/D1fFMEWzZHhcnOsBRx1nfjXGGuZUrUaOC6wr
+                    Aquy2YXgNPtCyp1IBGQKTi/vEjmX8WMgwm2RU3zzcYFN10BdaJjYWNPrhGPeIIgTx8aDgzVTzhppg79R+TvN2L5o3CaJrM36O4//6qhVZ8jmvOsx
+                    3PdOgfGFLI3ECTsQNDKwKVAdXDGKG/CGGb4XDVkRlK0zzMDljPygOYYbNdJQseJgAPL/xDWcINcK83pF8uedcuXOR6t8ee89VE1TwqFdJ/Oyfi9S
+                    DewfJggoiJen/rQRzlPQCzqzJfc1kuF2iP1tAzFHEL9RRwi+X9rX2qaTJh0x2WzA48ljVo2jc3nMPtt5YWV9nIRMXXkCubg8ZvRHvIgWGRhvrt1x
+                    4xjcBCOjMeuOCFwlhVqByF6VOWdbp+rkarAXeYY3GgnNMIoAUlkrGd7p/y3snQSAgbFYDI9LeBsOMgSh6c+arEaFHkXuE06zl5Vm7LTQ04zXDLYm
+                    m7/1+6L3QIgZwr2WcQWhR6KmKEMnn1VEw+iNoIc3MsBH+noggoF+o/ClKKp9PZk+WMDFggh0d+B+Gpk0Z4CmICpKgILP2hgF+Z9NUnskfN6ZdbaC
+                    VDiCQPtyTpwN/Gci8W9ANVEdVGikz3o5v7dwzb7+FyjUyG8LH136ZlflfSjrkeShAKeMJo3CHvPtfb/dXCVOk7oxU5l81NMMN/fRD+qAv/p83c3z
+                    AOCbS9S24zOde/LOnDHmWbAZWR0qAJ2d8Kr5MNb+nHUyAV7wOoy/F5BcwAZFHCSoGDBonirFiMc8EE8dhsU6TNiBrRGnMXfb2y8+s8r821B/fdjO
+                    2STiRBZFnuW71Suvd99f9ffOR8sKV5YDxzUzs9A9whtuaF2qr59+sXmgBcK3OuWnsAPokezlv4aaqHo78EXeE5kKGgtfPxbu1p5ftaYX6okLxOKT
+                    2Og+4Z0Fb6b+JgjderC7NWWtP/K3KvV0dTPxSezC+yKnJ9qa4y0Ya5PcOHOwPC9RH98w0Ajvbk3Yzx5AcK0+m+J2KSkBs/CkxN2Xf+fsS0odnq5A
+                    nmpwjZeUQtXckamJkUdQbFQgGtCydAtlX2+vM4gH7qiLL3357BHMy/WyF760w7I9VPxx5yPQsEN5whOPL1m5ksLoYemWW8nN3uyWI/gAu9BC0cRa
+                    TfAiZqGElQ66o/3zmv3qL/byFOaBOxcrPz+E08d3YNXNx3t37wGQ7Xt3d9+/heqT/57h8860XV5w3tBuLNrLT3E+Pvn408RFjLBC7Y1cqK52jBn8
+                    dY3Qk2/t+9+VR88If9n4+cNyZX7D2trCedbSKjeM9Xz90w/v8Z0dYKfVBcT+zVx/AMEbVcfB2OxTJ6kvT9V2UtlcrLy559/J7se71vYsd4FPE9M8
+                    X4HfVZbWcS4aTAp4xxcE4dLv758mgMNFV7lM397EHZw6zb6o/voBNoFSn03ZPy7aW5PWwnNnEHP7xT9/bW2+wvnQ7et88uCU92z/iCWkfLeCxLM3
+                    dj8u8XlN9ck8FP2OyRvqlyRO/9c41NLaFQFI17nbF8qh7Cc3kT6uCJRVfH9eqcXbHvYmGV/bYGltL72xFza4j8Dp1ZJfeBHvng9a5kyg2fgyvNJt
+                    ouuu9e+/Xj1gLW1bzxc5uKCzeTpXWZ2rPHlrv1zd3XqGUOYesDxFXGflQnnTPeB56cSO9fHW3sQrJ5QxYIL9oe/i72cQc5dn4JJji4PPWlraW53k
+                    8MLXSRuLlUtrbmM1YX28trf2orK+DciDlggABI5V61aCh+t3+ZBnxU4zB0dND7MEvk9x39bY81uAROztfvjAh4HobD8tg0x/OUF+m1ol9uZjgLxd
+                    vrE3vwl74Bk8lEw5IcsrgG0LJ7NLHDtJbFhvv4AdOo83X/E5JfhDIOfA7sGE1WsPcOYNa8oLEFmc8eDGS6Y8JiXuN/jDhzVQexpfCbExZtLH6KLj
+                    SNfXqk9/BQrr4zS+XVhaZ6Ce5m/xvHd/tbd9vKOCxSjtwa3a4B+3/2Edthnyt7p4e34bwoETHflMfvKBNYsj8x6R5HWa643kTbNopJqbMd2IRbnJ
+                    HDZoU1YrwJfmoRZ2G0HYbLZ0dYrFRDL9TYSYUANRszeSziiiej6C44LeiKohLdUh3gJjqutUB+d9NoW2mJqouWJPs9gHwepL5Xekv0ln5ZOo4FmO
+                    OfRB8oeHhwOycyVVaj7X1fF7DEO9/ygWit06NYoAcdqLP5k9mQpe+eSEzLeTXJHAGfKcaZijCnXvNYXD5JgkG0VFHE1h8dY9KBZTLa3Fke6CONI4
+                    LEtmPtWSSHw1ftBqfoeH1rEcRMFGQ/5vmmrq6tJpoTurKZqeOtUmJrOdZ7rZ42EqD+bNVGci0c0r31TiKOaIvTGHVUdHZ1dXptsvqRUlKbJKgZDx
+                    bmnqdHm3FUfIkfx5xIkf+BiLmrGMpktUT7UAQ0PDHyuekjI0SXPd/EGjLkpyyUi1tKHtZNWxXaI7I2bPY3WkSqnhvGzSbm2I6lhopvKyJFH1eMr1
+                    OUXTmI/dKUpzyVym2z2/nEJHuv9cAg650Ub8QRBVzRR0+lnamKHmMKWqd7qiIg+qjaBOwUjhr3ap3l0UJUlWB9kOSEsHEIXO62SaElbu+SHR2eGD
+                    REeis72r8yiWrPzbD9AzoFxN3URx5EjN8ARrJjyhvbr8wtrq2y5b0g3YVRHyF1yeSB2Cs5hUTtYNE/oEWZH2b7c9CKmTsc+4ntPa2Z7tEE+o274z
+                    bPOfodgpdkkh10seJYENpQI8kz6eydbOtjPJbuYqjewwUqo2rIvFo9jihGrMPacEaWlHFKPlHP80taLfeamUS+QO0TXf7lfxjH/bre3ttLMWvVqS
+                    GGJI19EoxPMMHS78aQQcFXFuARBUSgXVSOm0SEUz2hqHM4coHE3EW3J6LOaC8Thi+iDuB0JFrjN3JpcNxaqwG50EZCjFgYe7pYwC0An6d/c+6Dg/
+                    PctopqkVUsnjbQdAHBTisW3xH0yyLZfsqgXYRoRNSlRHh/NUp0eGGtaXuwhqVGgO0HzGjYJOqkkekmraGQ4Sx5NDFHnMWdfhT1H/VKBAFfUOoisB
+                    BxMbOzxAngxH/vhlQM1hjo/X6gVeKmCt/X+XVNaBATYAAA==
+          """
+          EXPECTED_SHA = '47bbc147733f1c720d434ed86cf8b5ff2b7bb99b8c69c450556b28a216dc3553'
+          content = gzip.decompress(base64.b64decode(''.join(MODULE_B64.split())))
+          if hashlib.sha256(content).hexdigest() != EXPECTED_SHA:
+              raise SystemExit('1.28 模組校驗不符：安全停止，不更改原網站')
+          compile(content.decode('utf-8'), 'sector_diagnostics_v128.py', 'exec')
+          radar = Path('radar.py')
+          quality = Path('site_quality.py')
+          prev_module = Path('sector_treasure_v127.py')
+          if not all(f.is_file() for f in (radar,quality,prev_module,Path('sector_dashboard_v126.py'))):
+              raise SystemExit('缺少1.27既有程式，停止安裝')
+          original = radar.read_text(encoding='utf-8')
+          checks = quality.read_text(encoding='utf-8')
+          m = re.search(r'^"""小G 股票雷達 ([0-9.]+)：',original)
+          version = m.group(1) if m else 'unknown'
+
+          def once(source, old, new, target):
+              n=source.count(old)
+              if n != 1:
+                  raise SystemExit(f'{target}找到{n}個升級標記（預期1個），拒絕覆寫舊檔')
+              return source.replace(old,new,1)
+
+          if version == '1.27':
+              patches = [
+                  ('小G 股票雷達 1.27：', '小G 股票雷達 1.28：'),
+                  ('<title>小G股票雷達 1.27</title>', '<title>小G股票雷達 1.28</title>'),
+                  ('STOCK RESEARCH LAB · 1.27</div>', 'STOCK RESEARCH LAB · 1.28</div>'),
+                  ('from sector_treasure_v127 import treasure_section',
+                   'from sector_treasure_v127 import treasure_section\nfrom sector_diagnostics_v128 import diagnostics_section'),
+                  ('    {treasure_section(UNIVERSE, INDUSTRY, TW_NAMES, records, history_frames, benchmark_frames, history_rows)}\n'
+                   '    {health_section(records,errors,history_rows,UNIVERSE,INDUSTRY)}',
+                   '    {treasure_section(UNIVERSE, INDUSTRY, TW_NAMES, records, history_frames, benchmark_frames, history_rows)}\n'
+                   '    {diagnostics_section(UNIVERSE, INDUSTRY, TW_NAMES, records, history_frames, benchmark_frames, history_rows)}\n'
+                   '    {health_section(records,errors,history_rows,UNIVERSE,INDUSTRY)}'),
+              ]
+              patched = original
+              for old,new in patches:
+                  patched = once(patched,old,new,'radar.py')
+              verified = once(checks,"'STOCK RESEARCH LAB · 1.27',", "'STOCK RESEARCH LAB · 1.28',",'site_quality.py')
+              verified = once(verified,"    '🔎 台股｜產業尋寶雷達・1.27',\n",
+                              "    '🔎 台股｜產業尋寶雷達・1.27',\n    '🧭 台股｜異常原因排查室・1.28',\n",'site_quality.py')
+              compile(patched,'radar.py','exec')
+              compile(verified,'site_quality.py','exec')
+              Path('sector_diagnostics_v128.py').write_bytes(content)
+              radar.write_text(patched,encoding='utf-8')
+              quality.write_text(verified,encoding='utf-8')
+              print('✅ 完成1.28安裝，1.24–1.27與資料都保留')
+          elif version == '1.28':
+              current = Path('sector_diagnostics_v128.py')
+              if (not current.is_file() or hashlib.sha256(current.read_bytes()).hexdigest()!=EXPECTED_SHA
+                  or 'from sector_diagnostics_v128 import diagnostics_section' not in original
+                  or "'🧭 台股｜異常原因排查室・1.28'" not in checks):
+                  raise SystemExit('1.28 檔案不相符，拒絕覆寫')
+              print('✅ 已完整安裝1.28，避免重複覆寫')
+          else:
+              raise SystemExit(f'只能從1.27升級；發現 {version}，已安全停止')
+          PY_UPGRADE
+      - name: 儲存新版模組與主程式
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add sector_diagnostics_v128.py radar.py site_quality.py
+          if ! git diff --cached --quiet; then
+            git commit -m 'Add anomaly evidence checklist v1.28'
+            git push || { git fetch origin main; git rebase origin/main; git push; }
+          fi
+      - name: 安裝 Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: 安裝既有依賴
+        run: pip install -r requirements.txt
+      - name: 驗收安全計算與缺資料情境
+        shell: bash
+        run: |
+          python - <<'PY_TEST'
+          import pandas as pd
+          from radar import UNIVERSE, INDUSTRY, TW_NAMES
+          from sector_diagnostics_v128 import diagnose, diagnostics_section, _official_5day
+          from datetime import datetime
+          empty=diagnose(UNIVERSE,INDUSTRY,TW_NAMES,[],{},{},[],[],[])
+          assert empty['count']==0 and empty['groups']==[]
+          assert '🧭 台股｜異常原因排查室・1.28' in diagnostics_section(UNIVERSE,INDUSTRY,TW_NAMES,[],{},{},[],[],[])
+          dates=pd.bdate_range(end='2026-11-20',periods=30)
+          frame=lambda last:pd.DataFrame({'Close':[100.] * 29 + [float(last)]},index=dates)
+          code='3532.TW'
+          r=[{'市場':'台股','股票':code,'交易日期':'2026-11-20'}]
+          m=[{'公司代號':'3532','資料年月':'2026-10','年增率':'28.8','累計年增率':'5.0'}]
+          q=[{'公司代號':'3532','季度':'2026Q3','累計營業利益率%':'2.2'},
+             {'公司代號':'3532','季度':'2025Q3','累計營業利益率%':'9.0'}]
+          days=['2026-11-20','2026-11-19','2026-11-18','2026-11-17','2026-11-16']
+          h=[{'市場':'台股','股票':code,'交易日期':d,'法人資料狀態':'官方已核對',
+              '外資買賣超股數':'-1000','投信買賣超股數':'0','自營商買賣超股數':'0',
+              '三大法人買賣超股數':'-1000'} for d in days]
+          data=diagnose(UNIVERSE,INDUSTRY,TW_NAMES,r,{code:frame(70)},
+                        {'台股':frame(95)},h,m,q)
+          assert data['count']==1, data['count']
+          stock=next(c for g in data['groups'] for c in g['stocks'])
+          assert stock['relative'] < -20 and abs(stock['margin_delta']+6.8)<1e-8
+          assert stock['flow5']==-5000 and stock['accumulated_yoy']==5
+          assert '查公司公告' in '；'.join(stock['checklist'])
+          assert _official_5day(h[:-1],code,'2026-11-20')[0] is None
+          page=diagnostics_section(UNIVERSE,INDUSTRY,TW_NAMES,r,{code:frame(70)},
+                                   {'台股':frame(95)},h,m,q)
+          assert '台勝科' in page and '-5.00 張' in page
+          print('✅ 1.28 缺值、20日比較、跨期獲利、法人5日及顯示測試完成')
+          PY_TEST
+      - name: 重新產生並完整驗收網站
+        run: python radar.py
+      - name: 保存研究網站與原本歷史
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html data/history.csv
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish anomaly evidence checklist v1.28'
+            git push || echo '::warning::可能有其他工作流程同時提交；本次Pages仍依驗收內容發布'
+          fi
+      - name: 準備完整手機及電腦網站
+        shell: bash
+        run: |
+          mkdir -p _site/data
+          cp index.html _site/index.html
+          cp data/history.csv _site/data/history.csv
+          for f in monthly_revenue.csv quarterly_profit.csv maintenance_status.json berkshire_13f.json; do
+            if [ -f "data/$f" ]; then cp "data/$f" "_site/data/$f"; fi
+          done
+      - name: 上傳網站
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
+  deploy:
+    needs: upgrade
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.publish.outputs.page_url }}
+    steps:
+      - name: 發布 1.28 研究排查室
+        id: publish
+        uses: actions/deploy-pages@v4
