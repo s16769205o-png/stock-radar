@@ -1,0 +1,217 @@
+name: 小G股票雷達 1.30｜訊號有效性驗證室
+
+on:
+  push:
+    paths:
+      - '.github/workflows/signal-validation-v130.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: stock-radar-signal-validation-v130
+  cancel-in-progress: false
+
+jobs:
+  upgrade:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 讀取既有股票雷達
+        uses: actions/checkout@v4
+      - name: 安裝並驗證 1.30 核心模組
+        shell: bash
+        run: |
+          python - <<'PY_INSTALL'
+          from pathlib import Path
+          import base64, gzip, hashlib, re
+          
+          MODULE_B64 = """
+                      H4sIAAAAAAAC/6VaW3MTV7Z+16/YY2qqpYksyzZX2XLVVCZTkzpnkqrAZKrG5VK11S2rg9St6W75Mi5XGQLBGBuTDDZgOwGCCYRgmxAgjmPCfz
+                      m4W9IT5yectdbefdPFmDk8GHX33uv6rdvu7urqOm0b+bPsE1mRTdab6k9nWMU0rIqat7VxlVnamC6XusdV06pa3WXZPKvaTNYVVtAmVaW7Yhgl
+                      Ni6XNEW2NUNPxWIf66UpZoxaqjlOtywm5+2qXIK7spkvAk2FjU4Bp75TcENlakkb00ZLaoqYM10FVsxU87DTNqt524oVNcs2TC0vl4Q0rKyWR0
+                      GgolZhVUvTx2DXBNAvqbKpA/lCVVfksqrbcslKsTNF0AIuuxV5KkZSszN/P5YGHpaKEjHSQQM5maJaeVOrkOJ5o1yRTRk4J5lugM7MBLWNMiw3
+                      7YJR0oyYYcLdMVWvaroK7IWpCqaKu3XbBLJjplGtpNhfNYvkBCupFqnN9SwY5oRsKt0FrVRSlVSsq6srVjCBSS5XqNpVU83lmFZGjmBzkIJbNB
+                      YT94p2ueT9/swydO93WbaLnE7eAMJ57gfxUFELcrVkK1re5mtQKFsrq/4Ccc2fWsjUsrW8T6CsKpqs86f/MnRV0wuG9+wfcP0hXMf4Y+66qVxJ
+                      Hs2N94LHxbJcyZAVJlsM/89xw1lJlquAm1X8gVyr8OO/PvzoT6eT7C8ff/LhPz7+6HQs9ucPP/jvP7Esk+oP5+u3bjvXFtwb950ni7WLD8Z7+9
+                      NS7PT7f/ngr3+EFXHprKYrUpJJRUAPCIo/VV3JoX74G/2eyxtV3aYnAofenRjz//GVXO1cJU/Lucy5sqZXrRw9r1TwPqA0Xy0BByUn21IiFouB
+                      vVkOgBWHMKmqiQwRNlXwrk4OTMEzuaLGAe5iSZL9s2rYavaMCRceBb1ajlDQCoBZDYJE1vMqf5JkoyBIggEu6ZppOot/BB4BuSSxLcQcn9A925
+                      wKHupgugK4xRbcmnfpyBkBltKsgqZrthrXExDFlhoQVCfzasVm8U+RwgemiTF0ZqrCf3YQRKhpyZAgciJ8rLgHINOYsMRGiJFPecJRmVwyVVmZ
+                      6q5ANoCVENo8bDUIBkAP5SlZK7F8ybDgoaGzUdM4q+oeMFMYcEiU2ILm0zN0CXHJLKNq5smGYSFCwssTsIGvSo2pdpygSab214CpMHfA0kwIT4
+                      zSAyBH9W9GXID/QD0ZyGNUpzBIrDgQCQh7FvatmmSBsRMYWbAiStGUNfDRJwBuiG1aF5co5fLocTZvuo+uu3f2nL2lxsJ2/dHGm73V/Z1Fd+2Z
+                      u/LE3fzZWXoqJRiFNdBuVjGERRQ9yUpgtMR/IAGyvLnt7lx0VrbaSeBTLIRhjjyjzECueJNgIkgw82GQRJYT9DHNl0rxs0iRk0YmdMnTSttttH
+                      KYZ5sRbgydmMQpex20x8tM/jYv0XUSr1mb4SCjjSQhV5sU/SVVb32cYL/Lst50O8pBchkOZ0XYAmURoxOJhhc1JcvIwrdTD2XSw+9sm3AP3t7e
+                      YNEMHVitZXsotCVn57xz55lENpScpSf183elJnQfPsYeX9h/udg5xiJUz6pTWMvCsuzvbrg3/w1lz12/LUGxCD8DuWr3H8LdFtGagZpswWCiOX
+                      6QN2CScuN/qGvj0mJ949JbtSQWw8BvBJSl0AkVH1ElaI1XJgRKvVwf5+hIMqFMMpKzc6NTFANJ3qnmrKnyKBSXtjZijHqQXF7OF2EDwE0rV8u5
+                      gilTF5VNnUwHdehvYADZ6jYKQWtLzWSoP8USpE7CZgaRSK3VAOASG1bofYyz3XIRChiD/ggqKHTPSPhjE4IL21wFSleoa5aVz6q8xmE1Q+Db2N
+                      rasmljbymyG7a6IIBdNBSiBqVgHJvtFPtAVyqGptvezoJqg44tdDHl4WMutTAoSZ7y9I7xCjUF3MiUWAfJARDgZD14RpElbvJV0ghvDkRG8jcR
+                      cgsS9BTY8OKj3LRgO0P9mwCLhYNKDtp26F5hMyWHCAVvAcIlTCKRiIUqlc8fa3yYZCjX4boIVmgx11Vk6sjjzr0VDQAgbTs8kthkxukZLqIBhj
+                      ctWD5s8R6khRNqYWEW4tfCpJF0DNuxAHBanK5dBB2LRglbnLI8Ge9P8hYur2qleNPuP7SAXtjvCGiF5jOqY0VuOQv/M1Xq5CEICDXjMHcx7t8h
+                      RPqobAEDMKtMxTXluQJFtEB/MlAiBbgEafmo4omeYIOB5J1NzK/JaiN+95aHwOM9IliQ0wsooEzoCdjCBzR0hL8j0r75SwU63tLH4XIPm95WkZ
+                      kfvXKXn7nXX9TWNpzPf/FASfKCva0ibAulnqhIhBC65aG3RUgUEKFJEMasQzeHWFpM68SieY24DauaOjVu0pRcqQDDeJyv6yGS3aw3ASDpTacT
+                      YV+KLYf0WZm6bd4I+FvD2Z6KAFaqrJdEvLIl4jrrp3rPJFnvR2tiD5qabFjWZFPkZKOXHegE7UsWwAPmgRtJdrRNzW3Xs4g94czT3ZFApFfJeo
+                      N5Sjcm4t6kHZf+aGlyzxlZq6gaoArGMgMCAMI7jmvxICcrWXieolgIOl5AxZGN6s3e8aqu4RmPGq2c3pWGQ/moqueLeALUqXIKWlk+cmK95iOs
+                      Xy/fpwTDEz2UxXFNAZKwtIJnMeY4pl5R+ngaEaUPBjkFT3VwGy+woSnPH+FoC2aB8JlCdICk5Mkf+NmeJtdhgttkglLHJDU9fJnIr5N4AgI1Nn
+                      vwgEqLJ2TdJnRjdvPMKrpI3jgmWTwhwl8GZ4lTD+x8gqOZOE0phx5GUbF27Wo2aFcp4Nv1ikhVCN28JNpqRnNESPRhvmc4un5kxL8vWI2M+BNz
+                      rKnVwtmbYiIjaMZ95JEo9CyRGE6PcHvQoaUvOJ/aCaC5slwRWMU2BM3qUQwAHHFHwks8GIuhMgI9mu9nuJsOnMFPIYE7x1xgl1BPlGSYsA7bGQ
+                      V3eJqLODbSd3CF31KGUEqvcwtNlZl2o0WLzH6KberR6UiOQoB+tfbcgdGTgS8SLZKa1DB6MUWuAFFapg+PHyBYZAwOYY9E24Ic5fH2MSEE4qQw
+                      bTIMy0QLdZBMMMi0zYKeXt40Ixa3XRtB2HswnTcVYQKkV4SnJUKblPGU8Ce3jKdO+7TsnWKiQVXYLo5WJcFZyogfM349xxxHtg4LGCrmxkQOhx
+                      dqbKfjZtux1IwmmUSGTruZ2ZzDOsgMUpidc9mMv4v6N0q34eRJh0+RaCCYC5QTyD2MJ3086QEmNVstW/FE64lSQCXhBWRgjXeekWvPr7nfrLuX
+                      f4Pp2Jl74ly97Ty4wi0II7N75ava82U+RzfNy0Lr4bA8Ix5QhEJR/QGNSZoQaaQQ+9vryZelLMOkwMyW5PKoIjMzEzf9LswMnxtEZQvsQSEwTM
+                      eiI95ZplItVyw+3VvYulk488lWXtOyf4Z6qx6M4XZNhype01jZuJTEcTED6INJA8TQZZ1TjbSW05KILCkjfsCmMNKlTPgqKpFkGza0dDzxSxns
+                      JvnvBL4UiPQG4qnAVGIm2nrBnJPz5p13ar78Nwj0JiX7/2zluGXyxap+tmmCoiihgwlEDB1lBjjBiS60/tA1ByyFEuDOUD7gugz7fhnpBALMCs
+                      MiD454YMxmqdJivgrDMutNCFFqvJY0CeCJxenzRAkE/MITJYFRxrtBC8a8yAbxSGoh3RS/csUSY7r3HOYqvOQc8UqQaiqfWMqapRcqceG9rD4S
+                      HvZGmt8tqB776bA9Qy1KM/WZlvrM77fmPB9bOXxJYZGvaR4OOInzGv687YFNM/uRQ7EZ5y8FcFvLY5B4vLNJgvbRVicxqkC8aTGeNpNKZN5L9R
+                      VmKpU3e0vSW9IVUEGMjA+lO4uWmOmZRle03n8bdRz9m/WkeUb6n9nmkoH3MwfrLDm/XXTnrtW+uC3FWloeAl4rAUUrFCIu9vHX+cje962gOtJ+
+                      zhZSBY4gXmHrt9qWLxEGFRfSIewQZohmqD3brn2/KHlnhiLCuG1rF+46S9vu9vX6T5fclVtR8kcYVHfMt+IbCByq8qYBjsFDVtaLIwL/AADIwl
+                      LIXCpGOo67kAjwi4WouGJIphfanCE0C/UXP0newYuXMQaRHNiBR/cg6013RA/XA5TYf7nuzH3tbt53l5bqr568/vxXd/1RY3a1ce5qbfFh7Ycr
+                      je9v1DcvN0GJkr/XbUiDtjk0aCtD0nv4Bttrq96ToI8Z7MH7nUEsBftCmsBejCy6LZJg+BbmTrh+B9pkkcNvoZf1QWC840YfSbCPDVpl6ESG4o
+                      GOAvKoZO35hcRgD1/xLhw8SHiCwR9zKOQiXswD/4gug+VLsmVlu6zxbmr/uoYGi/0eTarzRBDvxToJoWjjITIWALtUAjq2PFpS4T98lzHE8VAc
+                      gia2cesaCFc8gCCuo4wD7vWzD/yu7e06S/doM67B/vjaAv/kg+PqLUShv06nj6X3dzb3Xy66yztAsv7zl/VnS7XNL+DyUAT4tyW1O9dr379wf7
+                      xzIC3aMrdR35p9C2n0FS7hlho1lClwgSSlPjM0PU6Bxd1KT+B/btkeMDz8FZ70nA0phOcF5+enzpNzMCkwDjSvn4r0qiMISBAZXwZxS77ZW4sK
+                      Krnrj93Hd92VJ8633zTRijTInNbzC00m4lPNm72FJrKQTesP55ytBfBvE9mmltknTJRez56XIq27JEmDxb6h/7394BHjo+Cbl+sCFuuX3eU5d/
+                      YBT1nO1gZkM5y1ANJ9Q0RksOKBt1yFQb9ryFl6xFcPjg7RB2nO1uX6va+d3xZqyy/cW+e5UWurFziLwZ7RIVAOwbj2TePOZu36QzBV/eld586P
+                      7torSJrO1V/dhS/5zAvCE9fG7C3+TQMfkGubK7Xl+0DA3XnMidU/f+nOz7+eXeCoej27iNznrtWf/tyYfcpZA7HBnopQIxyF4vM8nAG68QOoLq
+                      Yp7W43WwDDt1qGxmGqawisyrMAAgocAEb2eYU3qJOVkqzpYLdrIPcsYEl8hDX3hTN3v7Z+5RiERm8a/vSlndkrFIDeoQDadPWCs/1dY3VNfLR1
+                      58fGxceelUTAuk9fgVXRF4hpsj1/YcxHZUBsE9j2X+IG8J+fHGCKBhg7a7vO1ioQxC9KNsHQjVsb+7tCYHDQ/q/3nY0VFOnii/1fV7jLhINJIK
+                      CK8zhM394rG+erBa44jOqQ3IBV/e6C+/lFgHZt6wYoDES4UqFUsVC/9JPz5MuT6d9zrd2H91A6CIXlZ+7lxcbd7drGrmeEUK5BwDRWH7rf33bn
+                      X8ImhMovt/l9MA1g1r15FTDjPv0KkO+BZBHtdfWBM/cCYiiMGXSxl2V4fSA/H+BjMClPaJDEgd6bvVW0jru95N7ZA76dsiHIAFHF2wlhJ9IYPE
+                      fMoL/gt2vPl0EbNNzGj+7yDdAP+irR4JCi9XvrjbUXoAS3YH8aGVB9eD17DiDnLt9zV/Z6EWngzP2d+fqDWWcb3QJ2dVd/cOZuhHsbz6/7L78Q
+                      +COHNX646ex+V1vbadxYB7p9aXQrEXJe7rmbG41Li7WVecTP+QvUGz1Fp3MnbqzADhAJfy/NgyvrX97wE5APbH6oQyDi6kHfBSHvrN0BSLqP59
+                      1z2/zdYH12AbltoS32d79rfP0Ntplz1yCGwK21nd8gv7UiBVUXrsBuTuTNc/s7gkBt7Zl79b47vwzMER0LlzgueeKpz13CsOOwrT+417h0BTiK
+                      +H645dzedXdXIsmnLViE3159XVu+BU4ZlFnRVAvZLvwsq8f71i5vjXcNuTe+xUxNMc3eP/3pYI88BGIBorhKIozpOX4xinj6aoFXJL6u/YefsI
+                      5/V+NZiI7ZwGPu9V+cK8vu/Gz97r+xsbj+rXsf8sGS+9Py/u4u/oAUfg5po6e2Vvsxf9GfPkpnx8BF4BY//uqXHgE9ntcihuE12rKnoGDTnVRL
+                      Fp5WNAssNpUZMzVlABrZTG9fZXKgLE92T2iKXcz0ptO/n+mwGW75OXu6IivYF/P9o4apqGamtzLJLAOWsyNKXj1eSIsH3aasaFULiMPamPeeOn
+                      92jN5EZo4UjhVOFvIDBajB3ROqNla0M8ePpQfyRskwM0f6jx47elwZwNaku8if9qaOg8zmmKZn0gdKK/AxHd18wiN9/PiJ4ydPccaW9i81kzp5
+                      1FTLh6NNPex0G9UV9ZiqNKuOZoraLDDARFGz1QGYUoUTOvMt9k8HwvaGRD0K/NOMDCx065OP9R8vHOxLap+njXHVLJSMiYxctY3DYoH6wulA5p
+                      P9aR8I3fjRNwxJasb7MRBQDFv7xClQoTOLYrLdXSXAHrBkJwO2o4ZtG+WwL9QTar7QP4DTUDeQGNMzJbVgD4DCNn7OL+7ZRuUAIaYjUE0XjhZO
+                      DZDHuq2KnFczujFhygcQUBhNWNNhvfvQdR4IR0+cOnmyI0louimisVj+H68qL28tMQAA
+          """
+          EXPECTED_SHA = '121d6e969583f446f7f145b8a4edb20a0d8548f01befb0dd8aa840fbb5d21b35'
+          content = gzip.decompress(base64.b64decode(''.join(MODULE_B64.split())))
+          if hashlib.sha256(content).hexdigest() != EXPECTED_SHA:
+              raise SystemExit('1.30 安裝檔完整性驗證失敗：保留原站')
+          compile(content.decode('utf-8'), 'signal_validation_v130.py', 'exec')
+          radar_path=Path('radar.py')
+          quality_path=Path('site_quality.py')
+          necessary=(radar_path,quality_path,Path('history_lab_v129.py'),Path('sector_diagnostics_v128.py'))
+          if any(not item.is_file() for item in necessary):
+              raise SystemExit('1.30 升級缺少既有必要檔案：保留原站')
+          source=radar_path.read_text(encoding='utf-8')
+          quality=quality_path.read_text(encoding='utf-8')
+          version_match=re.search(r'^"""小G 股票雷達 ([0-9.]+)：',source)
+          version=version_match.group(1) if version_match else 'unknown'
+          
+          
+          def replace_once(source,old,new,where):
+              count=source.count(old)
+              if count!=1:
+                  raise SystemExit(f'1.30 不相容：{where} 標記出現 {count} 次，保留原站：{old[:60]}')
+              return source.replace(old,new,1)
+          
+          
+          if version=='1.29':
+              target=Path('signal_validation_v130.py')
+              if target.exists():
+                  raise SystemExit('1.30 目標模組已存在，但版本仍為1.29：避免覆寫未知程式')
+              edits=[
+                  ('小G 股票雷達 1.29：','小G 股票雷達 1.30：'),
+                  ('<title>小G股票雷達 1.29</title>','<title>小G股票雷達 1.30</title>'),
+                  ('STOCK RESEARCH LAB · 1.29</div>','STOCK RESEARCH LAB · 1.30</div>'),
+                  ('from history_lab_v129 import history_lab_section',
+                   'from history_lab_v129 import history_lab_section\nfrom signal_validation_v130 import validation_section'),
+                  ("'三大法人買賣超股數','法人資料狀態','研究訊號歷史v129',",
+                   "'三大法人買賣超股數','法人資料狀態','研究訊號歷史v129','訊號同日對照v130',"),
+                  ("            if merged[key].get('研究訊號歷史v129') and not row.get('研究訊號歷史v129'):\n"
+                   "                row['研究訊號歷史v129']=merged[key]['研究訊號歷史v129']",
+                   "            if merged[key].get('研究訊號歷史v129') and not row.get('研究訊號歷史v129'):\n"
+                   "                row['研究訊號歷史v129']=merged[key]['研究訊號歷史v129']\n"
+                   "            if merged[key].get('訊號同日對照v130') and not row.get('訊號同日對照v130'):\n"
+                   "                row['訊號同日對照v130']=merged[key]['訊號同日對照v130']"),
+                  ('    {history_lab_section(UNIVERSE, INDUSTRY, TW_NAMES, records, history_frames, benchmark_frames, history_rows)}\n'
+                   '    {health_section(records,errors,history_rows,UNIVERSE,INDUSTRY)}',
+                   '    {history_lab_section(UNIVERSE, INDUSTRY, TW_NAMES, records, history_frames, benchmark_frames, history_rows)}\n'
+                   '    {validation_section(UNIVERSE, history_rows, history_frames, benchmark_frames)}\n'
+                   '    {health_section(records,errors,history_rows,UNIVERSE,INDUSTRY)}'),
+              ]
+              patched=source
+              for before,after in edits:
+                  patched=replace_once(patched,before,after,'radar.py')
+              checked=replace_once(quality,
+                  "    'STOCK RESEARCH LAB · 1.29',",
+                  "    'STOCK RESEARCH LAB · 1.30',\n    '🧪 台股｜訊號有效性驗證室・1.30',",
+                  'site_quality.py')
+              # Stop before any mutation if source or generated module cannot even compile.
+              compile(patched,'radar.py','exec')
+              compile(checked,'site_quality.py','exec')
+              target.write_bytes(content)
+              radar_path.write_text(patched,encoding='utf-8')
+              quality_path.write_text(checked,encoding='utf-8')
+              print('✅ 已安全升級 1.29 → 1.30；既有日曆、歷史、1.24–1.29 完全保留')
+          elif version=='1.30':
+              file=Path('signal_validation_v130.py')
+              if (not file.is_file() or hashlib.sha256(file.read_bytes()).hexdigest()!=EXPECTED_SHA
+                      or '訊號同日對照v130' not in source or
+                      "'🧪 台股｜訊號有效性驗證室・1.30'" not in quality):
+                  raise SystemExit('1.30 版本未通過完整性驗證：不覆寫')
+              print('✅ 既有1.30模組完整；重跑不改任何檔案')
+          else:
+              raise SystemExit(f'偵測到股票雷達版本 {version}：只允許從1.29安全升級到1.30')
+          PY_INSTALL
+      - name: 保存1.30模組與版本（保留舊資料）
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add radar.py site_quality.py signal_validation_v130.py
+          if ! git diff --cached --quiet; then
+            git commit -m 'Add signal effectiveness comparison v1.30'
+            git push || { git fetch origin main; git rebase origin/main; git push; }
+          fi
+      - name: 安裝 Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: 使用既有依賴
+        run: pip install -r requirements.txt
+      - name: 重新產生並驗證股票雷達
+        run: python radar.py
+      - name: 儲存歷史與新版網站
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html data/history.csv
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish signal validity lab v1.30'
+            git push || { git fetch origin main; git rebase origin/main; git push; }
+          fi
+      - name: 準備完整 GitHub Pages 網站
+        shell: bash
+        run: |
+          mkdir -p _site/data
+          cp index.html _site/index.html
+          cp data/history.csv _site/data/history.csv
+          for f in monthly_revenue.csv quarterly_profit.csv maintenance_status.json berkshire_13f.json; do
+            if [ -f "data/$f" ]; then cp "data/$f" "_site/data/$f"; fi
+          done
+      - name: 上傳網站
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
+  deploy:
+    needs: upgrade
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.publish.outputs.page_url }}
+    steps:
+      - name: 發布 1.30 訊號有效性驗證研究網站
+        id: publish
+        uses: actions/deploy-pages@v4
