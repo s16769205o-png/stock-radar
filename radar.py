@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import csv
 import html
+import math
 import time
 from collections import defaultdict
 from datetime import datetime
@@ -31,7 +32,8 @@ from institutional_flow import institutional_section
 from sector_dashboard_v126 import sector_dashboard_section
 from sector_treasure_v127 import treasure_section
 from sector_diagnostics_v128 import diagnostics_section
-from history_lab_v129 import history_lab_section
+from history_lab_v129 import _prices, history_lab_section
+from trading_sessions import last_completed_session, session_after
 from signal_validation_v130 import validation_section
 from world_events_v125 import official_events_section
 from site_quality import verify_site
@@ -43,7 +45,6 @@ ROOT = Path(__file__).resolve().parent
 DATA_FILE = ROOT / "data" / "history.csv"
 SITE_FILE = ROOT / "index.html"
 VOLUME_THRESHOLD = 1.5
-MIN_SUCCESS = 70
 BATCH_SIZE = 10
 HORIZONS = (5, 10, 20)
 BENCHMARKS = {"台股": ("0050.TW", "0050 台灣50 ETF"), "美股": ("SPY", "SPY 標普500 ETF")}
@@ -168,6 +169,10 @@ def calculate(data, market, code):
     data = data.dropna(subset=['Close','Volume'])
     if len(data) < 61: raise ValueError('交易日資料不足 61 筆')
     closes, volumes = data['Close'].astype(float), data['Volume'].astype(float)
+    if not all(math.isfinite(v) and v > 0 for v in closes.iloc[-61:]):
+        raise ValueError('收盤價含無效數值')
+    if not all(math.isfinite(v) and v >= 0 for v in volumes.iloc[-61:]):
+        raise ValueError('成交量含無效數值')
     price = float(closes.iloc[-1]); previous = float(closes.iloc[-2])
     ma20 = float(closes.iloc[-20:].mean()); ma60 = float(closes.iloc[-60:].mean())
     avg_vol = float(volumes.iloc[-21:-1].mean())
@@ -687,11 +692,33 @@ def render(records,errors,history_rows,history_frames,benchmark_frames,benchmark
     stage_file.replace(SITE_FILE)
 
 
+def require_complete_markets(records, benchmark_frames, now):
+    """Reject the whole publication when either fixed research pool is incomplete."""
+    issues = []
+    for market, codes in UNIVERSE.items():
+        expected = last_completed_session(market, now)
+        market_rows = [r for r in records if r['市場'] == market]
+        symbols = {r['股票'] for r in market_rows}
+        aligned = {r['股票'] for r in market_rows
+                   if r['交易日期'] == expected and r['股票'] in codes}
+        print(f'{market} {expected}：下載 {len(symbols & set(codes))}/{len(codes)}，'
+              f'同日 {len(aligned)}/{len(codes)}')
+        if aligned != set(codes) or len(market_rows) != len(codes):
+            issues.append(f'{market} 固定股票池不完整或交易日期不符（預期 {expected}）')
+        prices, dates = _prices(benchmark_frames.get(market))
+        if not dates or dates[-1] != expected:
+            issues.append(f'{market} 基準收盤日期不符（預期 {expected}）')
+        elif any(session_after(market, expected, -offset) not in prices
+                 for offset in range(61)):
+            issues.append(f'{market} 基準最近 61 個交易日有缺漏')
+    if issues:
+        raise RuntimeError('行情驗收未通過，保留既有網站及歷史：' + '；'.join(issues))
+
+
 def main():
+    scan_started = datetime.now(ZoneInfo('Asia/Taipei'))
     records,errors,histories=latest_snapshot()
     for err in errors:print('資料問題：',err)
-    if len(records)<MIN_SUCCESS:
-        raise RuntimeError(f'僅成功下載 {len(records)}/100 檔，低於安全門檻 {MIN_SUCCESS}，不覆寫舊網頁。')
     benchmark_frames={};benchmark_errors=[]
     for market,(ticker,_) in BENCHMARKS.items():
         try:
@@ -700,6 +727,8 @@ def main():
             benchmark_frames[market]=f
         except Exception as exc:
             benchmark_errors.append(f'{ticker}: {type(exc).__name__}: {str(exc)[:100]}')
+    for err in benchmark_errors:print('基準下載問題：',err)
+    require_complete_markets(records, benchmark_frames, scan_started)
     history_rows=persist(records)
     render(records,errors,history_rows,histories,benchmark_frames,benchmark_errors)
     # render() computes and archives any newly matured outcomes on the same dictionaries.
