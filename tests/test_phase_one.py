@@ -102,7 +102,7 @@ class SignalTests(unittest.TestCase):
         self.assertFalse(result['capture_ok'])
         self.assertEqual(result['rows'], [])
 
-    def test_existing_36_signals_are_preserved_and_excluded(self):
+    def load_original_signals(self):
         with radar.DATA_FILE.open(encoding='utf-8-sig', newline='') as handle:
             self.history = [row for row in csv.DictReader(handle)
                             if any(event.get('first_seen') == OBSERVED.isoformat()
@@ -111,6 +111,9 @@ class SignalTests(unittest.TestCase):
             archived = json.loads(row[lab.ARCHIVE_FIELD])
             row[lab.ARCHIVE_FIELD] = json.dumps(
                 [event for event in archived if event.get('first_seen') == OBSERVED.isoformat()])
+
+    def test_existing_36_signals_are_preserved_and_excluded(self):
+        self.load_original_signals()
         existing = [row[lab.ARCHIVE_FIELD] for row in self.history]
         self.histories = {}
         self.records = []
@@ -123,6 +126,48 @@ class SignalTests(unittest.TestCase):
         self.assertEqual(report['total_events'], 0)
         self.assertEqual(report['results'], [])
         self.assertEqual(report['saved_controls'], 0)
+
+
+    def test_history_lab_renders_the_36_original_signals(self):
+        self.load_original_signals()
+        with patch.object(lab, 'research_rows', return_value=self.snapshot):
+            page = lab.history_lab_section(self.universe, {}, {}, [], {},
+                                           self.benchmarks, self.history)
+        self.assertIn('前瞻訊號 0 筆，舊制封存 36 筆', page)
+        self.assertIn('最近12筆原始線索', page)
+        self.assertIn(OBSERVED.isoformat(), page)
+        self.assertIn('<div>舊制封存</div>', page)
+
+
+class StockWindowTests(unittest.TestCase):
+    def stock_frame(self, market):
+        end = last_completed_session(market, OBSERVED)
+        calendar = calendar_for(market)
+        dates = calendar.sessions_in_range(session_after(market, end, -64), end)
+        frame = prices({day.date().isoformat(): 100 for day in dates})
+        return frame.assign(Volume=1000)
+
+    def test_complete_stock_window_accepts_exchange_sessions(self):
+        for market, symbols in radar.UNIVERSE.items():
+            with self.subTest(market=market):
+                frame = self.stock_frame(market)
+                row = radar.calculate(frame, market, symbols[0])
+                self.assertEqual(row['交易日期'], last_completed_session(market, OBSERVED))
+                self.assertEqual(row['MA60'], 100)
+
+    def test_stock_window_rejects_missing_session_even_with_enough_rows(self):
+        for market, symbols in radar.UNIVERSE.items():
+            frame = self.stock_frame(market)
+            missing_day = frame.index[-10]
+            missing = frame.drop(missing_day)
+            missing_close = frame.copy()
+            missing_close.loc[missing_day, 'Close'] = float('nan')
+            duplicated = pd.concat([missing, frame.iloc[[-11]]]).sort_index()
+            for case, data in [('缺列', missing), ('缺收盤價', missing_close), ('重複交易日', duplicated)]:
+                with self.subTest(market=market, case=case):
+                    self.assertGreaterEqual(len(data.dropna()), 61)
+                    with self.assertRaisesRegex(ValueError, '最近 61 個交易日'):
+                        radar.calculate(data, market, symbols[0])
 
 
 class MarketGateTests(unittest.TestCase):

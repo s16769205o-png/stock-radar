@@ -33,7 +33,7 @@ from sector_dashboard_v126 import sector_dashboard_section
 from sector_treasure_v127 import treasure_section
 from sector_diagnostics_v128 import diagnostics_section
 from history_lab_v129 import _prices, history_lab_section
-from trading_sessions import last_completed_session, session_after
+from trading_sessions import last_completed_session, recent_sessions
 from signal_validation_v130 import validation_section
 from world_events_v125 import official_events_section
 from site_quality import verify_site
@@ -46,6 +46,7 @@ DATA_FILE = ROOT / "data" / "history.csv"
 SITE_FILE = ROOT / "index.html"
 VOLUME_THRESHOLD = 1.5
 BATCH_SIZE = 10
+TECHNICAL_WINDOW = 61
 HORIZONS = (5, 10, 20)
 BENCHMARKS = {"台股": ("0050.TW", "0050 台灣50 ETF"), "美股": ("SPY", "SPY 標普500 ETF")}
 
@@ -167,11 +168,17 @@ def calculate(data, market, code):
     if data is None or data.empty or not {'Close','Volume'}.issubset(data.columns):
         raise ValueError('缺少收盤價或成交量')
     data = data.dropna(subset=['Close','Volume'])
-    if len(data) < 61: raise ValueError('交易日資料不足 61 筆')
+    if len(data) < TECHNICAL_WINDOW:
+        raise ValueError(f'交易日資料不足 {TECHNICAL_WINDOW} 筆')
+    recent = data.iloc[-TECHNICAL_WINDOW:]
+    dates = recent.index.strftime('%Y-%m-%d').tolist()
+    trade_day = dates[-1]
+    if dates != recent_sessions(market, trade_day, TECHNICAL_WINDOW):
+        raise ValueError(f'最近 {TECHNICAL_WINDOW} 個交易日行情缺漏或日期不符')
     closes, volumes = data['Close'].astype(float), data['Volume'].astype(float)
-    if not all(math.isfinite(v) and v > 0 for v in closes.iloc[-61:]):
+    if not all(math.isfinite(v) and v > 0 for v in closes.iloc[-TECHNICAL_WINDOW:]):
         raise ValueError('收盤價含無效數值')
-    if not all(math.isfinite(v) and v >= 0 for v in volumes.iloc[-61:]):
+    if not all(math.isfinite(v) and v >= 0 for v in volumes.iloc[-TECHNICAL_WINDOW:]):
         raise ValueError('成交量含無效數值')
     price = float(closes.iloc[-1]); previous = float(closes.iloc[-2])
     ma20 = float(closes.iloc[-20:].mean()); ma60 = float(closes.iloc[-60:].mean())
@@ -182,7 +189,7 @@ def calculate(data, market, code):
     mom5 = 100 * (price / float(closes.iloc[-6]) - 1) if closes.iloc[-6] > 0 else 0.0
     trend, vol, momentum = technique_points(price,ma20,ma60,ratio,change,rsi,mom5)
     return {
-        '交易日期':data.index[-1].strftime('%Y-%m-%d'), '市場':market, '股票':code,
+        '交易日期':trade_day, '市場':market, '股票':code,
         '調整收盤價':round(price,2), 'MA20':round(ma20,2), 'MA60':round(ma60,2),
         '成交量':int(volumes.iloc[-1]),'量比':round(ratio,2) if ratio is not None else '',
         '單日漲跌幅':round(change,2),'量價訊號':classify_volume_price(ratio,change),
@@ -708,9 +715,8 @@ def require_complete_markets(records, benchmark_frames, now):
         prices, dates = _prices(benchmark_frames.get(market))
         if not dates or dates[-1] != expected:
             issues.append(f'{market} 基準收盤日期不符（預期 {expected}）')
-        elif any(session_after(market, expected, -offset) not in prices
-                 for offset in range(61)):
-            issues.append(f'{market} 基準最近 61 個交易日有缺漏')
+        elif any(day not in prices for day in recent_sessions(market, expected, TECHNICAL_WINDOW)):
+            issues.append(f'{market} 基準最近 {TECHNICAL_WINDOW} 個交易日有缺漏')
     if issues:
         raise RuntimeError('行情驗收未通過，保留既有網站及歷史：' + '；'.join(issues))
 

@@ -276,7 +276,7 @@ def history_lab_section(universe, industry, names, records, histories, benchmark
     for r in recent:
         pieces = []
         for h in HORIZONS:
-            state = _status(r,h,data['benchmark_days'],data['benchmark_map'])
+            state = _status(r, h, data['latest_day'])
             if state == 'matured':
                 parts = _num(r[f'excess_return_{h}d'])
                 pieces.append(f'{h}日超額 {parts:+.2f}pp')

@@ -30,3 +30,9 @@ def first_later_session(market, observed_at):
 
 def session_after(market, day, count):
     return calendar_for(market).session_offset(day, count).date().isoformat()
+
+
+def recent_sessions(market, end_day, count):
+    calendar = calendar_for(market)
+    start = calendar.session_offset(end_day, 1 - count)
+    return [session.date().isoformat() for session in calendar.sessions_in_range(start, end_day)]
