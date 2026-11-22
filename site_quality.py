@@ -9,7 +9,8 @@ from pathlib import Path
 import re
 
 REQUIRED = (
-    'STOCK RESEARCH LAB · 1.29',
+    'STOCK RESEARCH LAB · 1.30',
+    '🧪 台股｜訊號有效性驗證室・1.30',
     '🗂️ 台股｜歷史訊號與可信度研究室・1.29',
     '🇹🇼 台股｜產業交叉驗證總控台・1.26',
     '🔎 台股｜產業尋寶雷達・1.27',
