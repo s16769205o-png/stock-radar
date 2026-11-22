@@ -74,6 +74,9 @@ def _official_article_link(candidate, permitted_domain):
         return None
     if p.username or p.password or len(url) > 1600:
         return None
+    if (permitted_domain == 'eia.gov' and p.path.endswith('/todayinenergy/detail.php')
+            and not any(v.isdigit() for v in urllib.parse.parse_qs(p.query).get('id', []))):
+        return None
     return url
 
 

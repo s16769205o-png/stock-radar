@@ -1,4 +1,4 @@
-"""小G 股票雷達 1.25：1.5 的績效追蹤＋前十名升降榜。
+"""小G 股票雷達 1.26：1.5 的績效追蹤＋前十名升降榜。
 
 免費 GitHub Actions、無券商連線，僅供研究。5/10/20 個交易日績效是
 「訊號當日調整收盤價 -> 第 N 個後續交易日調整收盤價」的紙上觀察報酬，
@@ -28,6 +28,7 @@ from famous_13f import install_famous_room
 from villa_search import install_stock_search
 from sector_indices import install_sector_indices
 from institutional_flow import institutional_section
+from sector_dashboard_v126 import sector_dashboard_section
 from world_events_v125 import official_events_section
 from site_quality import verify_site
 from market_health_v123 import us_date_health_section
@@ -597,7 +598,7 @@ def render(records,errors,history_rows,history_frames,benchmark_frames,benchmark
         <section class="grid">{primary}</section><details class="rest"><summary>展開其餘 {len(rows[10:])} 檔</summary><section class="grid">{rest}</section></details>'''
 
     page=f'''<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>小G股票雷達 1.25</title><style>
+    <title>小G股票雷達 1.26</title><style>
     *{{box-sizing:border-box}}body{{margin:0;background:#f5f7fb;color:#202a3c;font-family:system-ui,-apple-system,'Noto Sans TC',sans-serif}}
     main{{max-width:1010px;margin:auto;padding:28px 16px 64px}}h1{{font-size:2.1rem;margin:8px 0}}h2{{margin:32px 0 12px;font-size:1.35rem}}h3{{margin:20px 0 10px}}
     .muted,small{{color:#6b7789}}.muted{{line-height:1.7;font-size:.92rem}}.eyebrow{{font-size:.79rem;letter-spacing:.07em;color:#325e96;font-weight:750}}
@@ -621,7 +622,7 @@ def render(records,errors,history_rows,history_frames,benchmark_frames,benchmark
     .movetag.up{{color:#176f4a;background:#e2f6ea}}.movetag.down{{color:#a64d36;background:#feede7}}.movetag.same{{color:#576476;background:#edf0f5}}
     @media(max-width:640px){{.movelist{{grid-template-columns:1fr}}.grid{{grid-template-columns:1fr}}.weights{{grid-template-columns:repeat(2,1fr)}}.stats strong{{font-size:1.3rem}}.stats>div{{padding:11px}}}}
     </style></head><body><main>
-    <div class="eyebrow">STOCK RESEARCH LAB · 1.25</div><h1>📡 小G股票雷達</h1>
+    <div class="eyebrow">STOCK RESEARCH LAB · 1.26</div><h1>📡 小G股票雷達</h1>
     <p class="muted">台股50＋美股50｜產業一句話、營收、獲利、技術排名及績效追蹤<br>台灣時間產生：{updated}。各股票請以卡片上的交易日為準。</p>
     <div class="stats"><div><small>成功掃描</small><strong>{len(records)}</strong></div><div><small>符合均線</small><strong>{sum(r['符合趨勢']=='是' for r in records)}</strong></div>
     <div><small>明顯放量</small><strong>{sum(str(r['量價訊號']).startswith('放量') for r in records)}</strong></div></div>
@@ -645,6 +646,7 @@ def render(records,errors,history_rows,history_frames,benchmark_frames,benchmark
     {sector_evidence_section(UNIVERSE, INDUSTRY)}
     {institutional_section(UNIVERSE, INDUSTRY, history_rows, records)}
     {official_events_section()}
+    {sector_dashboard_section(UNIVERSE, INDUSTRY, records, history_frames, benchmark_frames, history_rows)}
     {health_section(records,errors,history_rows,UNIVERSE,INDUSTRY)}
     {us_date_health_section(records,UNIVERSE)}
     <h2>🏭 產業觀察大廳</h2><p class="muted">依各群組在本測試池的平均技術分排序；不是資金流向、產業成長率或未來漲幅。</p>
