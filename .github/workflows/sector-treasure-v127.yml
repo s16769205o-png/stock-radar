@@ -1,0 +1,215 @@
+name: 小G股票雷達 1.27｜產業尋寶雷達
+
+on:
+  push:
+    paths:
+      - '.github/workflows/sector-treasure-v127.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: stock-radar-sector-treasure-v127
+  cancel-in-progress: false
+
+jobs:
+  upgrade:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 取得既有股票雷達
+        uses: actions/checkout@v4
+      - name: 安裝新版並保留所有舊房間
+        shell: bash
+        run: |
+          python - <<'PY_UPGRADE'
+          from pathlib import Path
+          import gzip,base64,hashlib,re
+          MODULE_B64 = """
+          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
+          mJ/nzSRrIfFY8v+HFqq2ASoAAA==
+          """
+          EXPECTED_SHA = '2e5e5aeaeed825d9a568381d8517ef1fc2713a72b5df973bfc8181f684834ff4'
+          content = gzip.decompress(base64.b64decode(''.join(MODULE_B64.split())))
+          if hashlib.sha256(content).hexdigest() != EXPECTED_SHA:
+              raise SystemExit('1.27 安裝檔校驗失敗；安全停止')
+          compile(content.decode('utf-8'),'sector_treasure_v127.py','exec')
+          radar=Path('radar.py')
+          quality=Path('site_quality.py')
+          sector=Path('sector_dashboard_v126.py')
+          if not all(f.is_file() for f in (radar, quality, sector)):
+              raise SystemExit('缺少 1.26 既有模組；安全停止')
+          original=radar.read_text(encoding='utf-8')
+          checks=quality.read_text(encoding='utf-8')
+          match=re.search(r'^"""小G 股票雷達 ([0-9.]+)：',original)
+          version=match.group(1) if match else 'unknown'
+
+          def replace_once(text, old, new, context):
+              times=text.count(old)
+              if times != 1:
+                  raise SystemExit(f'1.27 與{context}不相容：預期1個標記，實際{times}個；已安全停止')
+              return text.replace(old,new,1)
+
+          if version == '1.26':
+              patches = [
+                  ('小G 股票雷達 1.26：','小G 股票雷達 1.27：'),
+                  ('<title>小G股票雷達 1.26</title>', '<title>小G股票雷達 1.27</title>'),
+                  ('STOCK RESEARCH LAB · 1.26</div>', 'STOCK RESEARCH LAB · 1.27</div>'),
+                  ('from sector_dashboard_v126 import sector_dashboard_section',
+                   'from sector_dashboard_v126 import sector_dashboard_section\nfrom sector_treasure_v127 import treasure_section'),
+                  ('    {sector_dashboard_section(UNIVERSE, INDUSTRY, records, history_frames, benchmark_frames, history_rows)}\n'
+                   '    {health_section(records,errors,history_rows,UNIVERSE,INDUSTRY)}',
+                   '    {sector_dashboard_section(UNIVERSE, INDUSTRY, records, history_frames, benchmark_frames, history_rows)}\n'
+                   '    {treasure_section(UNIVERSE, INDUSTRY, TW_NAMES, records, history_frames, benchmark_frames, history_rows)}\n'
+                   '    {health_section(records,errors,history_rows,UNIVERSE,INDUSTRY)}'),
+              ]
+              patched=original
+              for old,new in patches:
+                  patched=replace_once(patched,old,new,'radar.py')
+              verified=replace_once(checks,"'STOCK RESEARCH LAB · 1.26',", "'STOCK RESEARCH LAB · 1.27',",'site_quality.py')
+              verified=replace_once(verified,"    '🇹🇼 台股｜產業交叉驗證總控台・1.26',\n",
+                  "    '🇹🇼 台股｜產業交叉驗證總控台・1.26',\n    '🔎 台股｜產業尋寶雷達・1.27',\n",'site_quality.py')
+              compile(patched,'radar.py','exec')
+              compile(verified,'site_quality.py','exec')
+              Path('sector_treasure_v127.py').write_bytes(content)
+              radar.write_text(patched,encoding='utf-8')
+              quality.write_text(verified,encoding='utf-8')
+              print('✅ 1.27 安裝完成，保留 1.26 全部研究室及原有歷史')
+          elif version == '1.27':
+              module=Path('sector_treasure_v127.py')
+              if (not module.is_file() or hashlib.sha256(module.read_bytes()).hexdigest()!=EXPECTED_SHA
+                      or 'from sector_treasure_v127 import treasure_section' not in original
+                      or "'🔎 台股｜產業尋寶雷達・1.27'" not in checks):
+                  raise SystemExit('1.27 目前版本與模組不相符；拒絕覆寫')
+              print('✅ 已安裝 1.27；安全跳過重複安裝')
+          else:
+              raise SystemExit(f'只能由 1.26 升級，現在是 {version}；未修改原網站')
+          PY_UPGRADE
+      - name: 儲存新版模組及主程式
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add sector_treasure_v127.py radar.py site_quality.py
+          if ! git diff --cached --quiet; then
+            git commit -m 'Add mobile sector stock explorer v1.27'
+            git push || { git fetch origin main; git rebase origin/main; git push; }
+          fi
+      - name: 安裝 Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: 安裝既有依賴
+        run: pip install -r requirements.txt
+      - name: 驗收缺資料及法人校驗情境
+        shell: bash
+        run: |
+          python - <<'PY_TEST'
+          from radar import UNIVERSE, INDUSTRY, TW_NAMES
+          from sector_treasure_v127 import treasure_section, research_rows, _verified_institution
+          result = research_rows(UNIVERSE, INDUSTRY, TW_NAMES, [], {}, {}, [], [], [])
+          assert result['total'] == 50
+          assert len(result['groups']) == len(set(INDUSTRY[s] for s in UNIVERSE['台股']))
+          page = treasure_section(UNIVERSE, INDUSTRY, TW_NAMES, [], {}, {}, [], [], [])
+          assert page.count('class="treasure-stock"') == 50
+          assert '🔎 台股｜產業尋寶雷達・1.27' in page
+          assert _verified_institution({}) is None
+          assert _verified_institution({'法人資料狀態':'官方已核對',
+              '外資買賣超股數':'1000','投信買賣超股數':'500',
+              '自營商買賣超股數':'0','三大法人買賣超股數':'1600'}) is None
+          assert _verified_institution({'法人資料狀態':'官方已核對',
+              '外資買賣超股數':'1000','投信買賣超股數':'500',
+              '自營商買賣超股數':'0','三大法人買賣超股數':'1500'}) is not None
+          print('✅ 50檔個股卡片、缺值標記、法人合計校驗通過')
+          PY_TEST
+      - name: 產生最新股票雷達並驗收
+        run: python radar.py
+      - name: 保存網站及原本歷史
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html data/history.csv
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish stock sector explorer v1.27'
+            git push || echo '::warning::其他工作流程同時推送，當次Pages仍依驗收版本發布'
+          fi
+      - name: 準備完整手機網站
+        shell: bash
+        run: |
+          mkdir -p _site/data
+          cp index.html _site/index.html
+          cp data/history.csv _site/data/history.csv
+          for f in monthly_revenue.csv quarterly_profit.csv maintenance_status.json berkshire_13f.json; do
+            if [ -f "data/$f" ]; then cp "data/$f" "_site/data/$f"; fi
+          done
+      - name: 上傳網站
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
+  deploy:
+    needs: upgrade
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.publish.outputs.page_url }}
+    steps:
+      - name: 發布 1.27 產業尋寶雷達
+        id: publish
+        uses: actions/deploy-pages@v4
