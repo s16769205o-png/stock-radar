@@ -27,3 +27,40 @@ jobs:
         run: python -m pip install -r requirements.txt
       - name: Run offline regression tests
         run: python -m unittest discover -s tests -v
+
+  mobile-browser-smoke:
+    name: Mobile Chromium preview (synthetic data only)
+    needs: offline-tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout proposed changes
+        uses: actions/checkout@v4
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install project + browser test dependencies
+        run: |
+          python -m pip install -r requirements.txt
+          python -m pip install 'playwright>=1.50,<2'
+          python -m playwright install --with-deps chromium
+      - name: Build full 100-stock HTML preview with offline fixtures
+        env:
+          STOCK_RADAR_BROWSER_PREVIEW_PATH: ${{ runner.temp }}/synthetic-stock-radar.html
+        run: python -m unittest discover -s tests -v
+      - name: Verify mobile layout, tabs and >72h warning in real Chromium
+        run: |
+          python tests/browser_health_check.py \
+            --html "$RUNNER_TEMP/synthetic-stock-radar.html" \
+            --output "$RUNNER_TEMP/mobile-preview"
+      - name: Save optional preview screenshots (not deployed)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: stock-radar-1-31-synthetic-mobile-preview
+          path: |
+            ${{ runner.temp }}/mobile-preview/*.png
+            ${{ runner.temp }}/synthetic-stock-radar.html
+          if-no-files-found: ignore
+          retention-days: 7
