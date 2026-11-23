@@ -122,6 +122,17 @@ class DailyUpdateOfflineTest(unittest.TestCase):
             self.assertTrue((root / QUARTERLY).is_file())
 
             outputs = {p.relative_to(root): p.read_bytes() for p in root.rglob('*') if p.is_file()}
+
+            # The market gate passes, but HTML rendering fails. Neither the
+            # existing site nor historical evidence may be changed.
+            with patch.object(radar, 'render', side_effect=RuntimeError('simulated render failure')):
+                with self.assertRaisesRegex(RuntimeError, 'simulated render failure'):
+                    radar.main()
+            self.assertEqual(
+                {p.relative_to(root): p.read_bytes() for p in root.rglob('*') if p.is_file()},
+                outputs,
+            )
+
             for symbol in ('2330.TW', 'SPY'):
                 with self.subTest(missing_session=symbol):
                     complete = quotes[symbol]
