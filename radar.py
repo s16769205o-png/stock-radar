@@ -606,8 +606,9 @@ def performance_section(market,signals,results,immature,missing):
             +''.join(lines)+'</tbody></table></div>')
 
 
-def render(records,errors,history_rows,history_frames,benchmark_frames,benchmark_errors, *, publish=True):
-    generated_at = datetime.now(ZoneInfo('Asia/Taipei'))
+def render(records,errors,history_rows,history_frames,benchmark_frames,benchmark_errors,
+           *, publish=True, scan_time=None):
+    generated_at = scan_time or datetime.now(ZoneInfo('Asia/Taipei'))
     updated=generated_at.strftime('%Y-%m-%d %H:%M')
     health_light=health_light_section(records,benchmark_frames,UNIVERSE,generated_at)
     tw=sorted([r for r in records if r['市場']=='台股'],key=rank)
@@ -805,7 +806,7 @@ def main():
     try:
         history_rows = persist(records, save=False)
         render(records,errors,history_rows,histories,benchmark_frames,benchmark_errors,
-               publish=False)
+               publish=False, scan_time=scan_started)
         # render() records newly matured outcomes in memory before the CSV is staged.
         publish_verified_report(history_rows, staged_site)
     finally:
