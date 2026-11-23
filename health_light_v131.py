@@ -71,7 +71,7 @@ def health_light_section(records, benchmark_frames, universe, generated_at):
             + '<span class="rhl-benchmark">基準 '
             + escape(item['benchmark']) + '：' + bench + '</span></p></div>'
         )
-    return '''<section id="radar-health-light-v131" class="rhl-card '''
+    return ('''<section id="radar-health-light-v131" class="rhl-card '''
     + status_class + '''" data-generated-at="''' + iso + '''"
       aria-label="股票雷達資料健康燈">
       <style>
@@ -136,6 +136,7 @@ def health_light_section(records, benchmark_frames, universe, generated_at):
         const warning=document.getElementById('rhl-age-warning');
         const label=document.getElementById('rhl-status');
         if(!Number.isFinite(issued)||!warning||!label)return;
+        const originalLabel=label.textContent;
         function refresh(){
           const elapsed=Date.now()-issued;
           if(elapsed>72*60*60*1000){
@@ -146,13 +147,13 @@ def health_light_section(records, benchmark_frames, universe, generated_at):
           }else{
             root.classList.remove('rhl-stale');
             warning.hidden=true;
-            label.textContent='''' + status_text + '''';
+            label.textContent=originalLabel;
           }
         }
         refresh();
         document.addEventListener('visibilitychange',function(){if(!document.hidden)refresh()});
       })();
       </script>
-    </section>'''
+    </section>''')
 
 
