@@ -133,6 +133,16 @@ class DailyUpdateOfflineTest(unittest.TestCase):
                 outputs,
             )
 
+            # Exercise a genuine late rendering failure, after all the
+            # research sections have run and the staging HTML exists.
+            with patch.object(radar, 'verify_site',
+                              side_effect=RuntimeError('simulated site verification failure')):
+                with self.assertRaisesRegex(RuntimeError, 'simulated site verification failure'):
+                    radar.main()
+            self.assertEqual(history.read_bytes(), outputs[Path('data/history.csv')])
+            self.assertEqual(site.read_bytes(), outputs[Path('index.html')])
+            self.assertFalse((root / 'index.stage.html').exists())
+
             for symbol in ('2330.TW', 'SPY'):
                 with self.subTest(missing_session=symbol):
                     complete = quotes[symbol]
