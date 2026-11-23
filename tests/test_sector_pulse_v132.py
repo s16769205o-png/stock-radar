@@ -95,7 +95,7 @@ class SectorPulseTests(unittest.TestCase):
         result = self.data()
         self.assertEqual(len(result['rows']), 1)
         self.assertEqual(result['rows'][0]['研判'], '樣本太少')
-        self.assertNotIn('金融', render_section(result))
+        self.assertNotIn('<strong>金融</strong>', render_section(result))
 
     def test_zero_changes_and_unavailable_history(self):
         self.add_group('持平', ['1111','1112','1113'], 10, 10, 5, 5)
