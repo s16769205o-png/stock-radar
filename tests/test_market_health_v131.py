@@ -96,6 +96,33 @@ class MarketHealthTests(unittest.TestCase):
             self.assertEqual(history.read_bytes(), b'ORIGINAL CSV')
             self.assertEqual(site.read_bytes(), b'ORIGINAL HTML')
 
+    def test_noon_taiwan_market_uses_last_completed_session_not_intraday_bar(self):
+        # 2026-11-23 12:55 TPE is *before* Taiwan market close. Yahoo
+        # already includes the uncompleted November 23 daily candle.
+        noon = datetime.fromisoformat('2026-11-23T12:55:00+08:00')
+        tw_expected = last_completed_session('台股', noon)
+        self.assertEqual(tw_expected, '2026-11-20')
+        self.assertEqual(self.records[0]['交易日期'], '2026-11-23')
+
+        def ticker_factory(symbol):
+            return Mock(history=Mock(return_value=self.frames[symbol]))
+
+        with (
+            patch.object(radar, 'latest_snapshot',
+                         return_value=(self.records, [], dict(self.frames))),
+            patch.object(radar.yf, 'Ticker', side_effect=ticker_factory) as ticker,
+        ):
+            report = health.fetch_live_report(now=noon, retry_attempts=1, sleep_seconds=0)
+
+        self.assertEqual(report['status'], 'READY')
+        self.assertEqual(report['markets'][0]['complete'], 50)
+        self.assertEqual(report['markets'][0]['expected_day'], tw_expected)
+        self.assertEqual(len(report['markets'][0]['unfinished_ignored']), 51)
+        self.assertEqual(report['markets'][0]['recovered'], [])
+        # Only two benchmarks should need fresh HTTP fetches; no 50-ticker retry.
+        self.assertEqual(ticker.call_count, 2)
+        self.assertIn('已排除尚未收盤', health.format_markdown(report))
+
     def test_retry_failure_returns_blocked_diagnostic_without_writing(self):
         code = radar.UNIVERSE['台股'][0]
         initial = [x for x in self.records if x['股票'] != code]
