@@ -74,6 +74,17 @@ def run(html: Path, output: Path):
                 page.locator('#tab-tw').click()
                 assert page.locator('#panel-tw').is_visible()
                 assert page.locator('#panel-us').is_hidden()
+                official_index = page.locator('#sector-index-tw')
+                official_index.wait_for(state='visible', timeout=10000)
+                comparison = official_index.locator('details.sector-research-extra')
+                assert comparison.count() == 1, 'Research-pool price strength must be inside TW index'
+                assert not comparison.evaluate('(n) => n.open'), 'Extra price table must start folded'
+                comparison.locator('summary').click()
+                assert comparison.evaluate('(n) => n.open')
+                assert '台股研究池｜族群強弱' in comparison.inner_text()
+                assert comparison.locator('table').count() == 1
+                assert page.locator('#panel-tw > .radar-subgroup').filter(has_text='台股研究池｜族群強弱').count() == 0
+                comparison.locator('summary').click()
                 pulse = page.locator('#sector-pulse-v132')
                 pulse.scroll_into_view_if_needed()
                 assert pulse.is_visible(), 'Taiwan sector evidence must be accessible'
@@ -87,6 +98,7 @@ def run(html: Path, output: Path):
                 pulse.screenshot(path=str(output / f'sector-pulse-{width}.png'))
                 page.locator('#tab-us').click()
                 assert page.locator('#panel-us').is_visible()
+                assert page.locator('#panel-us').get_by_text('美股研究池｜族群強弱').count() == 1
                 page.locator('#tab-famous').click()
                 assert page.locator('#panel-famous').is_visible()
                 page.locator('#tab-kitchen').click()

@@ -211,7 +211,7 @@ def _sector_table(rows, us=False):
         '<th>'+_text(h)+'</th>' for h in headers)+'</tr></thead><tbody>'+''.join(body)+'</tbody></table></div>'
 
 
-def render_sections(tw, us):
+def render_sections(tw, us, *, tw_research_html=''):
     source = ('<a href="'+TWSE_URL+'?response=html&amp;type=IND" '
               'target="_blank" rel="noopener noreferrer">證交所官方類股指數</a>')
     twrows = tw.get('rows',[])
@@ -225,12 +225,20 @@ def render_sections(tw, us):
     else:
         twcontent='<p class="sector-unavailable">目前無法自動取得證交所產業指數（'+_text(tw.get('error') or '資料未公布')+'）。既有股票研究報告不受影響。</p>'
         date='尚未取得';priorinfo=''
+    research = (
+        '<details class="sector-detail sector-research-extra">'
+        '<summary>🔎 展開自選50檔族群技術比較（與官方指數不同）</summary>'
+        '<p class="sector-note">官方指數看整體類股；以下只看雷達追蹤的台股樣本，'
+        '比較20／60日平均價格報酬、站上均線比例與相對0050的變化。'
+        '兩套產業分類及樣本範圍不同，不能把表格數字當成同一指數。</p>'
+        + tw_research_html + '</details>'
+    ) if tw_research_html else ''
     twsection=(
         '<section class="sector-index-section" id="sector-index-tw">'
         '<h2>🔭 產業指數觀景台｜台股</h2>'
         '<p class="sector-note">台灣證交所<b>官方產業分類「價格指數」</b>；統計日期 '+_text(date)+priorinfo+'。'
         '指數是上市市場類別表現，不等於我們固定 50 檔的研究群組；指數本身不能直接買賣。'+source+'。</p>'
-        +twcontent+
+        +twcontent+research+
         '<p class="sector-note">價格指數不含股息；「約一週」是與上週相近交易日的收盤點數相比，'
         '不是固定 5 個交易日。若行情源暫不可用，不會用預設數字補齊。</p></section>'
     )
@@ -278,6 +286,13 @@ CSS = r"""
  font-size:.86rem;margin:9px 0;}
 .sector-highlight b {font-size:.85rem;color:#29577d;white-space:nowrap;}
 .sector-detail>summary {padding:12px 9px;border-radius:9px;color:#285c8d;background:#eaf2fd;font-weight:650;}
+.sector-research-extra {margin-top:16px;border:1px solid #dce5f1;border-radius:12px;padding:10px;}
+.sector-research-extra > summary {font-size:.9rem;}
+.sector-research-extra .table-wrap {overflow-x:auto;max-width:100%;}
+.sector-research-extra .table-wrap table {min-width:740px;}
+.sector-research-extra h2 {font-size:1.06rem;margin:15px 0 9px;}
+.sector-research-extra h3 {font-size:.94rem;margin:12px 0 6px;}
+.sector-research-extra .muted {line-height:1.65;font-size:.82rem;}
 .sector-scroll {overflow-x:auto;margin-top:12px;border:1px solid #e0e7f0;border-radius:12px;}
 .sector-scroll table {border-collapse:collapse;min-width:490px;width:100%;font-size:.82rem;}
 .sector-scroll th {background:#eef3fa;text-align:right;font-weight:650;white-space:nowrap;}
@@ -305,7 +320,7 @@ SCRIPT = r"""
 """
 
 
-def install_sector_indices(path):
+def install_sector_indices(path, *, tw_research_html=''):
     """Enhance existing market panels without modifying holdings or source history."""
     path=Path(path)
     page=path.read_text(encoding='utf-8')
@@ -323,7 +338,7 @@ def install_sector_indices(path):
         us=fetch_us_etfs()
     except Exception as exc:
         us={'rows':[],'error':type(exc).__name__}
-    twhtml, ushtml=render_sections(tw,us)
+    twhtml, ushtml=render_sections(tw,us,tw_research_html=tw_research_html)
     def safejs(data):
         return json.dumps(data, ensure_ascii=False).replace('<',r'\u003c').replace('>',r'\u003e').replace('&',r'\u0026')
     js=SCRIPT.replace('__TW_HTML__',safejs(twhtml)).replace('__US_HTML__',safejs(ushtml))
