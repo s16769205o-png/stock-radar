@@ -1,19 +1,12 @@
 name: 小G月營收研究室 1.9（修正版）
 
+# RETIRED: 1.30+ includes these features. Historical installer kept for reference.
+# No push/schedule triggers, and all manual jobs are explicitly disabled.
 on:
-  push:
-    paths:
-      - '.github/workflows/revenue-v19.yml'
   workflow_dispatch:
-  schedule:
-    # 台灣時間每週日 11:15，定期將當月新營收資料存到 GitHub 歷史 CSV。
-    # 既有 radar.yml 的每日掃描仍照常運作。
-    - cron: '15 3 * * 0'
 
 permissions:
-  contents: write
-  pages: write
-  id-token: write
+  contents: read
 
 concurrency:
   group: monthly-revenue-v19
@@ -21,6 +14,7 @@ concurrency:
 
 jobs:
   upgrade:
+    if: ${{ false }}  # Legacy installer retired; never run jobs
     runs-on: ubuntu-latest
     steps:
       - name: 取得雷達程式
@@ -151,6 +145,7 @@ jobs:
           path: _site
 
   publish:
+    if: ${{ false }}  # Legacy installer retired; never run jobs
     needs: upgrade
     runs-on: ubuntu-latest
     permissions:
