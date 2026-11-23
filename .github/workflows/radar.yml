@@ -9,6 +9,11 @@ on:
     # 台灣時間週二至週六 07:40
     - cron: "40 23 * * 1-5"
 
+# Both scheduled runs use one publishing lock to avoid overlapping pushes/deploys.
+concurrency:
+  group: stock-radar-daily-publish
+  cancel-in-progress: false
+
 jobs:
   scan:
     runs-on: ubuntu-latest
@@ -34,7 +39,8 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add index.html data/history.csv
+          # Archive source snapshots alongside the report that used them.
+          git add index.html data/history.csv data/monthly_revenue.csv data/quarterly_profit.csv
           if ! git diff --cached --quiet; then
             git commit -m "更新股票雷達報告"
             git push
@@ -45,6 +51,8 @@ jobs:
           mkdir -p _site/data
           cp index.html _site/index.html
           cp data/history.csv _site/data/history.csv
+          cp data/monthly_revenue.csv _site/data/monthly_revenue.csv
+          cp data/quarterly_profit.csv _site/data/quarterly_profit.csv
 
       - name: 上傳網頁
         uses: actions/upload-pages-artifact@v4
