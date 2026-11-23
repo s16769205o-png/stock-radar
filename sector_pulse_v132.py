@@ -64,6 +64,10 @@ def _change(value):
     return '—' if value is None else f'{value:+.1f} 百分點'
 
 
+def _level(value):
+    return '—' if value is None else f'{value:+.1f}%'
+
+
 def _e(value):
     return escape(str(value), quote=True)
 
@@ -94,6 +98,12 @@ def render_section(data):
         )
         revenue = _change(r['月營收年增變化pp']) if is_qualified else '—'
         margin = _change(r['去年同季累計營利率變化pp']) if is_qualified else '—'
+        current_coverage = (r['股票數'] >= 3
+                            and r['同時有數據'] >= max(3, ceil(.75 * r['股票數'])))
+        yoy_level = (_level(r['月營收年增中位數'])
+                     if current_coverage else '—')
+        margin_level = (_level(r['營業利益率中位數'])
+                        if current_coverage else '—')
         tone = ('up' if verdict == '兩項同向改善'
                 else 'down' if verdict == '兩項同向放緩'
                 else 'mixed' if verdict == '營收與獲利分歧'
@@ -103,7 +113,11 @@ def render_section(data):
             '<strong>' + _e(r['產業']) + '</strong>'
             '<span class="sp132-tag sp132-' + tone + '">' + _e(verdict)
             + '</span></div>'
-            '<dl><div><dt>月營收年增率的跨月變化</dt><dd>'
+            '<dl><div><dt>最新月營收年增率中位數</dt><dd>'
+            + _e(yoy_level) + '</dd></div>'
+            '<div><dt>最新累計營業利益率中位數</dt><dd>'
+            + _e(margin_level) + '</dd></div>'
+            '<div><dt>月營收年增率的跨月變化</dt><dd>'
             + _e(revenue) + '</dd></div>'
             '<div><dt>累計營業利益率的同季跨年變化</dt><dd>'
             + _e(margin) + '</dd></div></dl>'
@@ -132,6 +146,9 @@ def render_section(data):
         + '。月營收與季度財報並非同一段期間。</p>'
         '<div class="sp132-grid">' + ''.join(cards) + '</div>'
         '<details class="sp132-explain"><summary>這些狀態怎麼判斷？</summary>'
+        '<p>最新水準是本研究池的當期中位數，不是整個產業的成長率；'
+        '只有最新兩項資料覆蓋至少 75% 且至少 3 檔才顯示。'
+        '「年增為正」不代表「成長正在加速」。</p>'
         '<p>每個族群至少 3 檔，且兩項最新資料、跨月與跨年配對'
         '都要覆蓋至少 75% 的研究池股票（且不少於 3 檔），'
         '才會比較兩種變化的方向。只對同一家公司做跨期比較，'
