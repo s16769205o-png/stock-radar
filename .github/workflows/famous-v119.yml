@@ -220,8 +220,7 @@ jobs:
     needs: upgrade
     runs-on: ubuntu-latest
     permissions:
-      pages: write
-      id-token: write
+      contents: read
     environment:
       name: github-pages
       url: ${{ steps.publish.outputs.page_url }}
