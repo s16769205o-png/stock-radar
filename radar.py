@@ -714,6 +714,7 @@ def publish_verified_report(history_rows, staged_site):
     staged_history = DATA_FILE.with_name(DATA_FILE.name + '.stage')
     backup_paths = {}
     replaced = []
+    rollback_failed = False
     outputs = ((staged_history, DATA_FILE), (staged_site, SITE_FILE))
     try:
         save_history(history_rows, staged_history)
@@ -747,15 +748,17 @@ def publish_verified_report(history_rows, staged_site):
                 except OSError as restore_exc:
                     restore_errors.append(str(restore_exc))
             if restore_errors:
+                rollback_failed = True
                 raise RuntimeError(
-                    '發布中斷且復原舊檔失敗：' + '；'.join(restore_errors)
+                    '發布中斷且復原舊檔失敗，復原備份已保留：' + '；'.join(restore_errors)
                 ) from exc
             raise
     finally:
         staged_history.unlink(missing_ok=True)
-        for backup in backup_paths.values():
-            if backup is not None:
-                backup.unlink(missing_ok=True)
+        if not rollback_failed:
+            for backup in backup_paths.values():
+                if backup is not None:
+                    backup.unlink(missing_ok=True)
 
 
 def require_complete_markets(records, benchmark_frames, now):
