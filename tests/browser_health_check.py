@@ -74,6 +74,17 @@ def run(html: Path, output: Path):
                 page.locator('#tab-tw').click()
                 assert page.locator('#panel-tw').is_visible()
                 assert page.locator('#panel-us').is_hidden()
+                pulse = page.locator('#sector-pulse-v132')
+                pulse.scroll_into_view_if_needed()
+                assert pulse.is_visible(), 'Taiwan sector evidence must be accessible'
+                assert pulse.locator('.sp132-card').count() >= 1
+                assert '不打分' in pulse.inner_text()
+                bounds = pulse.bounding_box()
+                assert bounds is not None
+                assert bounds['x'] >= -1 and bounds['x'] + bounds['width'] <= width + 2, (
+                    f'Sector pulse overflows {width}px mobile viewport: {bounds}'
+                )
+                pulse.screenshot(path=str(output / f'sector-pulse-{width}.png'))
                 page.locator('#tab-us').click()
                 assert page.locator('#panel-us').is_visible()
                 page.locator('#tab-famous').click()
@@ -105,7 +116,7 @@ def run(html: Path, output: Path):
             context.close()
         finally:
             browser.close()
-    print('PASS: 320px/390px mobile layouts, five villa tabs and fresh/stale status; screenshots saved.')
+    print('PASS: 320px/390px mobile layouts, five villa tabs, v1.32 sector pulse and fresh/stale status; screenshots saved.')
 
 
 if __name__ == '__main__':
