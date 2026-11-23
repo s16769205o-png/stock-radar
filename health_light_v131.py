@@ -67,9 +67,10 @@ def health_light_section(records, benchmark_frames, universe, generated_at):
             + '<span>' + check + '</span></div>'
             + '<div class="rhl-count">' + str(item['covered']) + ' / '
             + str(item['total']) + '<small> 檔</small></div>'
-            + '<p>行情日：' + escape(item['expected'])
-            + '<span class="rhl-benchmark">基準 '
-            + escape(item['benchmark']) + '：' + bench + '</span></p></div>'
+            + '<p>行情日<span class="rhl-date">' + escape(item['expected'])
+            + '</span><span class="rhl-benchmark">基準 '
+            + '<span class="rhl-benchmark-value">'
+            + escape(item['benchmark']) + '：' + bench + '</span></span></p></div>'
         )
     return ('''<section id="radar-health-light-v131" class="rhl-card '''
     + status_class + '''" data-generated-at="''' + iso + '''"
@@ -107,6 +108,9 @@ def health_light_section(records, benchmark_frames, universe, generated_at):
       #radar-health-light-v131 .rhl-market p{font-size:.74rem;line-height:1.65;
        color:#5b6b7b;margin:0;overflow-wrap:anywhere}
       #radar-health-light-v131 .rhl-benchmark{display:block}
+      #radar-health-light-v131 .rhl-date,
+      #radar-health-light-v131 .rhl-benchmark-value{display:block;
+       white-space:nowrap;font-variant-numeric:tabular-nums}
       #radar-health-light-v131 .rhl-note{font-size:.78rem;line-height:1.6;
        color:#687686;margin:0}
       #radar-health-light-v131 .rhl-age-alert{font-size:.82rem;color:#8c4b1d;
