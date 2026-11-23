@@ -22,6 +22,7 @@ REQUIRED = (
     '/* stock-radar-famous-1.19 */',
     'villa-quickfind',
     '/* stock-radar-sector-indices-1.21 */',
+    'sector-research-extra',
     'id="radar-health-light-v131"',
     'id="sector-pulse-v132"',
     '🛠️ 別墅機電總控室',
