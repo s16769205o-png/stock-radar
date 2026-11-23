@@ -23,6 +23,7 @@ from revenue import monthly_revenue_section
 from profitability import quarterly_profit_section
 from fundamental_crosscheck import fundamental_crosscheck_section
 from industry_readiness import industry_readiness_section
+from sector_pulse_v132 import sector_pulse_section
 from industry_lens import industry_lens_section
 from industry_briefs import add_industry_briefs
 from mobile_tabs import install_mobile_tabs
@@ -655,9 +656,9 @@ def render(records,errors,history_rows,history_frames,benchmark_frames,benchmark
     {health_light}
     <div class="stats"><div><small>成功掃描</small><strong>{len(records)}</strong></div><div><small>符合均線</small><strong>{sum(r['符合趨勢']=='是' for r in records)}</strong></div>
     <div><small>明顯放量</small><strong>{sum(str(r['量價訊號']).startswith('放量') for r in records)}</strong></div></div>
-    <h2>四大引擎（目前開發狀態）</h2><div class="weights"><div><b>30%</b>技術分析<small>均線／量價／RSI動能：試驗評分已啟用</small></div>
-    <div><b>30%</b>產業前景<small>建置中：加入官方資料跨期可比性觀察，30分評分尚未啟用</small></div>
-    <div><b>25%</b>法人買賣<small>建置中：台股官方三大法人方向觀察，25分評分尚未啟用</small></div><div><b>15%</b>國際新聞<small>已接入官方公告觀察；15分評分尚未啟用</small></div></div>
+    <h2>四種研究視角（不湊 100 分）</h2><div class="weights"><div><b>技術</b><small>目前保留原有 30 分實驗性技術排序，不代表投資勝率。</small></div>
+    <div><b>產業營運</b><small>比較已歸檔營收與獲利率的跨期變化，缺資料不判斷。</small></div>
+    <div><b>法人資金</b><small>台股官方資料有核對才觀察方向；不強迫給分。</small></div><div><b>事件公告</b><small>整理部分國際官方資訊與來源，不推測固定利多／利空分數。</small></div></div>
     {warning}
     {ranking_changes_section(records,history_rows)}
     <h2>🏊 績效游泳池（前十名追蹤）</h2>
@@ -672,6 +673,7 @@ def render(records,errors,history_rows,history_frames,benchmark_frames,benchmark
     {quarterly_profit_section(UNIVERSE, INDUSTRY, TW_NAMES)}
     {fundamental_crosscheck_section(UNIVERSE, INDUSTRY, TW_NAMES)}
     {industry_readiness_section(UNIVERSE, INDUSTRY)}
+    {sector_pulse_section(UNIVERSE, INDUSTRY)}
     {sector_evidence_section(UNIVERSE, INDUSTRY)}
     {institutional_section(UNIVERSE, INDUSTRY, history_rows, records)}
     {official_events_section()}
@@ -691,7 +693,7 @@ def render(records,errors,history_rows,history_frames,benchmark_frames,benchmark
     <h2>📘 系統說明</h2><div class="note">技術分數最高30分：均線12、量價10、RSI／5日動能8。這些是實驗性規則，未完成足夠的歷史回測及樣本外驗證。<br>
     明顯放量＝當日量達到<strong>前20個交易日（不含當日）平均量的1.5倍</strong>；放量下跌也會提示。<br>
     產業分類是手工整理的研究群組，不是官方產業分類；某些企業跨多個領域。產業平均技術分較高，不代表該產業前景更好。<br>
-    預定四大權重30／30／25／15未變，目前僅技術面提供正式試驗分數；產業前景與台股法人已有觀察資料但尚未正式評分，國際新聞目前只顯示部分國際官方公告，不提供15分評分。<br>
+    原規劃的 30／30／25／15 總分不再強制實施；技術面仍保留 30 分實驗性相對排序，產業營運、法人與官方公告以資料方向及限制說明為主，不直接加總。<br>
     此網站使用調整後歷史價格，非保證即時；未連接券商，不下單。<br>
     <a href="data/history.csv">查看CSV歷史紀錄</a>（既有紀錄保留，新增欄位在舊日期可留空）。</div>
     </main></body></html>'''
