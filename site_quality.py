@@ -22,6 +22,7 @@ REQUIRED = (
     '/* stock-radar-famous-1.19 */',
     'villa-quickfind',
     '/* stock-radar-sector-indices-1.21 */',
+    'id="radar-health-light-v131"',
     '🛠️ 別墅機電總控室',
     '🇺🇸 美股｜行情日期一致性診斷・1.23',
     '🇹🇼 台股｜產業前景引擎・基本面試算 1.23',
