@@ -1,18 +1,12 @@
 name: 小G獲利品質研究室 1.10（單檔安裝）
 
+# RETIRED: 1.30+ includes these features. Historical installer kept for reference.
+# No push/schedule triggers, and all manual jobs are explicitly disabled.
 on:
-  push:
-    paths:
-      - '.github/workflows/profit-v110.yml'
   workflow_dispatch:
-  schedule:
-    # 台灣時間週日13:35，錯開月營收流程與每日掃描
-    - cron: '35 5 * * 0'
 
 permissions:
-  contents: write
-  pages: write
-  id-token: write
+  contents: read
 
 concurrency:
   group: quarterly-profit-v110
@@ -20,6 +14,7 @@ concurrency:
 
 jobs:
   upgrade:
+    if: ${{ false }}  # Legacy installer retired; never run jobs
     runs-on: ubuntu-latest
     steps:
       - name: 取得雷達程式
@@ -157,6 +152,7 @@ jobs:
         with:
           path: _site
   publish:
+    if: ${{ false }}  # Legacy installer retired; never run jobs
     needs: upgrade
     runs-on: ubuntu-latest
     environment:

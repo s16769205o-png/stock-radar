@@ -15,9 +15,11 @@ from statistics import median
 from zoneinfo import ZoneInfo
 
 from sector_treasure_v127 import research_rows
+from trading_sessions import first_later_session, last_completed_session, session_after
 
 ARCHIVE_FIELD = '研究訊號歷史v129'  # in the already-archived history.csv
 HORIZONS = (5, 10, 20)
+PROSPECTIVE_METHOD = 'next_session_close'
 KINDS = (
     ('price_revenue', '營收年增／股價20日下跌'),
     ('revenue_margin', '營收年增／累計營利率未轉正'),
@@ -27,7 +29,7 @@ CORE = ('first_seen', 'price_day', 'symbol', 'name', 'sector', 'kind',
         'margin_pct', 'stock_base', 'benchmark_base')
 OUTCOME = tuple(f'{prefix}_{h}d' for h in HORIZONS for prefix in
                 ('stock_return', 'benchmark_return', 'excess_return', 'mature_date'))
-FIELDS = CORE + OUTCOME
+FIELDS = CORE + ('method', 'start_date') + OUTCOME
 
 
 def _esc(value):
@@ -79,7 +81,7 @@ def _load(history_rows):
                 value.get('symbol') != source.get('股票') or
                 value.get('kind') not in dict(KINDS)):
                 raise RuntimeError('1.29 歷史欄位的股票／日期／類型錯誤：拒絕覆寫舊資料')
-            events.append({field:value.get(field, '') for field in FIELDS})
+            events.append(value)
     keys = [(r['price_day'], r['symbol'], r['kind']) for r in events]
     if len(keys) != len(set(keys)):
         raise RuntimeError('1.29 歷史有重複事件：拒絕覆寫舊資料')
@@ -101,22 +103,39 @@ def _save(rows, history_rows):
             raise RuntimeError('1.29 歷史記錄缺少所屬交易日，拒絕遺失事件')
         grouped.setdefault(key, []).append(event)
     for key, group in grouped.items():
-        source[key][ARCHIVE_FIELD] = json.dumps(group, ensure_ascii=False,
-                                               separators=(',', ':'), allow_nan=False)
+        previous = source[key].get(ARCHIVE_FIELD)
+        if not previous or json.loads(previous) != group:
+            source[key][ARCHIVE_FIELD] = json.dumps(group, ensure_ascii=False,
+                                                   separators=(',', ':'), allow_nan=False)
 
 
-def _status(row, horizon, market_dates, market_map):
-    """Return matured / pending / gap; count exact 0050 trading sessions."""
-    field = f'excess_return_{horizon}d'
-    if (row.get(field, '') != '' and row.get(f'mature_date_{horizon}d', '')
-            and _num(row.get(f'stock_return_{horizon}d')) is not None
-            and _num(row.get(f'benchmark_return_{horizon}d')) is not None):
+def prospective_start(row):
+    """Legacy events have no prospective method and remain descriptive archives."""
+    if row.get('method') != PROSPECTIVE_METHOD:
+        return None
+    try:
+        observed = datetime.fromisoformat(row['first_seen'])
+        if observed.utcoffset() is None:
+            return None
+        expected = first_later_session('台股', observed)
+        start = row.get('start_date')
+        if start == expected and date.fromisoformat(row['price_day']) < date.fromisoformat(start):
+            return start
+    except (KeyError, ValueError, TypeError):
+        return None
+    return None
+
+
+def _status(row, horizon, latest_day):
+    start = prospective_start(row)
+    if start is None:
+        return 'legacy'
+    end = session_after('台股', start, horizon)
+    if (row.get(f'mature_date_{horizon}d') == end
+            and all(_num(row.get(f'{field}_{horizon}d')) is not None
+                    for field in ('stock_return', 'benchmark_return', 'excess_return'))):
         return 'matured'
-    origin = row['price_day']
-    if origin not in market_map:
-        return 'unavailable'
-    i = market_dates.index(origin)
-    if len(market_dates) - i - 1 < horizon:
+    if latest_day and end > latest_day:
         return 'pending'
     return 'unavailable'
 
@@ -134,16 +153,14 @@ def record_and_measure(universe, industry, names, records, histories, benchmarks
                  if r.get('市場') == '台股' and r.get('交易日期') == day}
     archive_keys = {(r['price_day'],r['symbol'],r['kind']) for r in old}
     positions = {d:i for i,d in enumerate(bench_dates)}
-    can_capture = False
-    try:
-        age = (now.date() - date.fromisoformat(day)).days
-        can_capture = (0 <= age <= 7 and len(by_symbol) == len(universe.get('台股', ()))
-                       and day in bench_map and snapshot.get('month')
-                       and snapshot.get('quarter'))
-    except ValueError:
-        pass
+    expected = last_completed_session('台股', now)
+    latest_day = bench_dates[-1] if bench_dates and bench_dates[-1] <= expected else ''
+    can_capture = bool(day == expected == latest_day and by_symbol
+                       and set(by_symbol) == set(universe.get('台股', ()))
+                       and snapshot.get('month') and snapshot.get('quarter'))
     added = 0
     if can_capture:
+        start_date = first_later_session('台股', now)
         for group in snapshot['groups']:
             for stock in group['stocks']:
                 sym = stock['symbol']
@@ -176,28 +193,30 @@ def record_and_measure(universe, industry, names, records, histories, benchmarks
                                price20_pct=stock['price'] if stock['price'] is not None else '',
                                revenue_yoy_pct=stock['yoy'],
                                margin_pct=stock['margin'] if stock['margin'] is not None else '',
-                               stock_base=value, benchmark_base=bench_map[day])
+                               method=PROSPECTIVE_METHOD, start_date=start_date)
                     old.append(row)
                     archive_keys.add(key)
                     added += 1
     matured = 0
+    price_cache = {}
     for row in old:
-        symbol = row['symbol']
-        stock_map, _ = _prices(histories.get(symbol))
-        origin = row['price_day']
-        start_stock = _num(row.get('stock_base'))
-        start_bench = _num(row.get('benchmark_base'))
-        if start_stock is None or start_stock <= 0 or start_bench is None or start_bench <= 0:
+        origin = prospective_start(row)
+        if origin is None or not latest_day or origin > latest_day:
             continue
-        if origin not in positions:
+        symbol = row['symbol']
+        if symbol not in price_cache:
+            price_cache[symbol] = _prices(histories.get(symbol))[0]
+        stock_map = price_cache[symbol]
+        start_stock = stock_map.get(origin)
+        start_bench = bench_map.get(origin)
+        if start_stock is None or start_bench is None:
             continue
         for horizon in HORIZONS:
             if row.get(f'mature_date_{horizon}d'):
-                continue  # preserve historical first measurement, never rewrite it
-            target_pos = positions[origin] + horizon
-            if target_pos >= len(bench_dates):
                 continue
-            end_date = bench_dates[target_pos]
+            end_date = session_after('台股', origin, horizon)
+            if end_date > latest_day:
+                continue
             close_stock = stock_map.get(end_date)
             close_bench = bench_map.get(end_date)
             if close_stock is None or close_bench is None:
@@ -210,11 +229,11 @@ def record_and_measure(universe, industry, names, records, histories, benchmarks
             row[f'mature_date_{horizon}d'] = end_date
             matured += 1
     # The existing daily CSV and Pages flow persists all events automatically.
-    if archive_rows is None:
+    if archive_rows is None and (added or matured):
         _save(old, history_rows)
     return {'rows':old,'new':added,'matured':matured,
             'capture_ok':can_capture,'day':day,
-            'benchmark_days':bench_dates,'benchmark_map':bench_map}
+            'latest_day':latest_day}
 
 
 def history_lab_section(universe, industry, names, records, histories, benchmarks, history_rows):
@@ -222,15 +241,15 @@ def history_lab_section(universe, industry, names, records, histories, benchmark
     rows = data['rows']
     count_days = len({r.get('交易日期') for r in history_rows
                       if r.get('市場') == '台股' and r.get('交易日期')})
+    prospective = [r for r in rows if prospective_start(r) is not None]
     cards = []
     for kind, title in KINDS:
-        subset = [r for r in rows if r['kind'] == kind]
+        subset = [r for r in prospective if r['kind'] == kind]
         unique_days = len({r['price_day'] for r in subset})
         items = []
         for horizon in HORIZONS:
-            mature = [r for r in subset if r.get(f'mature_date_{horizon}d')
-                      and _num(r.get(f'excess_return_{horizon}d')) is not None]
-            pending = sum(_status(r,horizon,data['benchmark_days'],data['benchmark_map']) == 'pending'
+            mature = [r for r in subset if _status(r,horizon,data['latest_day']) == 'matured']
+            pending = sum(_status(r,horizon,data['latest_day']) == 'pending'
                           for r in subset)
             gaps = len(subset)-len(mature)-pending
             if mature:
@@ -257,16 +276,19 @@ def history_lab_section(universe, industry, names, records, histories, benchmark
     for r in recent:
         pieces = []
         for h in HORIZONS:
-            state = _status(r,h,data['benchmark_days'],data['benchmark_map'])
+            state = _status(r, h, data['latest_day'])
             if state == 'matured':
                 parts = _num(r[f'excess_return_{h}d'])
                 pieces.append(f'{h}日超額 {parts:+.2f}pp')
+            elif state == 'legacy':
+                pieces.append('舊制封存')
+                break
             elif state == 'pending':
                 pieces.append(f'{h}日待成熟')
             else:
                 pieces.append(f'{h}日缺資料')
         latest.append('<li><strong>'+_esc(r['name'])+'</strong> <small>'+_esc(r['symbol'])
-                      +' · '+_esc(r['price_day'])+' · '+_esc(kind_label.get(r['kind'],r['kind']))
+                      +' · '+_esc(r['price_day'])+' · '+_esc(r.get('first_seen', ''))+' · '+_esc(kind_label.get(r['kind'],r['kind']))
                       +'</small><div>'+_esc('｜'.join(pieces))+'</div></li>')
     recent_html = '<ol class="hl-events">'+''.join(latest)+'</ol>' if recent else '<p class="muted">尚無首次觀察紀錄；下次成功掃描後會依當時條件開始保存。</p>'
     capture_note = ('本次完整台股資料與來源日期符合入庫條件。'
@@ -277,9 +299,9 @@ def history_lab_section(universe, industry, names, records, histories, benchmark
     沒有替舊日期補造營收訊號，也沒有買賣指令。</p>
     <div class="history-lab-v129" id="history-lab-v129">
     <p class="hl-status">舊有技術歷史存檔涵蓋 '''+str(count_days)+''' 個台股掃描日期；
-    新研究檔已封存 '''+str(len(rows))+''' 筆線索，本次新增 '''+str(data['new'])+''' 筆、成熟結果新增 '''+str(data['matured'])+''' 項。
+    前瞻訊號 '''+str(len(prospective))+''' 筆，舊制封存 '''+str(len(rows)-len(prospective))+''' 筆，本次新增 '''+str(data['new'])+''' 筆、成熟結果新增 '''+str(data['matured'])+''' 項。
     '''+_esc(capture_note)+'''</p>
-    <p class="muted">每筆從首次記錄的股價收盤價開始，追蹤5／10／20個<b>0050實際交易日</b>後相同日期的個股調整收盤價；
+    <p class="muted">前瞻訊號從首次觀察日之後第一個台股交易日的收盤價起算，再追蹤5／10／20個交易日。舊制封存仍可查閱，前瞻統計只計入新制；
     以0050同日價格漲跌作對照。若個股缺該日價格則留空，不用前一日代替。
     當期比較不包含交易成本與可成交性。</p>
     '''+''.join(cards)+'''

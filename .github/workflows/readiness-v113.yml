@@ -1,18 +1,12 @@
 name: 小G 1.13 產業前景評分地基（安裝與週更）
 
+# RETIRED: 1.30+ includes these features. Historical installer kept for reference.
+# No push/schedule triggers, and all manual jobs are explicitly disabled.
 on:
-  push:
-    paths:
-      - '.github/workflows/readiness-v113.yml'
   workflow_dispatch:
-  schedule:
-    # 台灣時間每週日15:20。官方月營收與季度財報保留新快照。
-    - cron: '20 7 * * 0'
 
 permissions:
-  contents: write
-  pages: write
-  id-token: write
+  contents: read
 
 concurrency:
   group: radar-readiness-v113
@@ -20,6 +14,7 @@ concurrency:
 
 jobs:
   upgrade:
+    if: ${{ false }}  # Legacy installer retired; never run jobs
     runs-on: ubuntu-latest
     steps:
       - name: 取得原有雷達
@@ -152,6 +147,7 @@ jobs:
           path: _site
 
   publish:
+    if: ${{ false }}  # Legacy installer retired; never run jobs
     needs: upgrade
     runs-on: ubuntu-latest
     environment:

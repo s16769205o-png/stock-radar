@@ -1,0 +1,35 @@
+name: Stock Radar v1.31 read-only market health
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - fix/phase-2-safe-publication
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose-live-quotes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - name: Checkout diagnostic branch
+        uses: actions/checkout@v4
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Inspect real quotes without publishing
+        shell: bash
+        run: |
+          set -euo pipefail
+          python market_health_v131.py --retry 1 > "$RUNNER_TEMP/market-health.md"
+          cat "$RUNNER_TEMP/market-health.md"
+          cat "$RUNNER_TEMP/market-health.md" >> "$GITHUB_STEP_SUMMARY"
+      - name: Explain read-only mode
+        if: always()
+        run: echo "This workflow never runs radar.main(), commits data files, or deploys GitHub Pages."
