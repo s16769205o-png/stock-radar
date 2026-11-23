@@ -72,7 +72,11 @@ class SectorPulseTests(unittest.TestCase):
         result = self.by_name('資料不齊')
         self.assertEqual(result['研判'], '跨期資料不足')
         self.assertEqual(result['營收配對'], 2)
-        self.assertIn('—', render_section(self.data()))
+        page = render_section(self.data())
+        self.assertIn('—', page)
+        self.assertIn('+12.0%', page)  # Current level is observable.
+        self.assertIn('+9.0%', page)
+        self.assertIn('跨期資料不足', page)  # The trend is NOT observable.
         self.assertNotIn('兩項同向改善', [result['研判']])
 
     def test_75_percent_coverage_prevents_false_success(self):
@@ -82,6 +86,7 @@ class SectorPulseTests(unittest.TestCase):
         result = self.by_name('不足七成五')
         self.assertEqual(result['同時有數據'], 4)
         self.assertEqual(result['研判'], '最新資料不足')
+        self.assertIn('<dd>—</dd>', render_section(self.data()))
 
     def test_three_of_four_is_enough_for_comparison(self):
         codes = ['1111','1112','1113','1114']
