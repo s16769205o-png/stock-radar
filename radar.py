@@ -24,6 +24,7 @@ from profitability import quarterly_profit_section
 from fundamental_crosscheck import fundamental_crosscheck_section
 from industry_readiness import industry_readiness_section
 from sector_pulse_v132 import sector_pulse_section
+from snapshot_transaction_v132 import staged_official_archives
 from industry_lens import industry_lens_section
 from industry_briefs import add_industry_briefs
 from mobile_tabs import install_mobile_tabs
@@ -712,7 +713,7 @@ def render(records,errors,history_rows,history_frames,benchmark_frames,benchmark
     return stage_file
 
 
-def publish_verified_report(history_rows, staged_site):
+def publish_verified_report(history_rows, staged_site, source_stages=()):
     """Publish validated HTML and CSV together, restoring prior files on errors.
 
     Two file replacements cannot be truly atomic on a filesystem; GitHub Actions
@@ -722,7 +723,16 @@ def publish_verified_report(history_rows, staged_site):
     backup_paths = {}
     replaced = []
     rollback_failed = False
-    outputs = ((staged_history, DATA_FILE), (staged_site, SITE_FILE))
+    # Source snapshots must not be published before site verification. Replace
+    # the HTML LAST; on any replacement error restore all prior files.
+    source_outputs = []
+    for stage, final in source_stages:
+        if final.exists() and not stage.is_file():
+            raise RuntimeError('官方來源暫存檔遺失，停止發布：' + str(final))
+        if stage.is_file():
+            source_outputs.append((stage, final))
+    outputs = ((staged_history, DATA_FILE), *source_outputs,
+               (staged_site, SITE_FILE))
     try:
         save_history(history_rows, staged_history)
         if not staged_site.is_file() or not staged_history.is_file():
@@ -805,14 +815,16 @@ def main():
     for err in benchmark_errors:print('基準下載問題：',err)
     require_complete_markets(records, benchmark_frames, scan_started)
     staged_site = ROOT / 'index.stage.html'
-    try:
-        history_rows = persist(records, save=False)
-        render(records,errors,history_rows,histories,benchmark_frames,benchmark_errors,
-               publish=False, scan_time=scan_started)
-        # render() records newly matured outcomes in memory before the CSV is staged.
-        publish_verified_report(history_rows, staged_site)
-    finally:
-        staged_site.unlink(missing_ok=True)
+    # Only local staged files change while rendering; all four publish or none.
+    with staged_official_archives(ROOT) as source_stages:
+        try:
+            history_rows = persist(records, save=False)
+            render(records,errors,history_rows,histories,benchmark_frames,benchmark_errors,
+                   publish=False, scan_time=scan_started)
+            # render() records newly matured outcomes in memory before CSV is staged.
+            publish_verified_report(history_rows, staged_site, source_stages)
+        finally:
+            staged_site.unlink(missing_ok=True)
     print(f'完成：{len(records)}/100 檔；升降榜、績效追蹤及原本功能已產生。')
 
 
