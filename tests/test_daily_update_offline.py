@@ -1,4 +1,5 @@
 import csv
+import os
 import io
 import unittest
 from contextlib import ExitStack, redirect_stdout
@@ -115,6 +116,13 @@ class DailyUpdateOfflineTest(unittest.TestCase):
             self.assertIn('訊號有效性驗證室・1.30', page)
             self.assertIn('id="radar-health-light-v131"', page)
             self.assertIn('本次報告行情完整', page)
+            # Export this *synthetic* complete site only when CI requests a
+            # browser preview. Never write to the repository or production.
+            preview = os.environ.get('STOCK_RADAR_BROWSER_PREVIEW_PATH')
+            if preview:
+                destination = Path(preview)
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                destination.write_text(page, encoding='utf-8')
             saved = archived_signals(history)
             self.assertEqual({key: saved[key] for key in original}, original)
             new = saved[(days['台股'], f'{code}.TW', 'revenue_margin')]
