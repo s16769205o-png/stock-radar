@@ -22,7 +22,16 @@ def _error_for(code, errors):
     return [str(e) for e in errors if str(e).startswith(code + ':')]
 
 
-def analyze_quotes(records, benchmarks, *, now, errors=(), recovered=(), retry_errors=None):
+def _completed_quotes(frame, expected_day):
+    """Ignore today's unfinished daily bar without altering Yahoo's DataFrame."""
+    if frame is None or getattr(frame, 'empty', True):
+        return frame
+    dates = frame.index.strftime('%Y-%m-%d')
+    return frame.loc[dates <= expected_day].copy()
+
+
+def analyze_quotes(records, benchmarks, *, now, errors=(), recovered=(),
+                   unfinished_ignored=(), retry_errors=None):
     """Pure diagnostic: no downloads and no filesystem writes."""
     retry_errors = retry_errors or {}
     markets = []
@@ -74,6 +83,7 @@ def analyze_quotes(records, benchmarks, *, now, errors=(), recovered=(), retry_e
             'total': len(codes), 'ready': ready, 'missing_or_stale': problems,
             'benchmark': benchmark_code, 'benchmark_problem': benchmark_problem,
             'recovered': [x for x in recovered if x in codes or x == benchmark_code],
+            'unfinished_ignored': [x for x in unfinished_ignored if x in codes or x == benchmark_code],
         })
 
     # Recheck against the real v1.30 publication validator to prevent
@@ -102,10 +112,28 @@ def analyze_quotes(records, benchmarks, *, now, errors=(), recovered=(), retry_e
 def fetch_live_report(*, now=None, retry_attempts=1, sleep_seconds=0.5):
     """Read real Yahoo quotes; retry missing/stale symbols, without publishing."""
     now = now or datetime.now(ZoneInfo('Asia/Taipei'))
-    records, errors, _histories = radar.latest_snapshot()
-    recovered, retry_errors = [], {}
+    records, errors, histories = radar.latest_snapshot()
+    recovered, unfinished_ignored, retry_errors = [], [], {}
     for market, codes in radar.UNIVERSE.items():
         expected = last_completed_session(market, now)
+        # At noon Yahoo's daily bar may be today's *unfinished* session.
+        # Reuse the downloaded frame for the previous completed session.
+        for code in codes:
+            frame = histories.get(code)
+            if frame is None or getattr(frame, 'empty', True):
+                continue
+            last_day = frame.index[-1].strftime('%Y-%m-%d')
+            if last_day <= expected:
+                continue
+            try:
+                completed = _completed_quotes(frame, expected)
+                fresh = radar.calculate(completed, market, code)
+                if fresh['交易日期'] == expected:
+                    records = [r for r in records if r.get('股票') != code]
+                    records.append(fresh)
+                    unfinished_ignored.append(code)
+            except Exception as exc:
+                retry_errors[code] = type(exc).__name__ + ': ' + str(exc)[:120]
         by_code = {r.get('股票'): r for r in records if r.get('市場') == market}
         for code in codes:
             row = by_code.get(code)
@@ -114,7 +142,10 @@ def fetch_live_report(*, now=None, retry_attempts=1, sleep_seconds=0.5):
             for attempt in range(retry_attempts):
                 try:
                     frame = radar.yf.Ticker(code).history(period='6mo', auto_adjust=True)
-                    fresh = radar.calculate(frame, market, code)
+                    if (frame is not None and not frame.empty
+                            and frame.index[-1].strftime('%Y-%m-%d') > expected):
+                        unfinished_ignored.append(code)
+                    fresh = radar.calculate(_completed_quotes(frame, expected), market, code)
                     if fresh.get('交易日期') != expected:
                         raise ValueError('行情仍停在 ' + str(fresh.get('交易日期')))
                     records = [r for r in records if r.get('股票') != code]
@@ -133,6 +164,10 @@ def fetch_live_report(*, now=None, retry_attempts=1, sleep_seconds=0.5):
         for attempt in range(1 + retry_attempts):
             try:
                 frame = radar.yf.Ticker(ticker).history(period='6mo', auto_adjust=True)
+                if (frame is not None and not frame.empty
+                        and frame.index[-1].strftime('%Y-%m-%d') > expected):
+                    unfinished_ignored.append(ticker)
+                frame = _completed_quotes(frame, expected)
                 prices, dates = _prices(frame)
                 expected_days = recent_sessions(market, expected, radar.TECHNICAL_WINDOW)
                 if not dates or dates[-1] != expected or any(x not in prices for x in expected_days):
@@ -148,7 +183,8 @@ def fetch_live_report(*, now=None, retry_attempts=1, sleep_seconds=0.5):
                     time.sleep(sleep_seconds)
     return analyze_quotes(
         records, benchmarks, now=now, errors=errors,
-        recovered=recovered, retry_errors=retry_errors,
+        recovered=recovered, unfinished_ignored=list(dict.fromkeys(unfinished_ignored)),
+        retry_errors=retry_errors,
     )
 
 
@@ -174,11 +210,13 @@ def format_markdown(report):
         )
 
     for market in report['markets']:
-        if market['ready'] and not market['recovered']:
+        if market['ready'] and not market['recovered'] and not market['unfinished_ignored']:
             continue
         lines += ['', '### ' + market['name'] + ' 診斷']
         if market['recovered']:
             lines.append('- 自動重新抓取後恢復：' + ', '.join(market['recovered']))
+        if market['unfinished_ignored']:
+            lines.append('- 已排除尚未收盤的盤中日線：' + str(len(market['unfinished_ignored'])) + ' 檔／基準')
         if market['benchmark_problem']:
             lines.append('- 基準異常：' + market['benchmark_problem'])
         for problem in market['missing_or_stale']:
