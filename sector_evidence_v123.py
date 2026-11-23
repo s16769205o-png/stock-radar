@@ -92,7 +92,9 @@ def compute(universe, industry, revenues, profits):
             else:
                 result['note']='尚缺去年同季累計利益率，無法判斷跨年獲利方向'
         output.append(result)
-    return sorted(output,key=lambda x:(x['pilot'] is None, -(x['pilot'] or 0),x['sector']))
+    # Legacy pilot points stay in historical research data but must not
+    # quietly decide display order after the unscored v1.32 policy change.
+    return sorted(output, key=lambda x: x['sector'])
 
 
 def sector_evidence_section(universe, industry):
