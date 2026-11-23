@@ -30,7 +30,12 @@ def assert_mobile_health(page, width: int):
         f'Market tiles overlap at width {width}: {tiles}'
     )
     page.locator('#radar-market-tabs').wait_for(state='visible', timeout=15000)
-    assert page.locator('#radar-market-tabs button').count() == 3
+    # The villa hub extends the original three market tabs to five rooms.
+    assert page.locator('#radar-market-tabs button').count() == 5, (
+        'All five established villa tabs must remain present'
+    )
+    for key in ('overview', 'tw', 'us', 'famous', 'kitchen'):
+        assert page.locator('#tab-' + key).count() == 1
 
 
 def run(html: Path, output: Path):
@@ -65,6 +70,10 @@ def run(html: Path, output: Path):
                 assert page.locator('#panel-us').is_hidden()
                 page.locator('#tab-us').click()
                 assert page.locator('#panel-us').is_visible()
+                page.locator('#tab-famous').click()
+                assert page.locator('#panel-famous').is_visible()
+                page.locator('#tab-kitchen').click()
+                assert page.locator('#panel-kitchen').is_visible()
                 page.locator('#tab-overview').click()
                 assert page.locator('#panel-overview').is_visible()
                 context.close()
@@ -90,7 +99,7 @@ def run(html: Path, output: Path):
             context.close()
         finally:
             browser.close()
-    print('PASS: 320px/390px mobile layouts and fresh/stale status; screenshots saved.')
+    print('PASS: 320px/390px mobile layouts, five villa tabs and fresh/stale status; screenshots saved.')
 
 
 if __name__ == '__main__':
