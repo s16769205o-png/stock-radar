@@ -116,6 +116,9 @@ class DailyUpdateOfflineTest(unittest.TestCase):
             self.assertIn('訊號有效性驗證室・1.30', page)
             self.assertIn('id="radar-health-light-v131"', page)
             self.assertIn('本次報告行情完整', page)
+            self.assertIn('id="sector-pulse-v132"', page)
+            self.assertIn('四種研究視角（不湊 100 分）', page)
+            self.assertNotIn('產業前景 30% 仍未正式啟用', page)
             # Export this *synthetic* complete site only when CI requests a
             # browser preview. Never write to the repository or production.
             preview = os.environ.get('STOCK_RADAR_BROWSER_PREVIEW_PATH')
