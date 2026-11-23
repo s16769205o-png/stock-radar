@@ -88,7 +88,7 @@ def compute(universe, industry, revenues, profits):
             # No full 30-score until a full comparable company set exists in prior year.
             if len(same)>=max(2,math.ceil(sample*.75)):
                 result['full_score']=round(rev_score+op_score+14*result['improving']/len(same),1)
-                result['note']='30 分實驗試算，尚未經回測驗證，未接入排行榜'
+                result['note']='跨年同季資料僅供描述性研究，尚未經回測驗證，未接入排行榜'
             else:
                 result['note']='尚缺去年同季累計利益率，無法判斷跨年獲利方向'
         output.append(result)
