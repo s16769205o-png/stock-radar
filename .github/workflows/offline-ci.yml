@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - fix/phase-1-signal-market-integrity
+      - fix/phase-2-safe-publication
   workflow_dispatch:
 
 permissions:
