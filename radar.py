@@ -10,6 +10,8 @@ import csv
 import html
 import math
 import time
+import shutil
+import tempfile
 from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
@@ -239,7 +241,7 @@ def latest_snapshot():
     return records,errors,histories
 
 
-def persist(records):
+def persist(records, *, save=True):
     DATA_FILE.parent.mkdir(parents=True,exist_ok=True)
     merged={}
     if DATA_FILE.exists():
@@ -264,14 +266,16 @@ def persist(records):
                 row['訊號同日對照v130']=merged[key]['訊號同日對照v130']
         merged[key]=row
     rows=list(merged.values())
-    save_history(rows)
+    if save:
+        save_history(rows)
     return rows
 
 
-def save_history(rows):
+def save_history(rows, output_path=None):
     """Re-save all archive rows, including matured forward observations, without duplicates."""
-    DATA_FILE.parent.mkdir(parents=True,exist_ok=True)
-    with DATA_FILE.open('w',encoding='utf-8-sig',newline='') as f:
+    target = Path(output_path) if output_path is not None else DATA_FILE
+    target.parent.mkdir(parents=True,exist_ok=True)
+    with target.open('w',encoding='utf-8-sig',newline='') as f:
         writer=csv.DictWriter(f,fieldnames=FIELDS)
         writer.writeheader()
         for row in sorted(rows,key=lambda r:(r['交易日期'],r['股票'])):
@@ -601,7 +605,7 @@ def performance_section(market,signals,results,immature,missing):
             +''.join(lines)+'</tbody></table></div>')
 
 
-def render(records,errors,history_rows,history_frames,benchmark_frames,benchmark_errors):
+def render(records,errors,history_rows,history_frames,benchmark_frames,benchmark_errors, *, publish=True):
     updated=datetime.now(ZoneInfo('Asia/Taipei')).strftime('%Y-%m-%d %H:%M')
     tw=sorted([r for r in records if r['市場']=='台股'],key=rank)
     us=sorted([r for r in records if r['市場']=='美股'],key=rank)
@@ -696,7 +700,62 @@ def render(records,errors,history_rows,history_frames,benchmark_frames,benchmark
     install_stock_search(stage_file)
     install_sector_indices(stage_file)
     verify_site(stage_file, records)
-    stage_file.replace(SITE_FILE)
+    if publish:
+        stage_file.replace(SITE_FILE)
+    return stage_file
+
+
+def publish_verified_report(history_rows, staged_site):
+    """Publish validated HTML and CSV together, restoring prior files on errors.
+
+    Two file replacements cannot be truly atomic on a filesystem; GitHub Actions
+    must only commit/deploy after this function returns successfully.
+    """
+    staged_history = DATA_FILE.with_name(DATA_FILE.name + '.stage')
+    backup_paths = {}
+    replaced = []
+    outputs = ((staged_history, DATA_FILE), (staged_site, SITE_FILE))
+    try:
+        save_history(history_rows, staged_history)
+        if not staged_site.is_file() or not staged_history.is_file():
+            raise RuntimeError('網站或歷史暫存檔不存在，拒絕發布')
+        for _, destination in outputs:
+            if destination.exists():
+                with tempfile.NamedTemporaryFile(
+                    dir=destination.parent, prefix=destination.name+'.rollback.',
+                    delete=False,
+                ) as handle:
+                    backup = Path(handle.name)
+                backup_paths[destination] = backup
+                shutil.copy2(destination, backup)
+            else:
+                backup_paths[destination] = None
+
+        try:
+            for stage, destination in outputs:
+                stage.replace(destination)
+                replaced.append(destination)
+        except BaseException as exc:
+            restore_errors = []
+            for destination in reversed(replaced):
+                try:
+                    backup = backup_paths[destination]
+                    if backup is not None:
+                        backup.replace(destination)
+                    else:
+                        destination.unlink(missing_ok=True)
+                except OSError as restore_exc:
+                    restore_errors.append(str(restore_exc))
+            if restore_errors:
+                raise RuntimeError(
+                    '發布中斷且復原舊檔失敗：' + '；'.join(restore_errors)
+                ) from exc
+            raise
+    finally:
+        staged_history.unlink(missing_ok=True)
+        for backup in backup_paths.values():
+            if backup is not None:
+                backup.unlink(missing_ok=True)
 
 
 def require_complete_markets(records, benchmark_frames, now):
@@ -735,10 +794,15 @@ def main():
             benchmark_errors.append(f'{ticker}: {type(exc).__name__}: {str(exc)[:100]}')
     for err in benchmark_errors:print('基準下載問題：',err)
     require_complete_markets(records, benchmark_frames, scan_started)
-    history_rows=persist(records)
-    render(records,errors,history_rows,histories,benchmark_frames,benchmark_errors)
-    # render() computes and archives any newly matured outcomes on the same dictionaries.
-    save_history(history_rows)
+    staged_site = ROOT / 'index.stage.html'
+    try:
+        history_rows = persist(records, save=False)
+        render(records,errors,history_rows,histories,benchmark_frames,benchmark_errors,
+               publish=False)
+        # render() records newly matured outcomes in memory before the CSV is staged.
+        publish_verified_report(history_rows, staged_site)
+    finally:
+        staged_site.unlink(missing_ok=True)
     print(f'完成：{len(records)}/100 檔；升降榜、績效追蹤及原本功能已產生。')
 
 
