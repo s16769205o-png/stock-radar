@@ -1,19 +1,12 @@
 name: 小G股票雷達 1.19｜名人持股觀察室（SEC 13F）
 
+# RETIRED: 1.30+ includes these features. Historical installer kept for reference.
+# No push/schedule triggers, and all manual jobs are explicitly disabled.
 on:
-  push:
-    paths:
-      # 手機可能自動補上 (1) 等重複檔名，仍可以觸發安裝。
-      - '.github/workflows/famous-v119*.yml'
   workflow_dispatch:
-  schedule:
-    # 每週一台灣時間 10:20 檢查是否有新季度 SEC 13F 申報。
-    - cron: '20 2 * * 1'
 
 permissions:
-  contents: write
-  pages: write
-  id-token: write
+  contents: read
 
 concurrency:
   group: stock-radar-famous-13f-v119
@@ -21,6 +14,7 @@ concurrency:
 
 jobs:
   upgrade:
+    if: ${{ false }}  # Legacy installer retired; never run jobs
     runs-on: ubuntu-latest
     steps:
       - name: 取得股票研究別墅
@@ -222,6 +216,7 @@ jobs:
           path: _site
 
   deploy:
+    if: ${{ false }}  # Legacy installer retired; never run jobs
     needs: upgrade
     runs-on: ubuntu-latest
     permissions:
