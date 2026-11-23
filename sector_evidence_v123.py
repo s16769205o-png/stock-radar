@@ -88,11 +88,13 @@ def compute(universe, industry, revenues, profits):
             # No full 30-score until a full comparable company set exists in prior year.
             if len(same)>=max(2,math.ceil(sample*.75)):
                 result['full_score']=round(rev_score+op_score+14*result['improving']/len(same),1)
-                result['note']='30 分實驗試算，尚未經回測驗證，未接入排行榜'
+                result['note']='跨年同季資料僅供描述性研究，尚未經回測驗證，未接入排行榜'
             else:
-                result['note']='暫僅 16 分方向訊號；缺少去年同季累計利益率，不能補齊 30 分'
+                result['note']='尚缺去年同季累計利益率，無法判斷跨年獲利方向'
         output.append(result)
-    return sorted(output,key=lambda x:(x['pilot'] is None, -(x['pilot'] or 0),x['sector']))
+    # Legacy pilot points stay in historical research data but must not
+    # quietly decide display order after the unscored v1.32 policy change.
+    return sorted(output, key=lambda x: x['sector'])
 
 
 def sector_evidence_section(universe, industry):
@@ -100,19 +102,16 @@ def sector_evidence_section(universe, industry):
     rmonth=max((r['month'] for r in data),default='')
     pquarter=max((r['quarter'] for r in data),default='')
     parts=['<h2>🇹🇼 台股｜產業前景引擎・基本面試算 1.23</h2>',
-      '<div class="note"><b>產業前景 30% 仍未正式啟用。</b>'
+      '<div class="note"><b>這是 1.23 早期試算資料的觀察頁；現在不再用分數替產業下結論。</b>'
       '<p class="muted">已保存月營收：'+_escape(rmonth or '無')+'；已保存季報：'+_escape(pquarter or '無')+'。'
-      '先建置可稽核的試算指標，尚不與技術分數相加、不調整排名。</p>'
-      '<p class="muted"><b>試算規則：</b>營收月年增為正比例 4 分、累計營收年增為正比例 4 分、'
-      '營業利益率為正比例 8 分；另預留 14 分給去年同季累計營業利益率改善比例。'
-      '目前缺跨年比較時，僅顯示 16 分方向訊號；小樣本或缺資料不計分。'
-      '此規則尚未回測，不能把「16 分」等同產業預測能力。</p>'
+      '只呈現可核對的營運數據，完全不與技術分數相加、不調整排名。</p>'
+      '<p class="muted">此處只用月營收年增、累計營業利益率與資料覆蓋狀況提供觀察；'
+      '跨期判斷請看 1.32 產業景氣雷達。小樣本或缺資料時不下結論。</p>'
       '<div class="table-wrap"><table><thead><tr><th>產業（研究分組）</th><th>營收年增中位數</th><th>營收資料</th>'
-      '<th>營業獲利公司</th><th>基本面方向訊號</th><th>研究限制</th></tr></thead><tbody>']
+      '<th>營業獲利公司</th><th>資料跨期狀態</th><th>研究限制</th></tr></thead><tbody>']
     for row in data:
-        signal=('—' if row['pilot'] is None else f"{row['pilot']:.1f}/16")
-        if row['full_score'] is not None:
-            signal=f"{row['full_score']:.1f}/30（實驗）"
+        signal = ('有跨年同季資料' if row['full_score'] is not None
+                  else '無足夠跨年同季資料')
         profit=f"{row['operating_positive']}/{row['profit_coverage']}" if row['profit_coverage'] else '—'
         parts.append('<tr><td><b>'+_escape(row['sector'])+'</b><small>'+str(row['sample'])+' 檔樣本</small></td>'
                      '<td>'+_percent(row['median_yoy'])+'</td><td>'+str(row['revenue_coverage'])+'/'+str(row['sample'])+'</td>'

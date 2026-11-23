@@ -137,7 +137,7 @@ def industry_readiness_section(universe, industry):
     pct = lambda v: '—' if v is None else f'{v:+.1f}%'
     diff = lambda v: '—' if v is None else f'{v:+.1f} 百分點'
     intro = ('<h2>🧱 台股產業前景・評分地基 1.13</h2>'
-             '<p class="muted">先驗證資料完整度與可比性，<b>不發放產業前景30分</b>。'
+             '<p class="muted">先驗證資料完整度與可比性，<b>不另編產業總分</b>。'
              '這裡只使用既有證交所月營收與一般業季報歸檔資料，金融股不混入一般業比較。'
              '月營收與累計獲利的所屬期間不同，不能視為同一月份損益。</p>')
     intro += ('<p class="muted">目前最新月份：<b>'+esc(month or '尚無')+'</b>'
@@ -159,12 +159,11 @@ def industry_readiness_section(universe, industry):
             '「營利率變化」比較<strong>今年與去年相同季度的年初至今累計營業利益率</strong>。'
             '兩個比較都使用相同公司的配對樣本，且配對檔數至少3檔才顯示差值；'
             '這些是研究觀察，不是因果解釋、股價預測或已驗證的選股分數。</p>')
-    rubric = ('<details class="rest"><summary>查看未來產業30分的評分設計草案</summary>'
-              '<div class="note"><b>12 分：營收成長的持續性</b>（跨月、跨年而非只看最新月）；'
-              '<b>12 分：企業核心獲利趨勢</b>（需去年同季可比的累計營利率與財報）；'
-              '<b>6 分：族群樣本廣度與資料可靠度</b>。'
-              '權重僅是待驗證草案，尚不產生分數；未來須有足夠歷史、產業差異校正及樣本外回測才可啟用。'
-              '</div></details>')
+    rubric = ('<details class="rest"><summary>資料完整度與比較限制</summary>'
+              '<div class="note">只比較已存檔的兩個營運期間，'
+              '營收年增的跨月變化與去年同季累計營利率的變化屬於不同資料。'
+              '目前不把它們換算成產業分數；樣本不足時只顯示現有資料。'
+              '金融業財報口徑與一般產業不同，已排除。</div></details>')
     return (intro + info + '<div class="table-wrap"><table><thead><tr><th>產業</th><th>資料覆蓋</th>'
             '<th>最新月營收年增</th><th>累計營利率</th><th>營收年增變化</th>'
             '<th>同季營利率變化</th><th>可比性</th></tr></thead><tbody>'
