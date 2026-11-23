@@ -1,9 +1,6 @@
 name: Stock Radar offline CI (no deploy)
 
 on:
-  push:
-    branches:
-      - fix/phase-2-safe-publication
   pull_request:
     branches:
       - main
