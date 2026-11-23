@@ -113,6 +113,8 @@ class DailyUpdateOfflineTest(unittest.TestCase):
             self.assertEqual(page.count('<article class="card"'), 100)
             self.assertIn('前瞻訊號 1 筆，舊制封存 36 筆', page)
             self.assertIn('訊號有效性驗證室・1.30', page)
+            self.assertIn('id="radar-health-light-v131"', page)
+            self.assertIn('本次報告行情完整', page)
             saved = archived_signals(history)
             self.assertEqual({key: saved[key] for key in original}, original)
             new = saved[(days['台股'], f'{code}.TW', 'revenue_margin')]
