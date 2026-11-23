@@ -334,11 +334,16 @@ def observed_return(frame, asof, trading_days):
     return 100 * (prices[end][1] / prices[end - trading_days][1] - 1)
 
 
-def industry_strength_section(records, histories, benchmarks):
-    """Sector PRICE/BREADTH observations only, never an industry-fundamental score."""
-    sections = ['<h2>🏗️ 產業研究室・第一期：族群強弱</h2>',
+def industry_strength_section(records, histories, benchmarks, *, markets=('台股', '美股')):
+    """Fixed research-pool price/breadth view, not official industry indices."""
+    title = ('🏗️ 台股研究池｜族群強弱' if markets == ('台股',)
+             else '🏗️ 美股研究池｜族群強弱' if markets == ('美股',)
+             else '🏗️ 研究池｜族群強弱')
+    sections = ['<h2>' + title + '</h2>',
         '<p class="muted">只用目前固定100檔樣本：比較族群內股票近20／60個交易日的平均調整收盤價變化、20日均線上方比例，及20日平均報酬相對0050或SPY的差距。這些是等權價格動能與廣度觀察，<b>不是產業營收、獲利、資本支出或未來前景的30分評分</b>。成分太少的族群僅作參考。</p>']
     for market, flag in (('台股', '🇹🇼'), ('美股', '🇺🇸')):
+        if market not in markets:
+            continue
         market_rows = [r for r in records if r.get('市場') == market and r.get('交易日期')]
         if not market_rows:
             sections.append(f'<h3>{flag} {market}</h3><p class="muted">本次沒有有效資料。</p>')
@@ -668,7 +673,7 @@ def render(records,errors,history_rows,history_frames,benchmark_frames,benchmark
     {warning_bench}
     {performance_section('台股',signals,results,immature,missing)}
     {performance_section('美股',signals,results,immature,missing)}
-    {industry_strength_section(records,history_frames,benchmark_frames)}
+    {industry_strength_section(records,history_frames,benchmark_frames,markets=('美股',))}
     {monthly_revenue_section(UNIVERSE, INDUSTRY, TW_NAMES)}
     {industry_lens_section(UNIVERSE, INDUSTRY, TW_NAMES, records)}
     {quarterly_profit_section(UNIVERSE, INDUSTRY, TW_NAMES)}
@@ -706,7 +711,12 @@ def render(records,errors,history_rows,history_frames,benchmark_frames,benchmark
     install_villa_hub(stage_file, records)
     install_famous_room(stage_file)
     install_stock_search(stage_file)
-    install_sector_indices(stage_file)
+    install_sector_indices(
+        stage_file,
+        tw_research_html=industry_strength_section(
+            records, history_frames, benchmark_frames, markets=('台股',)
+        ),
+    )
     verify_site(stage_file, records)
     if publish:
         stage_file.replace(SITE_FILE)
