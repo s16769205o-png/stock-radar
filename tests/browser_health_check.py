@@ -98,6 +98,7 @@ def run(html: Path, output: Path):
                 pulse.screenshot(path=str(output / f'sector-pulse-{width}.png'))
                 page.locator('#tab-us').click()
                 assert page.locator('#panel-us').is_visible()
+                assert page.locator('#panel-us').get_by_text('美股研究池｜族群強弱').count() == 1
                 page.locator('#tab-famous').click()
                 assert page.locator('#panel-famous').is_visible()
                 page.locator('#tab-kitchen').click()
