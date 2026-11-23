@@ -6,6 +6,7 @@ on:
       - main
       - fix/phase-1-signal-market-integrity
       - fix/phase-2-safe-publication
+      - feature/v131-readonly-market-health
   workflow_dispatch:
 
 permissions:
