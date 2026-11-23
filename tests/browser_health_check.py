@@ -24,6 +24,12 @@ def assert_mobile_health(page, width: int):
     assert -1 <= rect['x'] and rect['x'] + rect['width'] <= width + 2, (
         f'Health panel spills outside {width}px viewport: {rect}'
     )
+    # Narrow mobile cards must not clip the date or benchmark status.
+    for item in root.locator('.rhl-date, .rhl-benchmark-value').all():
+        scroll, client = item.evaluate('(el) => [el.scrollWidth, el.clientWidth]')
+        assert scroll <= client + 1, (
+            f'Date or benchmark label overflows at {width}px: {scroll}/{client}'
+        )
     tiles = [x.bounding_box() for x in root.locator('.rhl-market').all()]
     assert all(x is not None for x in tiles)
     assert tiles[0]['x'] + tiles[0]['width'] <= tiles[1]['x'] + 2, (
