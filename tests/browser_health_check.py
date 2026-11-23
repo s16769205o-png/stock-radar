@@ -59,6 +59,14 @@ def run(html: Path, output: Path):
                 )
                 assert page.locator('#rhl-status').inner_text() == '本次報告行情完整'
                 page.screenshot(path=str(output / f'health-fresh-{width}.png'))
+                # Existing phone tabs must continue to work with the new lamp.
+                page.locator('#tab-tw').click()
+                assert page.locator('#panel-tw').is_visible()
+                assert page.locator('#panel-us').is_hidden()
+                page.locator('#tab-us').click()
+                assert page.locator('#panel-us').is_visible()
+                page.locator('#tab-overview').click()
+                assert page.locator('#panel-overview').is_visible()
                 context.close()
 
             context = browser.new_context(
