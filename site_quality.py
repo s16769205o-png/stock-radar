@@ -24,6 +24,7 @@ REQUIRED = (
     '/* stock-radar-sector-indices-1.21 */',
     'sector-research-extra',
     'id="radar-health-light-v131"',
+    'id="vix-overview-v134"',
     'id="sector-pulse-v132"',
     '🛠️ 別墅機電總控室',
     '🇺🇸 美股｜行情日期一致性診斷・1.23',
