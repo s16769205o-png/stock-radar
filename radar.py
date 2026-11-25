@@ -46,6 +46,7 @@ from health_light_v131 import health_light_section
 from vix_overview_v134 import fetch_vix, render_vix_card
 from us_hours_v135 import install_us_hours
 from us_fundamentals_v136 import fetch_pilot, install_us_fundamentals
+from sec_filing_audit_v137 import audit_pilot
 from sector_evidence_v123 import sector_evidence_section
 from system_health import health_section
 
@@ -617,7 +618,8 @@ def performance_section(market,signals,results,immature,missing):
 
 
 def render(records,errors,history_rows,history_frames,benchmark_frames,benchmark_errors,
-           *, publish=True, scan_time=None, vix_snapshot=None, us_fundamentals=None):
+           *, publish=True, scan_time=None, vix_snapshot=None, us_fundamentals=None,
+           sec_audit=None):
     generated_at = scan_time or datetime.now(ZoneInfo('Asia/Taipei'))
     updated=generated_at.strftime('%Y-%m-%d %H:%M')
     health_light=health_light_section(records,benchmark_frames,UNIVERSE,generated_at)
@@ -637,7 +639,7 @@ def render(records,errors,history_rows,history_frames,benchmark_frames,benchmark
         <section class="grid">{primary}</section><details class="rest"><summary>展開其餘 {len(rows[10:])} 檔</summary><section class="grid">{rest}</section></details>'''
 
     page=f'''<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>小G股票雷達 1.36</title><style>
+    <title>小G股票雷達 1.37</title><style>
     *{{box-sizing:border-box}}body{{margin:0;background:#f5f7fb;color:#202a3c;font-family:system-ui,-apple-system,'Noto Sans TC',sans-serif}}
     main{{max-width:1010px;margin:auto;padding:28px 16px 64px}}h1{{font-size:2.1rem;margin:8px 0}}h2{{margin:32px 0 12px;font-size:1.35rem}}h3{{margin:20px 0 10px}}
     .muted,small{{color:#6b7789}}.muted{{line-height:1.7;font-size:.92rem}}.eyebrow{{font-size:.79rem;letter-spacing:.07em;color:#325e96;font-weight:750}}
@@ -661,7 +663,7 @@ def render(records,errors,history_rows,history_frames,benchmark_frames,benchmark
     .movetag.up{{color:#176f4a;background:#e2f6ea}}.movetag.down{{color:#a64d36;background:#feede7}}.movetag.same{{color:#576476;background:#edf0f5}}
     @media(max-width:640px){{.movelist{{grid-template-columns:1fr}}.grid{{grid-template-columns:1fr}}.weights{{grid-template-columns:repeat(2,1fr)}}.stats strong{{font-size:1.3rem}}.stats>div{{padding:11px}}}}
     </style></head><body><main>
-    <div class="eyebrow">STOCK RESEARCH LAB · 1.36</div><h1>📡 小G股票雷達</h1>
+    <div class="eyebrow">STOCK RESEARCH LAB · 1.37</div><h1>📡 小G股票雷達</h1>
     <p class="muted">台股50＋美股50｜產業一句話、營收、獲利、技術排名及績效追蹤<br>台灣時間產生：{updated}。各股票請以卡片上的交易日為準。</p>
     {health_light}
     {vix_card}
@@ -723,7 +725,7 @@ def render(records,errors,history_rows,history_frames,benchmark_frames,benchmark
         ),
     )
     install_us_hours(stage_file)
-    install_us_fundamentals(stage_file, us_fundamentals)
+    install_us_fundamentals(stage_file, us_fundamentals, sec_audit)
     verify_site(stage_file, records)
     if publish:
         stage_file.replace(SITE_FILE)
@@ -833,6 +835,7 @@ def main():
     require_complete_markets(records, benchmark_frames, scan_started)
     vix_snapshot = fetch_vix(scan_started)
     us_fundamentals = fetch_pilot(scan_started)
+    sec_audit = audit_pilot(us_fundamentals, scan_started)
     staged_site = ROOT / 'index.stage.html'
     # Only local staged files change while rendering; all four publish or none.
     with staged_official_archives(ROOT) as source_stages:
@@ -840,7 +843,7 @@ def main():
             history_rows = persist(records, save=False)
             render(records,errors,history_rows,histories,benchmark_frames,benchmark_errors,
                    publish=False, scan_time=scan_started, vix_snapshot=vix_snapshot,
-                   us_fundamentals=us_fundamentals)
+                   us_fundamentals=us_fundamentals, sec_audit=sec_audit)
             # render() records newly matured outcomes in memory before CSV is staged.
             publish_verified_report(history_rows, staged_site, source_stages)
         finally:
