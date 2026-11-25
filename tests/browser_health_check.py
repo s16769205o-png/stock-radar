@@ -82,7 +82,17 @@ def run(html: Path, output: Path):
                 # Existing phone tabs must continue to work with the new lamp.
                 page.locator('#tab-tw').click()
                 assert page.locator('#panel-tw').is_visible()
+                reading_tw=page.locator('#read138-tw')
+                assert reading_tw.count()==1
+                assert reading_tw.locator('button[data-mode="all"]').get_attribute('aria-pressed')=='true'
                 assert page.locator('#panel-us').is_hidden()
+                reading_overview=page.locator('#read138-overview')
+                assert reading_overview.count()==1
+                assert reading_overview.locator('button[data-mode="focus"]').get_attribute('aria-pressed')=='true'
+                assert page.locator('#panel-overview > .radar-subgroup[hidden]').count() >= 1
+                reading_overview.locator('button[data-mode="all"]').click()
+                assert page.locator('#panel-overview > .radar-subgroup[hidden]').count()==0
+                reading_overview.locator('button[data-mode="focus"]').click()
                 official_index = page.locator('#sector-index-tw')
                 official_index.wait_for(state='visible', timeout=10000)
                 comparison = official_index.locator('details.sector-research-extra')
@@ -107,6 +117,14 @@ def run(html: Path, output: Path):
                 pulse.screenshot(path=str(output / f'sector-pulse-{width}.png'))
                 page.locator('#tab-us').click()
                 assert page.locator('#panel-us').is_visible()
+                reading_us=page.locator('#read138-us')
+                assert reading_us.count()==1
+                assert reading_us.locator('button[data-mode="all"]').get_attribute('aria-pressed')=='true'
+                reading_us.locator('button[data-mode="focus"]').click()
+                assert page.locator('#panel-us > .radar-subgroup[hidden]').count()>=1
+                reading_us.locator('select').select_option('0')
+                assert reading_us.locator('button[data-mode="all"]').get_attribute('aria-pressed')=='true'
+                assert page.locator('#panel-us > .radar-subgroup[hidden]').count()==0
                 assert page.locator('#panel-us').get_by_text('美股研究池｜族群強弱').count() == 1
                 guide=page.locator('#panel-us #us-hours-v135')
                 assert guide.count()==1 and guide.is_visible()
