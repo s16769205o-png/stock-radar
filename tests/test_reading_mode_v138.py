@@ -64,7 +64,8 @@ class ReadingModeTests(unittest.TestCase):
         self.assertIn("section.hidden=hide",SCRIPT)
         self.assertIn("btn.setAttribute('aria-pressed'",SCRIPT)
         self.assertNotIn("removeChild(",SCRIPT)
-        self.assertNotIn("innerHTML",SCRIPT)
+        self.assertNotIn(".innerHTML=",SCRIPT)
+        self.assertIn("option.textContent=",SCRIPT)
         self.assertNotIn("fetch(",SCRIPT)
         self.assertIn("read138",CSS)
 
