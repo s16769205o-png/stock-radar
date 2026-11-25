@@ -86,6 +86,8 @@ def run(html: Path, output: Path):
                 assert reading_tw.count()==1
                 assert reading_tw.locator('button[data-mode="all"]').get_attribute('aria-pressed')=='true'
                 assert page.locator('#panel-us').is_hidden()
+                page.locator('#tab-overview').click()
+                assert page.locator('#panel-overview').is_visible(), 'Overview tab must be visible before testing its controls'
                 reading_overview=page.locator('#read138-overview')
                 assert reading_overview.count()==1
                 assert reading_overview.locator('button[data-mode="focus"]').get_attribute('aria-pressed')=='true'
