@@ -95,6 +95,8 @@ def run(html: Path, output: Path):
                 reading_overview.locator('button[data-mode="all"]').click()
                 assert page.locator('#panel-overview > .radar-subgroup[hidden]').count()==0
                 reading_overview.locator('button[data-mode="focus"]').click()
+                page.locator('#tab-tw').click()
+                assert page.locator('#panel-tw').is_visible(), 'Taiwan tab must reappear after overview'
                 official_index = page.locator('#sector-index-tw')
                 official_index.wait_for(state='visible', timeout=10000)
                 comparison = official_index.locator('details.sector-research-extra')
