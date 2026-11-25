@@ -100,7 +100,8 @@ def compare_sec_facts(symbol, yahoo_row, obj, asof):
     year_before = [
         x for x in quarters if x["tag"] == chosen["tag"]
         and x["end"].year == current_end.year - 1
-        and abs((x["end"] - current_end.replace(year=current_end.year - 1)).days) <= 10
+        and x["end"].month == current_end.month
+        and abs(x["end"].day - current_end.day) <= 10
     ]
     if not year_before:
         return {"state": "unverifiable", "reason": "SEC 缺去年同季可比營收"}
