@@ -129,7 +129,7 @@ def run(html: Path, output: Path):
                 reading_us.locator('select').select_option('0')
                 assert reading_us.locator('button[data-mode="all"]').get_attribute('aria-pressed')=='true'
                 assert page.locator('#panel-us > .radar-subgroup[hidden]').count()==0
-                assert page.locator('#panel-us').get_by_text('美股研究池｜族群強弱').count() == 1
+                assert page.locator('#panel-us .radar-subgroup h2').filter(has_text='美股研究池｜族群強弱').count() == 1
                 guide=page.locator('#panel-us #us-hours-v135')
                 assert guide.count()==1 and guide.is_visible()
                 assert '不是即時夜盤報價' in guide.inner_text()
