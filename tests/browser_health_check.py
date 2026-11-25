@@ -121,6 +121,8 @@ def run(html: Path, output: Path):
                 fundamentals.locator('summary').click()
                 assert fundamentals.locator('details').evaluate('(d)=>d.open')
                 assert fundamentals.locator('.uf136-company').count()==8
+                assert fundamentals.locator('.uf137-audit').count()==8
+                assert 'SEC 官方核對尚未啟用' in fundamentals.inner_text()
                 assert '未逐筆核對 SEC 原始申報' in fundamentals.inner_text()
                 rect=fundamentals.bounding_box()
                 assert rect and rect['x']>=-1 and rect['x']+rect['width']<=width+2
