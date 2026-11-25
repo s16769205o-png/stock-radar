@@ -115,6 +115,8 @@ class DailyUpdateOfflineTest(unittest.TestCase):
             self.assertIn('前瞻訊號 1 筆，舊制封存 36 筆', page)
             self.assertIn('訊號有效性驗證室・1.30', page)
             self.assertIn('id="radar-health-light-v131"', page)
+            self.assertIn('id="vix-overview-v134"', page)
+            self.assertIn('非即時行情', page)
             self.assertIn('本次報告行情完整', page)
             self.assertIn('id="sector-pulse-v132"', page)
             self.assertIn('sector-research-extra', page)

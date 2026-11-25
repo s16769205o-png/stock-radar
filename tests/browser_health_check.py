@@ -35,6 +35,15 @@ def assert_mobile_health(page, width: int):
     assert tiles[0]['x'] + tiles[0]['width'] <= tiles[1]['x'] + 2, (
         f'Market tiles overlap at width {width}: {tiles}'
     )
+    vix = page.locator('#vix-overview-v134')
+    assert vix.count() == 1, 'One VIX overview card is required'
+    assert '非即時行情' in vix.inner_text()
+    assert 'VIX' in vix.inner_text()
+    bounds = vix.bounding_box()
+    assert bounds is not None
+    assert bounds['x'] >= -1 and bounds['x'] + bounds['width'] <= width + 2, (
+        f'VIX card overflows at {width}px: {bounds}'
+    )
     page.locator('#radar-market-tabs').wait_for(state='visible', timeout=15000)
     # The villa hub extends the original three market tabs to five rooms.
     assert page.locator('#radar-market-tabs button').count() == 5, (

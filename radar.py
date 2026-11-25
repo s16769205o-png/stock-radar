@@ -43,6 +43,7 @@ from world_events_v125 import official_events_section
 from site_quality import verify_site
 from market_health_v123 import us_date_health_section
 from health_light_v131 import health_light_section
+from vix_overview_v134 import fetch_vix, render_vix_card
 from sector_evidence_v123 import sector_evidence_section
 from system_health import health_section
 
@@ -614,10 +615,11 @@ def performance_section(market,signals,results,immature,missing):
 
 
 def render(records,errors,history_rows,history_frames,benchmark_frames,benchmark_errors,
-           *, publish=True, scan_time=None):
+           *, publish=True, scan_time=None, vix_snapshot=None):
     generated_at = scan_time or datetime.now(ZoneInfo('Asia/Taipei'))
     updated=generated_at.strftime('%Y-%m-%d %H:%M')
     health_light=health_light_section(records,benchmark_frames,UNIVERSE,generated_at)
+    vix_card=render_vix_card(vix_snapshot)
     tw=sorted([r for r in records if r['市場']=='台股'],key=rank)
     us=sorted([r for r in records if r['市場']=='美股'],key=rank)
     alert_rows=sorted((r for r in records if r['研究警示']),key=lambda r:(r['市場'],rank(r)))
@@ -660,6 +662,7 @@ def render(records,errors,history_rows,history_frames,benchmark_frames,benchmark
     <div class="eyebrow">STOCK RESEARCH LAB · 1.32</div><h1>📡 小G股票雷達</h1>
     <p class="muted">台股50＋美股50｜產業一句話、營收、獲利、技術排名及績效追蹤<br>台灣時間產生：{updated}。各股票請以卡片上的交易日為準。</p>
     {health_light}
+    {vix_card}
     <div class="stats"><div><small>成功掃描</small><strong>{len(records)}</strong></div><div><small>符合均線</small><strong>{sum(r['符合趨勢']=='是' for r in records)}</strong></div>
     <div><small>明顯放量</small><strong>{sum(str(r['量價訊號']).startswith('放量') for r in records)}</strong></div></div>
     <h2>四種研究視角（不湊 100 分）</h2><div class="weights"><div><b>技術</b><small>目前保留原有 30 分實驗性技術排序，不代表投資勝率。</small></div>
@@ -824,13 +827,14 @@ def main():
             benchmark_errors.append(f'{ticker}: {type(exc).__name__}: {str(exc)[:100]}')
     for err in benchmark_errors:print('基準下載問題：',err)
     require_complete_markets(records, benchmark_frames, scan_started)
+    vix_snapshot = fetch_vix(scan_started)
     staged_site = ROOT / 'index.stage.html'
     # Only local staged files change while rendering; all four publish or none.
     with staged_official_archives(ROOT) as source_stages:
         try:
             history_rows = persist(records, save=False)
             render(records,errors,history_rows,histories,benchmark_frames,benchmark_errors,
-                   publish=False, scan_time=scan_started)
+                   publish=False, scan_time=scan_started, vix_snapshot=vix_snapshot)
             # render() records newly matured outcomes in memory before CSV is staged.
             publish_verified_report(history_rows, staged_site, source_stages)
         finally:
