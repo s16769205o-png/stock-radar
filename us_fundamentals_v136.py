@@ -110,7 +110,8 @@ def _link(symbol):
     return "https://finance.yahoo.com/quote/" + symbol + "/financials/"
 
 
-def render_pilot(rows):
+def render_pilot(rows, audits=None):
+    audits = audits if isinstance(audits, dict) else {}
     by_symbol = {
         row["symbol"]: row for row in rows or []
         if isinstance(row, dict) and row.get("symbol") in PILOT
@@ -137,11 +138,35 @@ def render_pilot(rows):
         else:
             quarter = "本次季度財報缺漏"
             growth, margin = "—", "—"
+        audit = audits.get(symbol, {})
+        state = audit.get("state") if isinstance(audit, dict) else None
+        if state == "matched":
+            audit_text = "SEC 10-Q 數字一致（已核對指定季度）"
+            audit_class = "uf137-match"
+        elif state == "different":
+            audit_text = "SEC 與 Yahoo 數字不一致，請人工複核"
+            audit_class = "uf137-different"
+        elif state == "unverifiable":
+            audit_text = "SEC 尚無法核實：" + str(audit.get("reason", "資料不足"))
+            audit_class = "uf137-pending"
+        else:
+            audit_text = "SEC 官方核對尚未啟用"
+            audit_class = "uf137-pending"
+        audit_link = ""
+        if state in ("matched", "different"):
+            cik, accession = audit.get("cik"), audit.get("accession")
+            if isinstance(cik, int) and isinstance(accession, str) and accession.count("-") == 2:
+                audit_link = (' · <a href="https://www.sec.gov/Archives/edgar/data/'
+                              + str(cik) + '/' + accession.replace("-", "") + '/"'
+                              + ' target="_blank" rel="noopener noreferrer">'
+                              'SEC 原始申報</a>')
         cards.append(
             '<article class="uf136-company"><div class="uf136-top"><strong>' +
             escape(symbol) + '</strong><span>' + quarter + '</span></div>'
             '<dl><div><dt>單季營收年增</dt><dd>' + growth + '</dd></div>'
             '<div><dt>單季淨利率</dt><dd>' + margin + '</dd></div></dl>'
+            '<p class="uf137-audit ' + audit_class + '">' + escape(audit_text)
+            + audit_link + '</p>'
             '<a href="' + _link(symbol) + '" target="_blank" '
             'rel="noopener noreferrer">查閱 Yahoo 財報資料</a></article>'
         )
@@ -153,6 +178,12 @@ def render_pilot(rows):
         '僅顯示可取得的<b>單季營收年增率</b>和<b>單季淨利率</b>。'
         '不是全美股排名、產業景氣指數或 100 分打分表。</p>'
         '<div class="uf136-grid">' + "".join(cards) + '</div>'
+        '<p class="uf136-info"><b>SEC 核對說明：</b>'
+        '預設不連線核對；只有管理者以合法識別設定'
+        ' SEC_USER_AGENT 後，才會對這 8 檔做官方 10-Q 比對。'
+        '「一致」只代表選定季度的特定營收年增與淨利率在容許'
+        '四捨五入差距內相符，並不代表 SEC 為資料背書；'
+        '「不一致」須人工確認，不可直接當成投資訊號。</p>'
         '<p class="uf136-info"><b>口徑與限制：</b>'
         '單季營收年增須有同公司、上年相近季度的可比資料；'
         '沒有就顯示「—」。淨利率＝同季淨利÷同季營收。'
@@ -193,11 +224,15 @@ CSS = """
 #us-fundamentals-v136 dt{color:#52677b}
 #us-fundamentals-v136 dd{font-weight:750;margin:0;font-variant-numeric:tabular-nums}
 #us-fundamentals-v136 a{font-size:.72rem}
+#us-fundamentals-v136 .uf137-audit{font-size:.74rem;line-height:1.5;
+ padding:7px 8px;border-radius:8px;background:#f1f4f8;color:#536579}
+#us-fundamentals-v136 .uf137-match{background:#e8f5ec;color:#1d6945}
+#us-fundamentals-v136 .uf137-different{background:#fff1e5;color:#8c461d}
 @media(max-width:510px){#us-fundamentals-v136 .uf136-grid{grid-template-columns:1fr}}
 """
 
 
-def install_us_fundamentals(path: Path, rows):
+def install_us_fundamentals(path: Path, rows, audits=None):
     """Mount inside the pre-existing US tab after the hours guide."""
     path = Path(path)
     page = path.read_text(encoding="utf-8")
@@ -207,7 +242,7 @@ def install_us_fundamentals(path: Path, rows):
         raise ValueError("美股季度財報研究：HTML 結構不完整")
     if "/* us-hours-v135 */" not in page:
         raise ValueError("美股季度財報研究：缺少美股時段入口")
-    safe = json.dumps(render_pilot(rows), ensure_ascii=False)
+    safe = json.dumps(render_pilot(rows, audits), ensure_ascii=False)
     safe = safe.replace("<", r"\u003c").replace(">", r"\u003e").replace("&", r"\u0026")
     script = (
         "/* stock-radar-us-fundamentals-v136 */"
