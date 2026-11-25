@@ -156,7 +156,7 @@ def render_pilot(rows, audits=None):
         audit_link = ""
         if state in ("matched", "different"):
             cik, accession = audit.get("cik"), audit.get("accession")
-            if isinstance(cik, int) and isinstance(accession, str) and fullmatch(r"\\d{10}-\\d{2}-\\d{6}", accession):
+            if isinstance(cik, int) and isinstance(accession, str) and fullmatch(r"[0-9]{10}-[0-9]{2}-[0-9]{6}", accession):
                 audit_link = (' · <a href="https://www.sec.gov/Archives/edgar/data/'
                               + str(cik) + '/' + accession.replace("-", "") + '/"'
                               + ' target="_blank" rel="noopener noreferrer">'
