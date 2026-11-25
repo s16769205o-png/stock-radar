@@ -115,6 +115,15 @@ def run(html: Path, output: Path):
                 assert bounds and bounds['x'] >= -1 and bounds['x']+bounds['width'] <= width+2
                 guide.locator('summary').click()
                 assert guide.locator('details').evaluate('(d)=>d.open')
+                fundamentals=page.locator('#panel-us #us-fundamentals-v136')
+                assert fundamentals.count()==1 and fundamentals.is_visible()
+                assert not fundamentals.locator('details').evaluate('(d)=>d.open')
+                fundamentals.locator('summary').click()
+                assert fundamentals.locator('details').evaluate('(d)=>d.open')
+                assert fundamentals.locator('.uf136-company').count()==8
+                assert '未逐筆核對 SEC 原始申報' in fundamentals.inner_text()
+                rect=fundamentals.bounding_box()
+                assert rect and rect['x']>=-1 and rect['x']+rect['width']<=width+2
                 page.locator('#tab-famous').click()
                 assert page.locator('#panel-famous').is_visible()
                 page.locator('#tab-kitchen').click()
