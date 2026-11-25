@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from datetime import datetime, date
 from html import escape
+from re import fullmatch
 from math import isfinite
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -155,7 +156,7 @@ def render_pilot(rows, audits=None):
         audit_link = ""
         if state in ("matched", "different"):
             cik, accession = audit.get("cik"), audit.get("accession")
-            if isinstance(cik, int) and isinstance(accession, str) and accession.count("-") == 2:
+            if isinstance(cik, int) and isinstance(accession, str) and fullmatch(r"\\d{10}-\\d{2}-\\d{6}", accession):
                 audit_link = (' · <a href="https://www.sec.gov/Archives/edgar/data/'
                               + str(cik) + '/' + accession.replace("-", "") + '/"'
                               + ' target="_blank" rel="noopener noreferrer">'
