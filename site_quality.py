@@ -9,7 +9,7 @@ from pathlib import Path
 import re
 
 REQUIRED = (
-    'STOCK RESEARCH LAB · 1.32',
+    'STOCK RESEARCH LAB · 1.35',
     '🧪 台股｜訊號有效性驗證室・1.30',
     '🗂️ 台股｜歷史訊號與可信度研究室・1.29',
     '🇹🇼 台股｜產業交叉驗證總控台・1.26',
@@ -25,6 +25,7 @@ REQUIRED = (
     'sector-research-extra',
     'id="radar-health-light-v131"',
     'id="vix-overview-v134"',
+    '/* us-hours-v135 */',
     'id="sector-pulse-v132"',
     '🛠️ 別墅機電總控室',
     '🇺🇸 美股｜行情日期一致性診斷・1.23',
