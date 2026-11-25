@@ -108,6 +108,13 @@ def run(html: Path, output: Path):
                 page.locator('#tab-us').click()
                 assert page.locator('#panel-us').is_visible()
                 assert page.locator('#panel-us').get_by_text('美股研究池｜族群強弱').count() == 1
+                guide=page.locator('#panel-us #us-hours-v135')
+                assert guide.count()==1 and guide.is_visible()
+                assert '不是即時夜盤報價' in guide.inner_text()
+                bounds=guide.bounding_box()
+                assert bounds and bounds['x'] >= -1 and bounds['x']+bounds['width'] <= width+2
+                guide.locator('summary').click()
+                assert guide.locator('details').evaluate('(d)=>d.open')
                 page.locator('#tab-famous').click()
                 assert page.locator('#panel-famous').is_visible()
                 page.locator('#tab-kitchen').click()
