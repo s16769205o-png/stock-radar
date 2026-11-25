@@ -27,7 +27,7 @@ REQUIRED = (
     'id="vix-overview-v134"',
     '/* us-hours-v135 */',
     '/* stock-radar-us-fundamentals-v136 */',
-    'SEC 官方核對尚未啟用',
+    'uf137-audit',
     'id="sector-pulse-v132"',
     '🛠️ 別墅機電總控室',
     '🇺🇸 美股｜行情日期一致性診斷・1.23',
