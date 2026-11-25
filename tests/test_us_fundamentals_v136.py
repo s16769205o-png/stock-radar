@@ -62,7 +62,7 @@ class UsFundamentalsTests(unittest.TestCase):
         self.assertIn("-3.5%",html)
         self.assertIn("+7.2%",html)
         self.assertEqual(html.count('class="uf136-company"'),8)
-        self.assertNotIn("100 分",html.split("研究樣本")[0] if "研究樣本" in html else "")
+        self.assertNotIn("/100",html)
         self.assertIn("SEC EDGAR",html)
         self.assertNotIn("買入建議",html)
 
