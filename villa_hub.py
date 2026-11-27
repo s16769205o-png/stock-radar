@@ -169,6 +169,9 @@ SCRIPT = r"""
     <div class="villa-note"><b>🔐 私人資料提醒</b>：這個清單只保存在目前瀏覽器的本機儲存空間，不會寫進公開 GitHub。
     換手機、無痕模式或清除網站資料可能使清單消失，請定期匯出備份。
     持有股數、成本和備註為選填，僅保留在這台裝置；沒有雲端同步。調整後歷史價格不能直接對比原始買入成本，所以暫不計算實際損益。</div>
+    <p class="villa-note"><b>🛡️ 新開放：獨立持股風控屋</b><br>
+    將「已持有」的股票帶入另一個私人研究頁，追蹤集中度、持有理由與自訂風險警報。<br>
+    <a href="./holdings-risk.html">前往持股風控屋（私人資料不會上傳）</a></p>
     <form class="villa-form" id="villa-add-form">
       <label class="villa-visually-hidden" for="villa-ticker">股票代號</label>
       <input id="villa-ticker" class="villa-input" placeholder="例：1303、NVDA、0883.HK" autocomplete="off" maxlength="20" required>
