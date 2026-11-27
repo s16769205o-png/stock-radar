@@ -39,11 +39,11 @@ def verify(browser,base,width,output):
     # Exactly same origin as existing kitchen; never use GitHub API to fetch secrets.
     page.evaluate("""() => {
       localStorage.setItem('soso-stock-radar-watchlist-v1',
-        JSON.stringify(['SHEL','0883.HK','MSFT']));
+        JSON.stringify(['DEMO','0001.HK','MSFT']));
       localStorage.setItem('soso-stock-radar-holdings-v1',
         JSON.stringify({
-          'SHEL':{status:'holding',quantity:10,cost:33.1,note:'能源部位'},
-          '0883.HK':{status:'holding',quantity:2,cost:8.8,note:'周期關注'},
+          'DEMO':{status:'holding',quantity:10,cost:3.21,note:'示例科技股'},
+          '0001.HK':{status:'holding',quantity:2,cost:14.7,note:'示例港股'},
           'MSFT':{status:'watch',quantity:100,cost:10,note:'未持有'}
         }));
     }""")
@@ -57,7 +57,7 @@ def verify(browser,base,width,output):
     # No price -> no pretend sell advice; all partial input remains private.
     assert "暫停完整配置比重警報" in page.locator("#coverage").inner_text()
     today=date.today().isoformat()
-    shell=page.locator(".holding").filter(has_text="SHEL")
+    shell=page.locator(".holding").filter(has_text="DEMO")
     shell.get_by_role("button",name="✏️ 編輯").click()
     assert page.locator("#editor").evaluate("(n)=>n.open")
     page.locator('input[name="price"]').fill("100")
@@ -76,7 +76,7 @@ def verify(browser,base,width,output):
     assert "暫停完整配置比重警報" in page.locator("#coverage").inner_text()
     assert page.locator("#holdings img").count()==0, "Private notes must use textContent"
     # Fill second holding to permit known-position allocation comparisons.
-    other=page.locator(".holding").filter(has_text="0883.HK")
+    other=page.locator(".holding").filter(has_text="0001.HK")
     other.get_by_role("button",name="✏️ 編輯").click()
     page.locator('input[name="price"]').fill("100")
     page.locator('input[name="fx"]').fill("4")
@@ -97,7 +97,7 @@ def verify(browser,base,width,output):
     assert page.locator("#stat-alert").inner_text()=="1"
     page.locator('[data-filter="alerts"]').click()
     assert page.locator(".holding").count()==1
-    assert page.locator(".holding").filter(has_text="SHEL").count()==1
+    assert page.locator(".holding").filter(has_text="DEMO").count()==1
     page.locator('[data-filter="all"]').click()
     # Export is local, not a network call; inspect the actual downloaded file.
     with page.expect_download() as download_info:
@@ -108,7 +108,7 @@ def verify(browser,base,width,output):
     exported=json.loads(target.read_text(encoding="utf-8"))
     assert exported["type"]=="soso-private-risk-house"
     assert len(exported["holdings"])==2
-    assert any(x["symbol"]=="SHEL" for x in exported["holdings"])
+    assert any(x["symbol"]=="DEMO" for x in exported["holdings"])
     assert all(u.startswith(base+"/") for u in requested),requested
     scroll_width=page.evaluate("document.documentElement.scrollWidth")
     assert scroll_width <= width+2, f"risk-house overflows: width={width} document={scroll_width}"
