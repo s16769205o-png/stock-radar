@@ -29,6 +29,7 @@ REQUIRED = (
     '/* stock-radar-us-fundamentals-v136 */',
     'uf137-audit',
     '/* stock-radar-reading-mode-v138-mount */',
+    './holdings-risk.html',
     'id="sector-pulse-v132"',
     '🛠️ 別墅機電總控室',
     '🇺🇸 美股｜行情日期一致性診斷・1.23',

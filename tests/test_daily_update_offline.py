@@ -125,6 +125,7 @@ class DailyUpdateOfflineTest(unittest.TestCase):
             self.assertIn('四種研究視角（不湊 100 分）', page)
             self.assertIn('STOCK RESEARCH LAB · 1.38', page)
             self.assertIn('/* stock-radar-reading-mode-v138-mount */', page)
+            self.assertIn('./holdings-risk.html', page)
             self.assertIn('SEC 官方核對尚未啟用', page)
             self.assertIn('/* stock-radar-us-fundamentals-v136 */', page)
             self.assertIn('/* us-hours-v135 */', page)
