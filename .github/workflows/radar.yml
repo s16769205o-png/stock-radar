@@ -57,6 +57,10 @@ jobs:
           cp data/history.csv _site/data/history.csv
           cp data/monthly_revenue.csv _site/data/monthly_revenue.csv
           cp data/quarterly_profit.csv _site/data/quarterly_profit.csv
+          # Separate, public application CODE only; personal holdings stay browser-local.
+          test -s holdings-risk.html && test -s risk_house_v1.js
+          cp holdings-risk.html _site/holdings-risk.html
+          cp risk_house_v1.js _site/risk_house_v1.js
 
       - name: 上傳網頁
         uses: actions/upload-pages-artifact@v4
